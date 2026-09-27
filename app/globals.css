@@ -17,7 +17,7 @@
   --color-stone: #6e6a69;
   --color-pebble: #9a9796;
   --color-rule: rgb(13 13 13 / 0.12);
-  --color-scrim: rgb(247 245 243 / 0.85);
+  --color-scrim: rgb(13 13 13 / 0.5); /* ink at 50%, used with a 12px blur */
 
   /* Fonts (loaded in app/layout.tsx with next/font) */
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
@@ -49,4 +49,9 @@
   --text-display--font-weight: 350;
 
   --radius-none: 0px;
+}
+
+/* Stop the grid behind the detail overlay from scrolling while it's open. */
+html:has(dialog[open]) {
+  overflow: hidden;
 }

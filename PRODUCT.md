@@ -102,16 +102,21 @@ archive on their own phones and computers. The app is deployed on a public URL.
 
 1. **Setup:** Next.js project, GitHub repo, Supabase project, blank page
    deployed to Vercel
-2. **Auth:** sign up, log in, log out, private per-user data
-3. **Add item:** hero photo upload and all optional fields (database already
-   supports multiple photos per item)
-4. **Grid:** uniform cards, zoom toggle, hover/tap behaviour, empty state
-5. **Overlay:** detail view, edit, delete, archive/unarchive
-6. **Detail photos:** add, reorder, remove, and change the hero photo
-7. **Views:** category rows, sorting, archive section
-8. **Colour:** auto-detect on upload, manual adjustment, colour view
-9. **Style over time:** first visualization
-10. **Polish & test:** friend testing, accessibility pass, mobile refinements,
+2. **Grid (sample data):** uniform cards, zoom toggle, hover/tap behaviour,
+   using a hard-coded sample closet so the design can be settled first
+3. **Overlay (view only):** detail view with enlarged image and details,
+   still on sample data
+4. **Auth:** sign up, log in, log out
+5. **Add item:** database with Row Level Security (private per-user data),
+   hero photo upload and all optional fields (database already supports
+   multiple photos per item); grid and overlay switch from sample data to
+   real data; empty state
+6. **Edit & archive:** edit, delete, archive/unarchive from the overlay
+7. **Detail photos:** add, reorder, remove, and change the hero photo
+8. **Views:** category rows, sorting, archive section
+9. **Colour:** auto-detect on upload, manual adjustment, colour view
+10. **Style over time:** first visualization
+11. **Polish & test:** friend testing, accessibility pass, mobile refinements,
     README and screenshots for the portfolio
 
 ## Later (v2+)
@@ -127,4 +132,5 @@ archive on their own phones and computers. The app is deployed on a public URL.
 - In style over time, where do items without a date acquired go?
 - For archived items, should we record how it left (sold, donated, gifted, lost)?
 - Should there be a limit on photos per item, or per account, to manage storage?
-- Login method: email and password, or a magic link sent by email?
+- ~~Login method: email and password, or a magic link sent by email?~~
+  Decided 2026-09-26: email and password.

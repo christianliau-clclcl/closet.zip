@@ -1,19 +1,7 @@
-// Placeholder homepage until login arrives in Milestone 2.
-export default function Home() {
-  return (
-    <>
-      <header className="border-b border-rule px-4 py-3 md:px-8">
-        <p className="text-label uppercase">Closet.zip</p>
-      </header>
+import ClosetView from "@/components/ClosetView";
+import { sampleItems } from "@/lib/sample-items";
 
-      <main className="flex flex-1 flex-col items-center justify-center px-4 text-center md:px-8">
-        <h1 className="font-serif text-title">A quiet archive</h1>
-        <p className="mt-4 text-stone">
-          Of the clothes you own and have owned.
-          <br />
-          Opening soon.
-        </p>
-      </main>
-    </>
-  );
+// Homepage: the closet, using sample data until Milestone 5.
+export default function Home() {
+  return <ClosetView items={sampleItems} />;
 }

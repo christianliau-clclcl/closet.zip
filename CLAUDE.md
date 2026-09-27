@@ -85,15 +85,24 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 2 — auth
-- Last completed: Milestone 1 (2026-09-26). Next.js 16 app with DESIGN.md
-  tokens in `app/globals.css` (Tailwind's default colours, radii and shadows
-  switched off), placeholder homepage, GitHub repo
-  (christianliau-clclcl/closet.zip), Supabase project connected (URL and
-  publishable key in `.env.local` and Vercel). Live at
+- Current milestone: 4 — auth (email and password). Roadmap reordered
+  2026-09-26: grid and overlay were designed first on sample data.
+- Milestone 3 done (2026-09-27): detail overlay (view only). Opens via
+  `?item=<code>` so Back closes it and links work. Desktop: grid behind with
+  scrim (ink 50% + 12px blur), garment floating left, canvas panel right with
+  Details and Notes. Phone: full-screen canvas page, no scrim. Price in $.
+- Milestone 2 done: grid of floating garments with dots (no cell surface),
+  three-stop zoom slider (`lib/zoom.ts`), hover/focus reveals name and brand
+  (space reserved only on hover-capable devices).
+- Milestone 1 done (2026-09-26): Next.js 16 app with DESIGN.md tokens in
+  `app/globals.css` (Tailwind's default colours, radii and shadows switched
+  off), GitHub repo (christianliau-clclcl/closet.zip), Supabase project
+  connected (URL and publishable key in `.env.local` and Vercel). Live at
   https://closet-zip.vercel.app
 - Known issues: `README.md` is still the create-next-app boilerplate; favicon
   is the Next.js default; ESLint 9 deprecation warning comes from the Next.js
-  template.
-- Next up: Milestone 2. First decide the login method (email and password, or
-  magic link), an open question in PRODUCT.md.
+  template. Sample item details in `lib/sample-items.ts` are placeholders
+  (photos in `public/sample/`).
+- Next up: Milestone 4 auth. Parked decisions: one page or two for log in /
+  sign up, email confirmation, password reset. Later: previous/next arrows in
+  the overlay; detail-photo dots under the garment (Milestone 7).

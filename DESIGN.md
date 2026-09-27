@@ -18,20 +18,21 @@ designer to confirm or refine in Figma.
    precise; memories are warm.
 4. **Flat and square.** No shadows, no rounded corners. Structure comes from
    thin rules, grid dots and white space.
-5. **Uniform cells.** Every item sits in an identical cell, centred, whether or
-   not its photo has a background.
+5. **Uniform cells.** Every item sits in an identical square cell, centred.
+   Cells have no surface of their own: background-removed garments float
+   directly on the canvas, and grid dots give the structure.
 
 ## Colours
 
 | Token            | Value      | Use                                              |
 |------------------|------------|--------------------------------------------------|
 | `canvas`         | `#f7f5f3`  | Page background (never pure white at page level) |
-| `cell`           | `#ffffff`  | Item cells, overlay, inputs, drawer              |
+| `cell`           | `#ffffff`  | Overlay, inputs, drawer (not item cells)         |
 | `ink`            | `#0d0d0d`  | Primary text, icons, grid dots (never `#000`)    |
 | `stone`          | `#6e6a69`  | Secondary text, metadata values                  |
 | `pebble`         | `#9a9796`  | Placeholders, disabled, archived-item labels     |
 | `rule`           | `#0d0d0d` at 12% opacity | Dividers, input borders, row lines |
-| `scrim`          | `#f7f5f3` at 85% opacity | Behind the detail overlay          |
+| `scrim`          | `#0d0d0d` at 50% opacity + 12px blur | Behind the detail overlay. 50% keeps both light and dark garments readable on it; the blur turns the grid into soft shapes |
 
 No accent colour. Selected and active states use `ink` (fill or underline).
 Archived items are shown with `pebble` labels and reduced image opacity (0.5).
@@ -58,8 +59,8 @@ Archived items are shown with `pebble` labels and reduced image opacity (0.5).
 - Base unit: 4px. Scale: 4, 8, 12, 16, 24, 32, 48, 80.
 - Page margins: 16px mobile, 32px desktop. The grid runs full width (no max
   width), like a catalog sheet.
-- Gap between grid cells: 1px of `rule`, or 8px of canvas, depending on the
-  grid style (proposal: test both in Figma).
+- Gap between grid cells: 8px of canvas. (Decided 2026-09-26 after testing
+  1px `rule` lines against dots on real garments: dots won.)
 - Border radius: 0 everywhere.
 - Elevation: none. Layering is shown by `cell` on `canvas`, plus the scrim.
 
@@ -91,8 +92,9 @@ uppercase); view switcher centre (Grid · Rows · Colour · Time · Archive); zo
 toggle, filter and add on the right. Text only, no pill, no background. A
 `rule` line underneath.
 
-**Item cell.** Square `cell` surface, image centred with contained fit, index
-code below in mono 11px. Hover (desktop): name and brand appear under the code
+**Item cell.** Square and transparent (no surface; the garment sits on the
+canvas), a grid dot at the top-left, image centred with contained fit, index
+code below the image inside the cell in mono 11px. Hover (desktop): name and brand appear under the code
 in `stone`. Tap (touch): opens the overlay.
 
 **Zoom toggle.** Three small square icons (dense, medium, large grid) or a
@@ -108,12 +110,17 @@ separated by `rule` lines. Colour options show a small filled dot of that
 colour next to the name. A full-width `ink` button at the bottom: "Show 24
 items".
 
-**Detail overlay.** Covers the grid with the scrim. Desktop: a `cell` panel
-split in two, with the enlarged image left (detail photos as thumbnails
-below) and details right. Mobile: full screen, image on top, details below.
+**Detail overlay.** A layer over the closet, not a separate page: the grid
+stays visible behind, darkened and blurred by the scrim. Desktop: the garment
+floats large on the left directly on the scrim (no panel behind it; detail
+photo dots below it once detail photos exist), and a `canvas` panel on the
+right holds the index code, the name in Fraunces, then a Details section and a
+Notes section. Mobile: no scrim; a full-screen `canvas` page with the garment
+on top and the details below, scrolling together.
 Details are a two-column list of mono label / value pairs separated by `rule`
-lines; empty fields are hidden. The user's notes sit underneath in Fraunces,
-set apart from the data. Close with ✕, Esc, or clicking the scrim.
+lines; empty fields and empty sections are hidden. The user's notes sit
+underneath in Fraunces, set apart from the data. Close with ✕, Esc, Back, or
+clicking the scrim or the space around the garment.
 
 **Buttons.** Primary: `ink` fill, `cell` text, mono 13px 500, 12px × 20px
 padding, square. Secondary: transparent with a 1px `ink` border. Tertiary:
@@ -157,7 +164,7 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   --color-stone: #6e6a69;
   --color-pebble: #9a9796;
   --color-rule: rgb(13 13 13 / 0.12);
-  --color-scrim: rgb(247 245 243 / 0.85);
+  --color-scrim: rgb(13 13 13 / 0.5);
 
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --font-serif: var(--font-fraunces), Georgia, serif;
