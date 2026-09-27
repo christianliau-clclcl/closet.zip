@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+/* Design tokens from DESIGN.md. This theme is the source of truth. */
+@theme {
+  /* Guardrails: remove Tailwind's defaults so only our tokens exist.
+     No extra colours, no rounded corners, no shadows. */
+  --color-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  /* Colours */
+  --color-canvas: #f7f5f3;
+  --color-cell: #ffffff;
+  --color-ink: #0d0d0d;
+  --color-stone: #6e6a69;
+  --color-pebble: #9a9796;
+  --color-rule: rgb(13 13 13 / 0.12);
+  --color-scrim: rgb(247 245 243 / 0.85);
+
+  /* Fonts (loaded in app/layout.tsx with next/font) */
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-fraunces), Georgia, serif;
+
+  /* Type sizes, each with its line height and tracking.
+     Serif sizes also carry their 350 weight. */
+  --text-label: 11px;
+  --text-label--line-height: 1.5;
+  --text-label--letter-spacing: 0.04em;
+
+  --text-meta: 13px;
+  --text-meta--line-height: 1.5;
+  --text-meta--letter-spacing: 0;
+
+  --text-notes: 18px;
+  --text-notes--line-height: 1.5;
+  --text-notes--letter-spacing: -0.01em;
+  --text-notes--font-weight: 350;
+
+  --text-title: 40px;
+  --text-title--line-height: 1.05;
+  --text-title--letter-spacing: -0.03em;
+  --text-title--font-weight: 350;
+
+  --text-display: 64px;
+  --text-display--line-height: 1.05;
+  --text-display--letter-spacing: -0.04em;
+  --text-display--font-weight: 350;
+
+  --radius-none: 0px;
+}
