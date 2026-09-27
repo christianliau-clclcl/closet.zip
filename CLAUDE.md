@@ -85,7 +85,15 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 1 — project setup and first deploy
-- Last completed:
-- Known issues:
-- Next up:
+- Current milestone: 2 — auth
+- Last completed: Milestone 1 (2026-09-26). Next.js 16 app with DESIGN.md
+  tokens in `app/globals.css` (Tailwind's default colours, radii and shadows
+  switched off), placeholder homepage, GitHub repo
+  (christianliau-clclcl/closet.zip), Supabase project connected (URL and
+  publishable key in `.env.local` and Vercel). Live at
+  https://closet-zip.vercel.app
+- Known issues: `README.md` is still the create-next-app boilerplate; favicon
+  is the Next.js default; ESLint 9 deprecation warning comes from the Next.js
+  template.
+- Next up: Milestone 2. First decide the login method (email and password, or
+  magic link), an open question in PRODUCT.md.
