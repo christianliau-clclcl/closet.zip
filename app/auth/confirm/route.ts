@@ -17,7 +17,11 @@ export async function GET(request: NextRequest) {
     if (!error) redirect(next);
   }
 
-  // Expired or already-used link.
+  // A password reset link that didn't work: the reset page explains why and
+  // offers a new link (it shows that message whenever nobody is logged in).
+  if (next === "/reset-password") redirect("/reset-password");
+
+  // Expired or already-used sign-up link.
   if (searchParams.get("error_code") === "otp_expired") {
     redirect("/login?notice=link-expired");
   }

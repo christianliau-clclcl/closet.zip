@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FormField from "@/components/FormField";
@@ -146,6 +147,14 @@ export default function AuthForm({ notice }: { notice?: LoginNotice }) {
           >
             {busy ? text.busy : text.button}
           </button>
+          {mode === "login" && (
+            <Link
+              href="/forgot-password"
+              className="mt-4 inline-block text-stone underline-offset-4 hover:underline"
+            >
+              Forgot password?
+            </Link>
+          )}
         </div>
       </form>
     </div>
