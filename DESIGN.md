@@ -30,7 +30,7 @@ designer to confirm or refine in Figma.
 | `cell`           | `#ffffff`  | Overlay, inputs, drawer (not item cells)         |
 | `ink`            | `#0d0d0d`  | Primary text, icons, grid dots (never `#000`)    |
 | `stone`          | `#6e6a69`  | Secondary text, metadata values                  |
-| `pebble`         | `#9a9796`  | Placeholders, disabled, archived-item labels     |
+| `pebble`         | `#9a9796`  | Disabled only (too faint for text people need to read: 2.9:1 on `cell`) |
 | `rule`           | `#0d0d0d` at 12% opacity | Dividers, input borders, row lines |
 | `scrim`          | `#0d0d0d` at 50% opacity + 12px blur | Behind the detail overlay. 50% keeps both light and dark garments readable on it; the blur turns the grid into soft shapes |
 

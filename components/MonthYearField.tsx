@@ -1,7 +1,7 @@
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const inputClass =
-  "w-full appearance-none border border-rule bg-cell px-3 py-3 outline-none placeholder:text-pebble focus:border-ink";
+  "w-full appearance-none border border-rule bg-cell px-3 py-3 outline-none placeholder:text-stone focus:border-ink";
 
 type MonthYearFieldProps = {
   legend: string;
@@ -29,7 +29,7 @@ export default function MonthYearField({
             aria-label={`${legend} month`}
             value={month}
             onChange={(event) => onMonthChange(event.target.value)}
-            className={`${inputClass} pr-8 ${month ? "" : "text-pebble"}`}
+            className={`${inputClass} pr-8 ${month ? "" : "text-stone"}`}
           >
             <option value="">Month</option>
             {months.map((name, index) => (

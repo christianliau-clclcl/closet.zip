@@ -117,7 +117,7 @@ export default function ItemDetailsFields({
           placeholder="What you love about it, how you found it, what it reminds you of."
           value={draft.notes}
           onChange={(e) => set("notes", e.target.value)}
-          className="mt-2 w-full resize-y border border-rule bg-cell px-3 py-3 font-serif text-notes outline-none placeholder:text-pebble focus:border-ink"
+          className="mt-2 w-full resize-y border border-rule bg-cell px-3 py-3 font-serif text-notes outline-none placeholder:text-stone focus:border-ink"
         />
       </div>
     </section>

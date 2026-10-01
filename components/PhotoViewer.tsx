@@ -155,8 +155,8 @@ export default function PhotoViewer({ photos, title }: PhotoViewerProps) {
               aria-current={i === index ? "true" : undefined}
               className="flex size-6 cursor-pointer items-center justify-center"
             >
-              {/* Inactive: pebble on the phone's canvas page, canvas on the darker desktop scrim. */}
-              <span className={`size-2 rounded-full ${i === index ? "bg-ink" : "bg-pebble md:bg-canvas"}`} />
+              {/* Inactive: stone on the phone's canvas page, canvas on the darker desktop scrim. */}
+              <span className={`size-2 rounded-full ${i === index ? "bg-ink" : "bg-stone md:bg-canvas"}`} />
             </button>
           ))}
         </div>

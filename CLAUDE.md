@@ -85,7 +85,7 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 10 — polish. Roadmap changed 2026-10-01: sharing,
+- Current milestone: 11 — colour (Milestone 10 done). Roadmap changed 2026-10-01: sharing,
   selling, styling/outfits, more visualizations and folders inside folders
   come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar
@@ -144,9 +144,12 @@ Update this section at the end of each working session.
   connected (URL and publishable key in `.env.local` and Vercel). Live at
   https://closet-zip.vercel.app
 - Known issues: `README.md` is still the create-next-app boilerplate; favicon
-  is the Next.js default; ESLint 9 deprecation warning comes from the Next.js
-  template. Sample item details in `lib/sample-items.ts` are placeholders
-  (photos in `public/sample/`). Auth emails use Supabase's default templates
+  is a placeholder (`app/icon.svg`, no `apple-icon` yet); ESLint 9
+  deprecation warning comes from the Next.js template. Demo closet details
+  in `lib/sample-items.ts` are fictional (photos in `public/sample/`).
+  Input borders (`rule`, 1.3:1) are below WCAG's 3:1 for field boundaries;
+  kept for the quiet look (labels above + white fill mark each field),
+  revisit in final polish (Milestone 18). Auth emails use Supabase's default templates
   and built-in sender (editing them needs custom SMTP: an email service plus
   an owned domain). Consequences: generic wording, a low hourly email limit,
   and links must be opened in the same browser that requested them. Revisit
@@ -162,25 +165,23 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
-- Milestone 10 in progress (polish pass, decided 2026-10-01):
-  Done (2026-10-01): on-brand `app/not-found.tsx` and `app/error.tsx`
-  (shared `StatusPage`; Next 16 error prop is `retry`, not `reset`); page
-  titles via the layout template "%s · Closet.zip"; placeholder favicon
-  `app/icon.svg` (the user will design the real one); filter drawer full
-  screen on phones; `HoverLabel` beside the pointer ("brand | year", square,
-  max 320px; under the cell for keyboard focus) replaced the bottom-left
-  caption; overlay photos slide in the direction you move (`PhotoViewer`);
-  desktop ← → buttons beside the garment, dots kept; clicking the empty
-  margin around the garment closes the overlay (`onPhotoMargin`).
-  Left:
-  1. Next: demo text: remove the "Placeholder note." prefixes in
-     `lib/sample-items.ts`, keep fictional but natural details (the user
-     will edit them), drop the PLACEHOLDER header comment.
-  2. Photos fade in when they load (motion style from `lib/motion.ts`,
-     respect Reduce motion).
-  3. Accessibility check by hand: contrast (`pebble` placeholders on white),
-     keyboard order, screen-reader labels, Reduce motion. No new tools
-     without asking.
+- Milestone 10 done (2026-10-01, polish pass): on-brand `app/not-found.tsx`
+  and `app/error.tsx` (shared `StatusPage`; Next 16 error prop is `retry`,
+  not `reset`); page titles via the layout template "%s · Closet.zip";
+  placeholder favicon `app/icon.svg` (the user will design the real one);
+  filter drawer full screen on phones; `HoverLabel` beside the pointer
+  ("brand | year", square, max 320px; under the cell for keyboard focus)
+  replaced the bottom-left caption; overlay photos slide in the direction
+  you move (`PhotoViewer`); desktop ← → buttons beside the garment, dots
+  kept; clicking the empty margin around the garment closes the overlay
+  (`onPhotoMargin`); demo notes without placeholder labels; photos fade in
+  once loaded (`FadeImage`, CSS opacity, Reduce motion respected).
+  Accessibility check by hand (2026-10-01): keyboard order, labels, alt
+  text and Reduce motion all fine; placeholders and phone photo dots moved
+  from `pebble` to `stone` for contrast (`pebble` is now for disabled states
+  only); photo reordering now respects Reduce motion. Testing tip: the
+  browser pane's clicks land wrong when an emulated size is scaled to fit;
+  use a size that fits the pane, or check with `elementFromPoint`.
   Moved to Milestone 18: intro above the demo closet for logged-out
   visitors (a band above the grid: Fraunces title, a few mono lines,
   "Start your archive" + Log in, then "SAMPLE CLOSET"). The user's points:

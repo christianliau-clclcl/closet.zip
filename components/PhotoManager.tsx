@@ -1,6 +1,6 @@
 "use client";
 
-import { Reorder } from "motion/react";
+import { MotionConfig, Reorder } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
@@ -115,94 +115,98 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
         The first photo is the cover. Drag to reorder. Changes save straight away.
       </p>
 
-      <Reorder.Group
-        axis="xy"
-        values={order}
-        onReorder={arrange}
-        className="mt-4 grid grid-cols-3 gap-x-2 gap-y-4"
-      >
-        {order.map((id, index) => {
-          const photo = byId.get(id);
-          if (!photo) return null;
-          const isHero = index === 0;
-          return (
-            <Reorder.Item
-              key={id}
-              value={id}
-              dragListener={!busy}
-              onDragEnd={() => saveOrder(latestOrder.current)}
-              className="relative cursor-grab bg-canvas active:cursor-grabbing"
-            >
-              <div className="relative aspect-square border border-rule">
-                <Image
-                  src={photo.thumbSrc ?? photo.src}
-                  alt={isHero ? `Photo ${index + 1}, the cover` : `Photo ${index + 1}`}
-                  fill
-                  sizes="128px"
-                  unoptimized={photo.unoptimized}
-                  draggable={false}
-                  className="pointer-events-none object-contain p-2 select-none"
-                />
-              </div>
-
-              {confirmingId === id ? (
-                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label uppercase">
-                  <span>Remove?</span>
-                  <button type="button" onClick={() => remove(id)} disabled={Boolean(busy)} className={`${smallAction} underline underline-offset-4`}>
-                    Yes
-                  </button>
-                  <button type="button" onClick={() => setConfirmingId(null)} className={`${smallAction} text-stone`}>
-                    Keep
-                  </button>
+      {/* reducedMotion="user": with Reduce motion on, the other photos jump to
+          their new places instead of gliding while you drag. */}
+      <MotionConfig reducedMotion="user">
+        <Reorder.Group
+          axis="xy"
+          values={order}
+          onReorder={arrange}
+          className="mt-4 grid grid-cols-3 gap-x-2 gap-y-4"
+        >
+          {order.map((id, index) => {
+            const photo = byId.get(id);
+            if (!photo) return null;
+            const isHero = index === 0;
+            return (
+              <Reorder.Item
+                key={id}
+                value={id}
+                dragListener={!busy}
+                onDragEnd={() => saveOrder(latestOrder.current)}
+                className="relative cursor-grab bg-canvas active:cursor-grabbing"
+              >
+                <div className="relative aspect-square border border-rule">
+                  <Image
+                    src={photo.thumbSrc ?? photo.src}
+                    alt={isHero ? `Photo ${index + 1}, the cover` : `Photo ${index + 1}`}
+                    fill
+                    sizes="128px"
+                    unoptimized={photo.unoptimized}
+                    draggable={false}
+                    className="pointer-events-none object-contain p-2 select-none"
+                  />
                 </div>
-              ) : (
-                <>
-                  <div className="mt-2 text-label uppercase">
-                    {isHero ? (
-                      <span>Cover</span>
-                    ) : (
-                      <button type="button" onClick={() => move(id, 0)} disabled={Boolean(busy)} className={`${smallAction} underline-offset-4 hover:underline`}>
-                        Make cover
-                      </button>
-                    )}
+
+                {confirmingId === id ? (
+                  <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label uppercase">
+                    <span>Remove?</span>
+                    <button type="button" onClick={() => remove(id)} disabled={Boolean(busy)} className={`${smallAction} underline underline-offset-4`}>
+                      Yes
+                    </button>
+                    <button type="button" onClick={() => setConfirmingId(null)} className={`${smallAction} text-stone`}>
+                      Keep
+                    </button>
                   </div>
-                  <div className="mt-1 flex items-center gap-3 text-stone">
-                    <button
-                      type="button"
-                      onClick={() => move(id, index - 1)}
-                      disabled={index === 0 || Boolean(busy)}
-                      aria-label="Move earlier"
-                      className={`${smallAction} disabled:invisible`}
-                    >
-                      ←
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => move(id, index + 1)}
-                      disabled={index === order.length - 1 || Boolean(busy)}
-                      aria-label="Move later"
-                      className={`${smallAction} disabled:invisible`}
-                    >
-                      →
-                    </button>
-                    {/* A piece always keeps at least one photo. */}
-                    {photos.length > 1 && (
+                ) : (
+                  <>
+                    <div className="mt-2 text-label uppercase">
+                      {isHero ? (
+                        <span>Cover</span>
+                      ) : (
+                        <button type="button" onClick={() => move(id, 0)} disabled={Boolean(busy)} className={`${smallAction} underline-offset-4 hover:underline`}>
+                          Make cover
+                        </button>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-3 text-stone">
                       <button
                         type="button"
-                        onClick={() => setConfirmingId(id)}
-                        disabled={Boolean(busy)}
-                        className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
+                        onClick={() => move(id, index - 1)}
+                        disabled={index === 0 || Boolean(busy)}
+                        aria-label="Move earlier"
+                        className={`${smallAction} disabled:invisible`}
                       >
-                        Remove
+                        ←
                       </button>
-                    )}
-                  </div>
-                </>
-              )}
-            </Reorder.Item>
-          );
-        })}
-      </Reorder.Group>
+                      <button
+                        type="button"
+                        onClick={() => move(id, index + 1)}
+                        disabled={index === order.length - 1 || Boolean(busy)}
+                        aria-label="Move later"
+                        className={`${smallAction} disabled:invisible`}
+                      >
+                        →
+                      </button>
+                      {/* A piece always keeps at least one photo. */}
+                      {photos.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setConfirmingId(id)}
+                          disabled={Boolean(busy)}
+                          className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </>
+                )}
+              </Reorder.Item>
+            );
+          })}
+        </Reorder.Group>
+      </MotionConfig>
 
       {roomLeft > 0 && (
         <div className="mt-4 grid grid-cols-3 gap-2">
