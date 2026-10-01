@@ -67,7 +67,7 @@ export default function HoverLabel({ item, anchor }: HoverLabelProps) {
     <p
       ref={labelRef}
       aria-hidden
-      className={`pointer-events-none fixed top-0 left-0 z-10 max-w-xs truncate bg-canvas px-2 py-1 ${text ? "hidden [@media(hover:hover)]:block" : "hidden"}`}
+      className={`pointer-events-none fixed top-0 left-0 z-10 max-w-xs truncate bg-ink px-2 py-1 text-canvas ${text ? "hidden [@media(hover:hover)]:block" : "hidden"}`}
     >
       {text}
     </p>

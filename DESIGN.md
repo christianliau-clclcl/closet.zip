@@ -123,7 +123,8 @@ canvas), a grid dot at the top-left, image centred with contained fit, and
 the name under the image at Large zoom only. Hover or keyboard focus shows the
 item in the hover label. Tap (touch): opens the overlay.
 
-**Hover label.** One square label, mono 13px `ink` on `canvas`, 8px × 4px
+**Hover label.** One square label, mono 13px `canvas` on `ink` (flipped
+2026-10-01 so it stands out over garments and the canvas), 8px × 4px
 padding, no border, 320px wide at most (cut off with …). It sits 16px below
 and right of the pointer, flipping to the other side near the screen's edges.
 With keyboard focus it hangs under the focused cell's bottom-left corner
