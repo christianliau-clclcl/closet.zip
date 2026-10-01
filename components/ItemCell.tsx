@@ -34,7 +34,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
         <span className="relative block flex-1">
           <Image
-            src={item.hero.src}
+            src={item.hero.thumbSrc ?? item.hero.src}
             alt={itemTitle(item)}
             fill
             sizes={style.sizes}

@@ -1,0 +1,28 @@
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import AddItemForm from "@/components/AddItemForm";
+import TopBar from "@/components/TopBar";
+import { createClient } from "@/lib/supabase/server";
+
+// Add a piece to your closet. Logged-in only.
+export default async function AddPage() {
+  const supabase = await createClient();
+  const { data } = await supabase.auth.getClaims();
+  if (!data?.claims) redirect("/login");
+
+  return (
+    <>
+      <TopBar>
+        <Link href="/" className="text-label uppercase">
+          Cancel
+        </Link>
+      </TopBar>
+      <main className="mx-auto w-full max-w-sm px-4 py-12 md:py-20">
+        <h1 className="font-serif text-title">Add a piece</h1>
+        <div className="mt-8">
+          <AddItemForm />
+        </div>
+      </main>
+    </>
+  );
+}

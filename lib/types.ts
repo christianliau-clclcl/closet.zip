@@ -12,7 +12,8 @@ export type MonthYear = {
 };
 
 export type Photo = {
-  src: string;
+  src: string; // full size, for the overlay
+  thumbSrc?: string; // small version for the grid, when there is one
   // True for photos from Supabase Storage: they're already resized before
   // upload, and their signed links change each visit, so Next.js shouldn't
   // try to resize them again on the server.

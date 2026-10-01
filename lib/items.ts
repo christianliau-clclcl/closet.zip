@@ -6,9 +6,8 @@ import type { Category, Item, ItemStatus, MonthYear } from "@/lib/types";
 // the page asks for fresh links each time it loads.
 const SIGNED_URL_SECONDS = 60 * 60;
 
-type ItemRow = Tables<"items"> & {
-  item_photos: Pick<Tables<"item_photos">, "storage_path" | "is_hero">[];
-};
+type PhotoRow = Pick<Tables<"item_photos">, "storage_path" | "thumb_path" | "is_hero">;
+type ItemRow = Tables<"items"> & { item_photos: PhotoRow[] };
 
 // The logged-in person's items, newest first, ready for the grid and overlay.
 // Row Level Security already limits the query to their own rows.
@@ -17,42 +16,48 @@ export async function getMyItems(): Promise<Item[]> {
 
   const { data: rows, error } = await supabase
     .from("items")
-    .select("*, item_photos(storage_path, is_hero)")
+    .select("*, item_photos(storage_path, thumb_path, is_hero)")
     .order("created_at", { ascending: false });
   if (error) throw error;
 
-  const heroPaths = rows.map(heroPath).filter((path): path is string => Boolean(path));
-  if (heroPaths.length === 0) return [];
+  // Signed links for every hero photo, full size and thumbnail.
+  const paths = rows.flatMap((row) => {
+    const hero = heroPhoto(row);
+    return hero ? [hero.storage_path, hero.thumb_path].filter((p): p is string => Boolean(p)) : [];
+  });
+  if (paths.length === 0) return [];
 
   // One request for all the signed links, rather than one per photo.
   const { data: signed, error: signError } = await supabase.storage
     .from("item-photos")
-    .createSignedUrls(heroPaths, SIGNED_URL_SECONDS);
+    .createSignedUrls(paths, SIGNED_URL_SECONDS);
   if (signError) throw signError;
 
   const urlByPath = new Map(
     signed.flatMap((s) => (s.path && s.signedUrl ? [[s.path, s.signedUrl] as const] : [])),
   );
 
-  // Every item should have a hero photo; any that doesn't is left out
-  // rather than shown as a broken image.
+  // Every item should have a hero photo; any that doesn't (or whose file is
+  // missing) is left out rather than shown as a broken image.
   return rows.flatMap((row) => {
-    const path = heroPath(row);
-    const url = path && urlByPath.get(path);
-    return url ? [toItem(row, url)] : [];
+    const hero = heroPhoto(row);
+    const src = hero && urlByPath.get(hero.storage_path);
+    if (!src) return [];
+    const thumbSrc = hero.thumb_path ? urlByPath.get(hero.thumb_path) : undefined;
+    return [toItem(row, src, thumbSrc)];
   });
 }
 
-function heroPath(row: ItemRow): string | undefined {
-  return row.item_photos.find((photo) => photo.is_hero)?.storage_path;
+function heroPhoto(row: ItemRow): PhotoRow | undefined {
+  return row.item_photos.find((photo) => photo.is_hero);
 }
 
 // Database rows use snake_case and null for "empty"; the interface uses
 // camelCase and leaves empty fields out, so they're hidden automatically.
-function toItem(row: ItemRow, heroUrl: string): Item {
+function toItem(row: ItemRow, src: string, thumbSrc: string | undefined): Item {
   return {
     id: row.id,
-    hero: { src: heroUrl, unoptimized: true },
+    hero: { src, thumbSrc, unoptimized: true },
     name: text(row.name),
     category: (row.category as Category | null) ?? undefined,
     brand: text(row.brand),

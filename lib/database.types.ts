@@ -22,6 +22,7 @@ export type Database = {
           item_id: string
           position: number
           storage_path: string
+          thumb_path: string | null
           user_id: string
         }
         Insert: {
@@ -31,6 +32,7 @@ export type Database = {
           item_id: string
           position?: number
           storage_path: string
+          thumb_path?: string | null
           user_id?: string
         }
         Update: {
@@ -40,6 +42,7 @@ export type Database = {
           item_id?: string
           position?: number
           storage_path?: string
+          thumb_path?: string | null
           user_id?: string
         }
         Relationships: [

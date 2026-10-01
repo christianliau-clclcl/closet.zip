@@ -43,7 +43,16 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
   if (items.length === 0) {
     return (
       <>
-        <TopBar>{loggedIn && <LogOutButton />}</TopBar>
+        <TopBar>
+          {loggedIn && (
+            <>
+              <Link href="/add" className="text-label uppercase">
+                Add
+              </Link>
+              <LogOutButton />
+            </>
+          )}
+        </TopBar>
         <main className="flex flex-1 flex-col">
           <EmptyState />
         </main>
@@ -56,7 +65,12 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
       <TopBar>
         <ZoomSlider value={zoom} onChange={setZoom} />
         {loggedIn ? (
-          <LogOutButton />
+          <>
+            <Link href="/add" className="text-label uppercase">
+              Add
+            </Link>
+            <LogOutButton />
+          </>
         ) : (
           <Link href="/login" className="text-label uppercase">
             Log in
