@@ -9,6 +9,8 @@ import ItemOverlay from "@/components/ItemOverlay";
 import LogOutButton from "@/components/LogOutButton";
 import TopBar from "@/components/TopBar";
 import ZoomSlider from "@/components/ZoomSlider";
+import type { Unit } from "@/lib/measurements";
+import { saveMyUnit } from "@/lib/profile-client";
 import type { Item } from "@/lib/types";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
 
@@ -17,11 +19,20 @@ import { zoomStyles, type Zoom } from "@/lib/zoom";
 type ClosetViewProps = {
   items: Item[];
   loggedIn: boolean;
+  initialUnit: Unit; // for measurements in the overlay
 };
 
-export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
+export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   const [previewId, setPreviewId] = useState<string | null>(null);
+  const [unit, setUnit] = useState<Unit>(initialUnit);
+
+  // Kept while browsing, so every piece opens in the same unit; remembered in
+  // the profile for logged-in people (demo visitors can switch, unsaved).
+  function changeUnit(next: Unit) {
+    setUnit(next);
+    if (loggedIn) saveMyUnit(next);
+  }
   // True when the overlay was opened from the grid (so closing = going back),
   // false when the page was loaded straight from an item link.
   const openedFromGrid = useRef(false);
@@ -91,7 +102,13 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
       {/* Reading the address happens in the browser only; Suspense lets the
           grid above load first without waiting for it. */}
       <Suspense fallback={null}>
-        <ItemOverlay items={items} onClose={closeItem} editable={loggedIn} />
+        <ItemOverlay
+          items={items}
+          onClose={closeItem}
+          editable={loggedIn}
+          unit={unit}
+          onUnitChange={changeUnit}
+        />
       </Suspense>
     </>
   );

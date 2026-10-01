@@ -1,5 +1,6 @@
 import ClosetView from "@/components/ClosetView";
 import { getMyItems } from "@/lib/items";
+import { getMyUnit } from "@/lib/profile";
 import { sampleItems } from "@/lib/sample-items";
 import { createClient } from "@/lib/supabase/server";
 
@@ -10,7 +11,7 @@ export default async function Home() {
   const { data } = await supabase.auth.getClaims();
   const loggedIn = Boolean(data?.claims);
 
-  const items = loggedIn ? await getMyItems() : sampleItems;
+  const [items, unit] = loggedIn ? await Promise.all([getMyItems(), getMyUnit()]) : [sampleItems, "in" as const];
 
-  return <ClosetView items={items} loggedIn={loggedIn} />;
+  return <ClosetView items={items} loggedIn={loggedIn} initialUnit={unit} />;
 }

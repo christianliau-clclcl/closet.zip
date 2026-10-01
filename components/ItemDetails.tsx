@@ -1,10 +1,25 @@
+import UnitSwitch from "@/components/UnitSwitch";
 import { formatCategory, formatMonthYear, formatPrice, leftSummary } from "@/lib/format";
+import {
+  formatMeasurement,
+  measurementLabels,
+  measurementRows,
+  type MeasurementKey,
+  type Unit,
+} from "@/lib/measurements";
 import type { Item } from "@/lib/types";
 
-// The details panel content: a list of label / value rows separated by rule
-// lines, then the user's notes in Fraunces. Empty fields are left out, and a
-// section with nothing in it isn't shown at all.
-export default function ItemDetails({ item }: { item: Item }) {
+type ItemDetailsProps = {
+  item: Item;
+  unit: Unit;
+  onUnitChange: (unit: Unit) => void;
+};
+
+// The details panel content: label / value rows separated by rule lines, the
+// garment's measurements in the person's unit, then the user's notes in
+// Fraunces. Empty fields are left out, and a section with nothing in it isn't
+// shown at all.
+export default function ItemDetails({ item, unit, onUnitChange }: ItemDetailsProps) {
   const rows: [string, string | undefined][] = [
     ["Category", item.category && formatCategory(item.category)],
     ["Brand", item.brand],
@@ -13,23 +28,38 @@ export default function ItemDetails({ item }: { item: Item }) {
     ["Acquired", item.acquired && formatMonthYear(item.acquired)],
     ["From", item.acquiredFrom],
     ["Price", item.price !== undefined ? formatPrice(item.price) : undefined],
+    ["Size", item.size],
     ["Left", leftSummary(item)],
   ];
   const filled = rows.filter(([, value]) => value);
+
+  // In the category's own order (as on the edit form), then any others,
+  // showing only those that were measured.
+  const order = [
+    ...measurementRows(item.category),
+    ...(Object.keys(measurementLabels) as MeasurementKey[]),
+  ].filter((key, index, all) => all.indexOf(key) === index);
+  const measured = order.flatMap((key) => {
+    const cm = item.measurements?.[key];
+    return cm ? [[measurementLabels[key], formatMeasurement(cm, unit)] as const] : [];
+  });
 
   return (
     <>
       {filled.length > 0 && (
         <section className="mt-8">
           <h3 className="text-label text-stone uppercase">Details</h3>
-          <dl className="mt-2 border-t border-rule">
-            {filled.map(([label, value]) => (
-              <div key={label} className="grid grid-cols-2 gap-4 border-b border-rule py-2">
-                <dt className="text-label text-stone uppercase">{label}</dt>
-                <dd>{value}</dd>
-              </div>
-            ))}
-          </dl>
+          <DetailsList rows={filled} />
+        </section>
+      )}
+
+      {measured.length > 0 && (
+        <section className="mt-8">
+          <div className="flex items-baseline justify-between">
+            <h3 className="text-label text-stone uppercase">Measurements</h3>
+            <UnitSwitch value={unit} onChange={onUnitChange} />
+          </div>
+          <DetailsList rows={measured} />
         </section>
       )}
 
@@ -40,5 +70,18 @@ export default function ItemDetails({ item }: { item: Item }) {
         </section>
       )}
     </>
+  );
+}
+
+function DetailsList({ rows }: { rows: readonly (readonly [string, string | undefined])[] }) {
+  return (
+    <dl className="mt-2 border-t border-rule">
+      {rows.map(([label, value]) => (
+        <div key={label} className="grid grid-cols-2 gap-4 border-b border-rule py-2">
+          <dt className="text-label text-stone uppercase">{label}</dt>
+          <dd>{value}</dd>
+        </div>
+      ))}
+    </dl>
   );
 }

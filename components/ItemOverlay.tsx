@@ -6,12 +6,15 @@ import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
+import type { Unit } from "@/lib/measurements";
 import type { Item } from "@/lib/types";
 
 type ItemOverlayProps = {
   items: Item[];
   onClose: () => void;
   editable: boolean; // your own items: show Edit etc. (never in the demo)
+  unit: Unit;
+  onUnitChange: (unit: Unit) => void;
 };
 
 // The detail overlay. It opens whenever the address has ?item=<id>, so the
@@ -22,7 +25,7 @@ type ItemOverlayProps = {
 // Layout on desktop: the grid stays visible behind, darkened and blurred; the
 // garment floats large on the left and the details sit in a panel on the right.
 // On phones: a full-screen canvas page, garment on top and details below.
-export default function ItemOverlay({ items, onClose, editable }: ItemOverlayProps) {
+export default function ItemOverlay({ items, onClose, editable, unit, onUnitChange }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -40,6 +43,10 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
       // preventScroll: on phones the panel sits below the garment, and
       // focusing it would otherwise scroll the garment out of view.
       dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus({ preventScroll: true });
+      // Opening a dialog makes the browser focus (and scroll to) the first
+      // focusable thing inside; on phones that can be the panel below the
+      // photo. Always start at the top, with the garment in view.
+      dialog.scrollTop = 0;
     }
     if (!item && dialog.open) dialog.close();
   }, [item]);
@@ -90,7 +97,7 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
             )}
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
             {editable && <ItemActions key={item.id} item={item} />}
-            <ItemDetails item={item} />
+            <ItemDetails item={item} unit={unit} onUnitChange={onUnitChange} />
           </div>
         </>
       )}

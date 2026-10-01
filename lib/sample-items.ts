@@ -2,7 +2,8 @@ import type { Item } from "@/lib/types";
 
 // A hard-coded sample closet for designing the grid and overlay before
 // the database exists (Milestones 2–3). Replaced by real data in Milestone 5.
-// PLACEHOLDER: colour, material, acquired, acquiredFrom, price and notes are made up
+// PLACEHOLDER: colour, material, acquired, acquiredFrom, price, size,
+// measurements (cm) and notes are made up
 // for layout testing. Replace them with the real details.
 // Some fields are left out on purpose, to test that empty fields are hidden.
 export const sampleItems: Item[] = [
@@ -17,6 +18,8 @@ export const sampleItems: Item[] = [
     acquired: { month: 3, year: 2021 },
     acquiredFrom: "Vintage shop",
     price: 120,
+    size: "M",
+    measurements: { chest: 56.5, length: 62, shoulder: 47, sleeve: 61 },
     notes:
       "Placeholder note. The first piece I bought that I actually wanted to keep for a long time. It has faded exactly where I lean on things, and the cuffs are starting to fray in a way I like.",
     status: "in_closet",
@@ -67,6 +70,8 @@ export const sampleItems: Item[] = [
     category: "bottoms",
     colour: "Khaki",
     acquired: { month: 4, year: 2020 },
+    size: "32 × 30",
+    measurements: { waist: 82, rise: 30.5, inseam: 76, leg_opening: 24, length: 107 },
     status: "in_closet",
   },
   {
