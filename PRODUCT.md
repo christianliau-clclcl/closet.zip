@@ -166,9 +166,12 @@ archive on their own phones and computers. The app is deployed on a public URL.
       the field, tap the garment to pick (eyedropper); DETECT AGAIN (e.g.
       after changing the cover); CLEAR. The name is never filled in
       automatically.
-    - **11c:** colour dot beside the colour in the overlay; filter drawer's
-      Colour section lists families, each dot the average of the person's
-      own pieces in that family
+    - **11c (done 2026-10-01):** square swatch beside the colour in the
+      overlay (family name when no name was typed); the filter drawer's
+      Colour section lists families, each swatch the average of the
+      person's own pieces in that family (`colourFamily` in
+      `lib/colour.ts`: hue, saturation and brightness; olive counts as
+      green, burgundy as red)
     - **11d:** SORT · Colour (see "Colour order")
     - **11e:** colours for pieces uploaded before 11: detected when their
       Edit page opens (built in 11b); decide whether a one-time "detect all"

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Swatch from "@/components/Swatch";
 import {
   countFilters,
   filterFields,
@@ -88,6 +89,7 @@ export default function FilterDrawer({ items, filters, onApply, onClose }: Filte
                         onChange={() => toggle(field, option.value)}
                         className="size-4 accent-ink"
                       />
+                      {option.swatch && <Swatch hex={option.swatch} />}
                       <span className="flex-1">{option.label}</span>
                       <span className="text-stone">{option.count}</span>
                     </label>

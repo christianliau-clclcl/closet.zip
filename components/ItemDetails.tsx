@@ -1,4 +1,6 @@
+import Swatch from "@/components/Swatch";
 import UnitSwitch from "@/components/UnitSwitch";
+import { colourFamily, familyLabels } from "@/lib/colour";
 import { formatCategory, formatMonthYear, formatPrice, leftSummary } from "@/lib/format";
 import {
   formatMeasurement,
@@ -20,10 +22,20 @@ type ItemDetailsProps = {
 // Fraunces. Empty fields are left out, and a section with nothing in it isn't
 // shown at all.
 export default function ItemDetails({ item, unit, onUnitChange }: ItemDetailsProps) {
-  const rows: [string, string | undefined][] = [
+  // Colour: a swatch of the colour itself, then the name typed for it, or
+  // the family ("Blue") when there's a colour but no name.
+  const colourName = item.colour ?? (item.colourHex && familyLabels[colourFamily(item.colourHex)]);
+  const colour = colourName && (
+    <span className="flex items-center gap-2">
+      {item.colourHex && <Swatch hex={item.colourHex} />}
+      {colourName}
+    </span>
+  );
+
+  const rows: [string, React.ReactNode][] = [
     ["Category", item.category && formatCategory(item.category)],
     ["Brand", item.brand],
-    ["Colour", item.colour],
+    ["Colour", colour],
     ["Material", item.material],
     ["Acquired", item.acquired && formatMonthYear(item.acquired)],
     ["From", item.acquiredFrom],
@@ -73,7 +85,7 @@ export default function ItemDetails({ item, unit, onUnitChange }: ItemDetailsPro
   );
 }
 
-function DetailsList({ rows }: { rows: readonly (readonly [string, string | undefined])[] }) {
+function DetailsList({ rows }: { rows: readonly (readonly [string, React.ReactNode])[] }) {
   return (
     <dl className="mt-2 border-t border-rule">
       {rows.map(([label, value]) => (

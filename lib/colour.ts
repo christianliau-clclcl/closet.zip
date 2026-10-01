@@ -115,3 +115,83 @@ function readPixels(
 function toHex(r: number, g: number, b: number): string {
   return "#" + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, "0")).join("");
 }
+
+// ---------------------------------------------------------------------------
+// Colour families: broad groups worked out from a colour, for filtering and
+// for the colour order (PRODUCT.md "Colour order"). Never stored.
+
+// In gradient order: the colours around the wheel, then the neutrals.
+export const families = [
+  "red",
+  "orange",
+  "yellow",
+  "green",
+  "blue",
+  "purple",
+  "pink",
+  "brown",
+  "white",
+  "grey",
+  "black",
+] as const;
+export type Family = (typeof families)[number];
+
+export const familyLabels: Record<Family, string> = {
+  red: "Red",
+  orange: "Orange",
+  yellow: "Yellow",
+  green: "Green",
+  blue: "Blue",
+  purple: "Purple",
+  pink: "Pink",
+  brown: "Beige & brown",
+  white: "White",
+  grey: "Grey",
+  black: "Black",
+};
+
+// Hue (0–360° around the colour wheel), saturation (0–1: how colourful) and
+// value (0–1: how bright) of a "#rrggbb" colour.
+export function toHsv(hex: string): { hue: number; saturation: number; value: number } {
+  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const max = Math.max(r, g, b);
+  const range = max - Math.min(r, g, b);
+  let hue = 0;
+  if (range > 0) {
+    if (max === r) hue = ((g - b) / range) % 6;
+    else if (max === g) hue = (b - r) / range + 2;
+    else hue = (r - g) / range + 4;
+    hue = (hue * 60 + 360) % 360;
+  }
+  return { hue, saturation: max ? range / max : 0, value: max / 255 };
+}
+
+export function colourFamily(hex: string): Family {
+  const { hue, saturation, value } = toHsv(hex);
+  // Too dark to have a colour of its own.
+  if (value < 0.12) return "black";
+  // Barely any colour: a neutral, by brightness.
+  if (saturation < 0.1) return value < 0.18 ? "black" : value > 0.85 ? "white" : "grey";
+  // Warm and muted or dark: khaki, stone, camel, chocolate.
+  if (hue >= 15 && hue < 50 && (saturation < 0.45 || value < 0.55)) return "brown";
+  // Light, soft reds read as pink.
+  if ((hue < 15 || hue >= 345) && saturation < 0.4 && value > 0.7) return "pink";
+  if (hue < 15 || hue >= 345) return "red";
+  if (hue < 40) return "orange";
+  // Dark yellows are olive, which reads as green in clothes.
+  if (hue < 70) return value < 0.6 ? "green" : "yellow";
+  if (hue < 170) return "green";
+  if (hue < 260) return "blue";
+  if (hue < 300) return "purple";
+  // Magentas: light ones are pink; dark ones are wine reds or plums.
+  if (value < 0.6) return hue >= 325 ? "red" : "purple";
+  return "pink";
+}
+
+// The average of several "#rrggbb" colours: a family's swatch in the filter
+// drawer, made from the person's own pieces rather than an invented colour.
+export function averageColour(hexes: string[]): string {
+  const sum = [0, 0, 0];
+  for (const hex of hexes) [1, 3, 5].forEach((i, c) => (sum[c] += parseInt(hex.slice(i, i + 2), 16)));
+  return toHex(sum[0] / hexes.length, sum[1] / hexes.length, sum[2] / hexes.length);
+}

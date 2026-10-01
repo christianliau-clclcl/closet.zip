@@ -139,14 +139,13 @@ Scroll snaps to cells.
 
 **Filter drawer.** Slides in from the right over the grid on `cell`. Sections
 (Sort, Category, Colour, Brand) with mono headings. Options are checkbox rows
-separated by `rule` lines. Colour options show a small filled dot of that
-colour next to the name. A full-width `ink` button at the bottom: "Show 24
+separated by `rule` lines. Colour options are families (see Colour swatch).
+A full-width `ink` button at the bottom: "Show 24
 items". Built (Milestone 9a): sections
 Category · Brand · Size · Colour, options taken from the person's own pieces
 with a count each; "or" within a section, "and" across; CLEAR ALL above the
 button; slides in with the app's motion style; scrim behind. On phones it's a
-full-screen `cell` page with no scrim (decided 2026-10-01). Colour dots wait
-for detected colours (Milestone 10). **Sort** is a small list under SORT in the
+full-screen `cell` page with no scrim (decided 2026-10-01). **Sort** is a small list under SORT in the
 view bar (Newest added · Date acquired · Brand A–Z · Price), not in the drawer;
 the bar reads "SORT · BRAND" / "FILTER · 2" while they're in use.
 
@@ -163,6 +162,15 @@ Details are a two-column list of mono label / value pairs separated by `rule`
 lines; empty fields and empty sections are hidden. The user's notes sit
 underneath in Fraunces, set apart from the data. Close with ✕, Esc, Back, or
 clicking the scrim or the space around the garment.
+
+**Colour swatch.** A small flat square of a garment's own colour (decided
+2026-10-01: square, not a dot), always next to the colour's name: 12px
+beside text (overlay details, filter drawer), 16px inside the Colour field
+on Add/Edit, where an empty swatch is a `rule` outline. The filter drawer's
+Colour section lists families (Red … Pink, Beige & brown, White, Grey,
+Black, in gradient order); each family's swatch is the average of the
+person's own pieces in it, so no colour is invented. In the overlay, a
+piece with a colour but no name shows its family's name.
 
 **Buttons.** Primary: `ink` fill, `cell` text, mono 13px 500, 12px × 20px
 padding, square. Secondary: transparent with a 1px `ink` border. Tertiary:

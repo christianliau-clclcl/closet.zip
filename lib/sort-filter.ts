@@ -1,3 +1,4 @@
+import { averageColour, colourFamily, familyLabels, families, type Family } from "@/lib/colour";
 import { formatCategory } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
@@ -76,8 +77,10 @@ export function countFilters(filters: Filters): number {
 }
 
 // The text a piece has for a field, compared without caring about case or
-// extra spaces, so "levi's " and "Levi's" match.
+// extra spaces, so "levi's " and "Levi's" match. Colour filters by family
+// ("blue"), worked out from the colour itself, not the name people typed.
 function valueOf(item: Item, field: FilterField): string | undefined {
+  if (field === "colour") return item.colourHex ? colourFamily(item.colourHex) : undefined;
   return item[field]?.trim() || undefined;
 }
 const same = (a: string, b: string) => a.localeCompare(b, "en", { sensitivity: "base" }) === 0;
@@ -95,10 +98,16 @@ export function filterItems(items: Item[], filters: Filters): Item[] {
   );
 }
 
-export type FilterOption = { value: string; label: string; count: number };
+export type FilterOption = {
+  value: string;
+  label: string;
+  count: number;
+  swatch?: string; // colour families: the average of the pieces in it
+};
 
 // The options for each field, built from the pieces themselves, so every
-// option matches at least one piece. Sorted A–Z (categories in their usual order).
+// option matches at least one piece. Sorted A–Z (categories in their usual
+// order, colour families in gradient order).
 export function filterOptions(items: Item[]): Record<FilterField, FilterOption[]> {
   const categoryOrder = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
   return Object.fromEntries(
@@ -113,15 +122,31 @@ export function filterOptions(items: Item[]): Record<FilterField, FilterOption[]
         else
           counts.set(key, {
             value,
-            label: field === "category" ? formatCategory(item.category!) : value,
+            label:
+              field === "category"
+                ? formatCategory(item.category!)
+                : field === "colour"
+                  ? familyLabels[value as Family]
+                  : value,
             count: 1,
           });
       }
       const options = [...counts.values()].sort((a, b) =>
         field === "category"
           ? categoryOrder.indexOf(a.value) - categoryOrder.indexOf(b.value)
-          : a.label.localeCompare(b.label, "en", { sensitivity: "base", numeric: true }),
+          : field === "colour"
+            ? families.indexOf(a.value as Family) -
+              families.indexOf(b.value as Family)
+            : a.label.localeCompare(b.label, "en", { sensitivity: "base", numeric: true }),
       );
+      if (field === "colour") {
+        for (const option of options) {
+          const hexes = items.flatMap((item) =>
+            item.colourHex && colourFamily(item.colourHex) === option.value ? [item.colourHex] : [],
+          );
+          option.swatch = averageColour(hexes);
+        }
+      }
       return [field, options];
     }),
   ) as Record<FilterField, FilterOption[]>;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useId, useRef, useState } from "react";
+import Swatch from "@/components/Swatch";
 import { detectColour, loadImageFromUrl, sampleColour } from "@/lib/colour";
 import { containedBox } from "@/lib/image";
 
@@ -66,11 +67,7 @@ export default function ColourField({ name, hex, onNameChange, onHexChange, phot
       </label>
       {/* The swatch sits inside the input's box; the box takes the focus border. */}
       <div className="mt-2 flex items-center border border-rule bg-cell focus-within:border-ink">
-        <span
-          aria-hidden
-          className={`ml-3 size-4 shrink-0 ${hex ? "" : "border border-rule"}`}
-          style={hex ? { backgroundColor: hex } : undefined}
-        />
+        <Swatch hex={hex || undefined} className="ml-3 size-4" />
         <input
           id={inputId}
           value={name}
