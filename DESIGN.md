@@ -135,7 +135,13 @@ Scroll snaps to cells.
 (Sort, Category, Colour, Brand) with mono headings. Options are checkbox rows
 separated by `rule` lines. Colour options show a small filled dot of that
 colour next to the name. A full-width `ink` button at the bottom: "Show 24
-items".
+items". Built (Milestone 9a): sections
+Category · Brand · Size · Colour, options taken from the person's own pieces
+with a count each; "or" within a section, "and" across; CLEAR ALL above the
+button; slides in with the app's motion style; scrim behind. Colour dots wait
+for detected colours (Milestone 10). **Sort** is a small list under SORT in the
+view bar (Newest added · Date acquired · Brand A–Z · Price), not in the drawer;
+the bar reads "SORT · BRAND" / "FILTER · 2" while they're in use.
 
 **Detail overlay.** A layer over the closet, not a separate page: the grid
 stays visible behind, darkened and blurred by the scrim. Desktop: the garment

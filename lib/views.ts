@@ -23,12 +23,16 @@ export function itemsInView(items: Item[], view: View): Item[] {
   return items.filter((item) => (view === "archive") === (item.status === "archived"));
 }
 
-// The current address with one part changed (or removed, with null), e.g.
-// withParam("view", "archive") → "/?view=archive". Other parts are kept.
-export function withParam(key: string, value: string | null): string {
+// The current address with some parts changed; other parts are kept.
+// e.g. withParams((p) => p.set("view", "archive")) → "/?view=archive"
+export function withParams(update: (params: URLSearchParams) => void): string {
   const params = new URLSearchParams(window.location.search);
-  if (value === null) params.delete(key);
-  else params.set(key, value);
+  update(params);
   const query = params.toString();
   return query ? `?${query}` : window.location.pathname;
+}
+
+// One part changed, or removed with null.
+export function withParam(key: string, value: string | null): string {
+  return withParams((params) => (value === null ? params.delete(key) : params.set(key, value)));
 }

@@ -5,10 +5,12 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
 import CategoryRows from "@/components/CategoryRows";
 import EmptyState from "@/components/EmptyState";
+import FilterDrawer from "@/components/FilterDrawer";
 import HoverCaption from "@/components/HoverCaption";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
 import LogOutButton from "@/components/LogOutButton";
+import SortMenu from "@/components/SortMenu";
 import TopBar from "@/components/TopBar";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
@@ -16,7 +18,18 @@ import ZoomSlider from "@/components/ZoomSlider";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import type { Item } from "@/lib/types";
-import { itemsInView, readView, withParam, type View } from "@/lib/views";
+import {
+  countFilters,
+  filterFields,
+  filterItems,
+  noFilters,
+  readFilters,
+  readSort,
+  sortItems,
+  type Filters,
+  type Sort,
+} from "@/lib/sort-filter";
+import { itemsInView, readView, withParam, withParams, type View } from "@/lib/views";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
 
 // Runs in the browser so it can remember the zoom level as the slider moves,
@@ -32,8 +45,32 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
   const [zoom, setZoom] = useState<Zoom>("medium");
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
-  const view = readView(useSearchParams());
-  const shown = itemsInView(items, view);
+  const params = useSearchParams();
+  const view = readView(params);
+  const sort = readSort(params);
+  const filters = readFilters(params);
+  const filterCount = countFilters(filters);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const inView = itemsInView(items, view);
+  const shown = sortItems(filterItems(inView, filters), sort);
+
+  function changeSort(next: Sort) {
+    window.history.pushState(null, "", withParam("sort", next === "newest" ? null : next));
+  }
+
+  function applyFilters(next: Filters) {
+    window.history.pushState(
+      null,
+      "",
+      withParams((p) => {
+        for (const field of filterFields) {
+          p.delete(field);
+          for (const value of next[field]) p.append(field, value);
+        }
+      }),
+    );
+    setFilterOpen(false);
+  }
 
   // Instant: every piece is already loaded, so this only filters them.
   function changeView(next: View) {
@@ -102,7 +139,25 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         )}
       </TopBar>
 
-      <ViewBar view={view} onChange={changeView} />
+      <ViewBar view={view} onChange={changeView}>
+        <SortMenu sort={sort} onChange={changeSort} />
+        <button
+          type="button"
+          onClick={() => setFilterOpen(true)}
+          className="cursor-pointer text-label whitespace-nowrap uppercase"
+        >
+          {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
+        </button>
+      </ViewBar>
+
+      {filterOpen && (
+        <FilterDrawer
+          items={inView}
+          filters={filters}
+          onApply={applyFilters}
+          onClose={() => setFilterOpen(false)}
+        />
+      )}
 
       {shown.length > 0 ? (
         <main className="p-4 md:p-8">
@@ -116,13 +171,20 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
       ) : (
         <main className="flex flex-1 flex-col">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
-          <ViewEmpty
-            message={
-              view === "archive"
-                ? "Nothing archived. Pieces you no longer own will appear here."
-                : "Nothing in your closet right now."
-            }
-          />
+          {inView.length > 0 ? (
+            <ViewEmpty
+              message="No pieces match these filters."
+              action={{ label: "Clear filters", onClick: () => applyFilters(noFilters) }}
+            />
+          ) : (
+            <ViewEmpty
+              message={
+                view === "archive"
+                  ? "Nothing archived. Pieces you no longer own will appear here."
+                  : "Nothing in your closet right now."
+              }
+            />
+          )}
         </main>
       )}
 
