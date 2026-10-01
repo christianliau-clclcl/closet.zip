@@ -85,16 +85,23 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 5 — add item (database, photo storage, add form, real
-  data in the grid). Roadmap reordered 2026-09-26: grid and overlay were
-  designed first on sample data.
+- Current milestone: 6 — edit & archive (edit, archive/unarchive, delete
+  from the overlay).
+- Milestone 5 done (2026-10-01, live, tested on phone): `/add` page with
+  photo picker (resized in the browser to 1600px + 600px thumbnail, WebP or
+  PNG, transparency kept) and all optional details (`ItemDetailsFields`,
+  reusable for editing; validation in `lib/item-draft.ts`; brand
+  suggestions). Grid reads real items for logged-in users (`lib/items.ts`,
+  signed photo links, thumbnails in the grid), empty state when there are
+  none; demo closet for logged-out visitors. Item labels: no index codes;
+  hover caption "name · brand · year" (DESIGN.md "Item labels").
 - Milestone 4 done (2026-09-30, live): email + password auth with
   `@supabase/ssr`. One `/login` page (log in / sign up switch), email
   confirmation via `/auth/confirm`, log out in the top bar, password reset
   (`/forgot-password` → email → `/reset-password`). `proxy.ts` refreshes the
   session. Logged-out visitors see the sample closet as a demo.
 - Milestone 3 done (2026-09-27): detail overlay (view only). Opens via
-  `?item=<code>` so Back closes it and links work. Desktop: grid behind with
+  `?item=<id>` so Back closes it and links work. Desktop: grid behind with
   scrim (ink 50% + 12px blur), garment floating left, canvas panel right with
   Details and Notes. Phone: full-screen canvas page, no scrim. Price in $.
 - Milestone 2 done: grid of floating garments with dots (no cell surface),
@@ -124,5 +131,5 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
-- Next up: Milestone 5 add item. Later: previous/next arrows in the
-  overlay; detail-photo dots under the garment (Milestone 7).
+- Next up: Milestone 6. Later: previous/next arrows in the overlay;
+  detail-photo dots under the garment (Milestone 7).

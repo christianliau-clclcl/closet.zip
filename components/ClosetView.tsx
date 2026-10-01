@@ -91,7 +91,7 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
       {/* Reading the address happens in the browser only; Suspense lets the
           grid above load first without waiting for it. */}
       <Suspense fallback={null}>
-        <ItemOverlay items={items} onClose={closeItem} />
+        <ItemOverlay items={items} onClose={closeItem} editable={loggedIn} />
       </Suspense>
     </>
   );

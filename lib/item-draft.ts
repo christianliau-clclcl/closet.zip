@@ -1,5 +1,5 @@
 import type { TablesInsert } from "@/lib/database.types";
-import type { Category } from "@/lib/types";
+import type { Category, Item } from "@/lib/types";
 
 // What's typed into the details form, before it's checked and saved.
 // Everything is a string (or empty) while editing; empty means "not filled in".
@@ -28,6 +28,22 @@ export const emptyDraft: ItemDraft = {
   price: "",
   notes: "",
 };
+
+// A saved item turned back into form fields, for editing.
+export function itemToDraft(item: Item): ItemDraft {
+  return {
+    name: item.name ?? "",
+    category: item.category ?? "",
+    brand: item.brand ?? "",
+    colour: item.colour ?? "",
+    material: item.material ?? "",
+    acquiredMonth: item.acquired?.month ? String(item.acquired.month) : "",
+    acquiredYear: item.acquired ? String(item.acquired.year) : "",
+    acquiredFrom: item.acquiredFrom ?? "",
+    price: item.price !== undefined ? item.price.toFixed(Number.isInteger(item.price) ? 0 : 2) : "",
+    notes: item.notes ?? "",
+  };
+}
 
 // The item columns the details form fills in.
 export type DetailsRow = Omit<TablesInsert<"items">, "id" | "user_id">;

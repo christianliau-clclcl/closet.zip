@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
+import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import { itemTitle } from "@/lib/format";
 import type { Item } from "@/lib/types";
@@ -10,6 +11,7 @@ import type { Item } from "@/lib/types";
 type ItemOverlayProps = {
   items: Item[];
   onClose: () => void;
+  editable: boolean; // your own items: show Edit etc. (never in the demo)
 };
 
 // The detail overlay. It opens whenever the address has ?item=<id>, so the
@@ -20,7 +22,7 @@ type ItemOverlayProps = {
 // Layout on desktop: the grid stays visible behind, darkened and blurred; the
 // garment floats large on the left and the details sit in a panel on the right.
 // On phones: a full-screen canvas page, garment on top and details below.
-export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
+export default function ItemOverlay({ items, onClose, editable }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -87,6 +89,7 @@ export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
               ✕
             </button>
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
+            {editable && <ItemActions item={item} />}
             <ItemDetails item={item} />
           </div>
         </>

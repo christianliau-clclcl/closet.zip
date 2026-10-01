@@ -130,7 +130,10 @@ archive on their own phones and computers. The app is deployed on a public URL.
 ## Open questions
 
 - In style over time, where do items without a date acquired go?
-- For archived items, should we record how it left (sold, donated, gifted, lost)?
+- ~~For archived items, should we record how it left (sold, donated, gifted, lost)?~~
+  Decided 2026-10-01: yes, optional: sold, donated, gifted, lost or other.
+  Until the Archive section exists (Milestone 8), archived items stay in the
+  grid, faded to 50% and sorted after the pieces you own.
 - Should there be a limit on photos per item, or per account, to manage storage?
 - ~~Login method: email and password, or a magic link sent by email?~~
   Decided 2026-09-26: email and password.
