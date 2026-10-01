@@ -203,8 +203,11 @@ archive on their own phones and computers. The app is deployed on a public URL.
     Steps:
     - **12a:** tables, privacy rules and checks; tested as two users and a
       logged-out visitor
-    - **12b:** FOLDERS view: cover grid, + NEW FOLDER, open a folder (path
-      "FOLDERS / SEASONS / SUMMER"), rename, delete
+    - **12b (done 2026-10-01):** FOLDERS view (logged in only; the demo has
+      no folders): path row "FOLDERS / SEASONS / SUMMER" (earlier parts go
+      up; Back too), + NEW FOLDER (inside the open folder), RENAME, DELETE;
+      one grid with the folders inside first, then the folder's own pieces
+      (archived ones included); SORT and FILTER only inside a folder
     - **12c:** add to / remove from folders in the overlay (checklist)
     - **12d:** SELECT mode in the grid (add to folder, remove from folder)
     - **12e:** covers: pick a garment or upload an image

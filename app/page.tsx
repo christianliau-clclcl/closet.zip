@@ -1,4 +1,5 @@
 import ClosetView from "@/components/ClosetView";
+import { getMyFolders } from "@/lib/folders";
 import { getMyItems } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { sampleItems } from "@/lib/sample-items";
@@ -11,7 +12,9 @@ export default async function Home() {
   const { data } = await supabase.auth.getClaims();
   const loggedIn = Boolean(data?.claims);
 
-  const [items, unit] = loggedIn ? await Promise.all([getMyItems(), getMyUnit()]) : [sampleItems, "in" as const];
+  const [items, folders, unit] = loggedIn
+    ? await Promise.all([getMyItems(), getMyFolders(), getMyUnit()])
+    : [sampleItems, [], "in" as const];
 
-  return <ClosetView items={items} loggedIn={loggedIn} initialUnit={unit} />;
+  return <ClosetView items={items} folders={folders} loggedIn={loggedIn} initialUnit={unit} />;
 }

@@ -48,3 +48,13 @@ export type Item = {
   archived?: MonthYear; // when it left the closet
   leftVia?: LeftVia;
 };
+
+// A personal folder (Milestone 12). Pieces are linked, never copied, so a
+// piece can be in several folders; folders can sit inside folders.
+export type Folder = {
+  id: string;
+  name: string;
+  parentId?: string; // the folder it sits in; none for top-level folders
+  coverItemId?: string; // a chosen cover piece (12e); else the first piece
+  itemIds: string[]; // the pieces directly in it, in the folder's order
+};

@@ -6,6 +6,7 @@ import { Suspense, useRef, useState } from "react";
 import CategoryRows from "@/components/CategoryRows";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
+import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
@@ -16,9 +17,10 @@ import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
 import ZoomSlider from "@/components/ZoomSlider";
 import { useColourBackfill } from "@/lib/colour-backfill";
+import { folderPath, itemsInFolder } from "@/lib/folder-tree";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
-import type { Item } from "@/lib/types";
+import type { Folder, Item } from "@/lib/types";
 import {
   countFilters,
   filterFields,
@@ -30,7 +32,7 @@ import {
   type Filters,
   type Sort,
 } from "@/lib/sort-filter";
-import { itemsInView, readView, withParam, withParams, type View } from "@/lib/views";
+import { itemsInView, readView, views, withParam, withParams, type View } from "@/lib/views";
 import type { Zoom } from "@/lib/zoom";
 
 // Runs in the browser so it can remember the zoom level as the slider moves,
@@ -38,11 +40,12 @@ import type { Zoom } from "@/lib/zoom";
 // piece live in the address (?view=…&item=…), so Back and links work.
 type ClosetViewProps = {
   items: Item[];
+  folders: Folder[]; // the logged-in person's folders (none in the demo)
   loggedIn: boolean;
   initialUnit: Unit; // for measurements in the overlay
 };
 
-export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewProps) {
+export default function ClosetView({ items, folders, loggedIn, initialUnit }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   // Your own pieces saved before colours existed get one in the background.
   useColourBackfill(items, loggedIn);
@@ -52,12 +55,17 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
     setPreview(id ? { id, anchor: anchor ?? null } : null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const params = useSearchParams();
-  const view = readView(params);
+  // FOLDERS is only for your own closet; the demo has none.
+  const viewOptions: readonly View[] = loggedIn ? views : views.filter((v) => v !== "folders");
+  const readFromAddress = readView(params);
+  const view = viewOptions.includes(readFromAddress) ? readFromAddress : "all";
+  // The open folder (FOLDERS view): none at the top level.
+  const folder = view === "folders" ? folderPath(folders, params.get("folder") ?? undefined).at(-1) : undefined;
   const sort = readSort(params);
   const filters = readFilters(params);
   const filterCount = countFilters(filters);
   const [filterOpen, setFilterOpen] = useState(false);
-  const inView = itemsInView(items, view);
+  const inView = view === "folders" ? (folder ? itemsInFolder(items, folder) : []) : itemsInView(items, view);
   const shown = sortItems(filterItems(inView, filters), sort);
 
   function changeSort(next: Sort) {
@@ -80,7 +88,20 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
 
   // Instant: every piece is already loaded, so this only filters them.
   function changeView(next: View) {
-    window.history.pushState(null, "", withParam("view", next === "all" ? null : next));
+    window.history.pushState(
+      null,
+      "",
+      withParams((p) => {
+        p.delete("folder");
+        if (next === "all") p.delete("view");
+        else p.set("view", next);
+      }),
+    );
+  }
+
+  // Each folder is its own address, so Back goes up a level.
+  function openFolder(id: string | undefined) {
+    window.history.pushState(null, "", withParam("folder", id ?? null));
   }
 
   // Kept while browsing, so every piece opens in the same unit; remembered in
@@ -145,15 +166,20 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         )}
       </TopBar>
 
-      <ViewBar view={view} onChange={changeView}>
-        <SortMenu sort={sort} onChange={changeSort} />
-        <button
-          type="button"
-          onClick={() => setFilterOpen(true)}
-          className="cursor-pointer text-label whitespace-nowrap uppercase"
-        >
-          {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
-        </button>
+      <ViewBar view={view} options={viewOptions} onChange={changeView}>
+        {/* The top of FOLDERS is just folders: nothing to sort or filter. */}
+        {(view !== "folders" || folder) && (
+          <>
+            <SortMenu sort={sort} onChange={changeSort} />
+            <button
+              type="button"
+              onClick={() => setFilterOpen(true)}
+              className="cursor-pointer text-label whitespace-nowrap uppercase"
+            >
+              {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
+            </button>
+          </>
+        )}
       </ViewBar>
 
       {filterOpen && (
@@ -165,7 +191,22 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         />
       )}
 
-      {shown.length > 0 ? (
+      {view === "folders" ? (
+        <main className="flex flex-1 flex-col p-4 md:p-8">
+          <FolderView
+            folders={folders}
+            items={items}
+            folderId={folder?.id}
+            pieces={shown}
+            filtered={inView.length > shown.length}
+            zoom={zoom}
+            onOpenFolder={openFolder}
+            onOpenItem={openItem}
+            onPreview={showPreview}
+            onClearFilters={() => applyFilters(noFilters)}
+          />
+        </main>
+      ) : shown.length > 0 ? (
         <main className="p-4 md:p-8">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
           {view === "rows" ? (
