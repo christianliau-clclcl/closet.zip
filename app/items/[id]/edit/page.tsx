@@ -28,7 +28,13 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
       <main className="mx-auto w-full max-w-sm px-4 py-12 md:py-20">
         <h1 className="font-serif text-title">Edit piece</h1>
         <div className="mt-8">
-          <PhotoManager itemId={item.id} photos={item.photos ?? [item.hero]} />
+          {/* The key changes whenever the saved photos or their order change,
+              so the manager starts fresh from what's actually saved. */}
+          <PhotoManager
+            key={(item.photos ?? []).map((p) => p.id).join()}
+            itemId={item.id}
+            photos={item.photos ?? [item.hero]}
+          />
         </div>
         <div className="mt-12">
           <EditItemForm item={item} brandSuggestions={brands} />

@@ -123,7 +123,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      reorder_item_photos: {
+        Args: { p_item_id: string; p_photo_ids: string[] }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never

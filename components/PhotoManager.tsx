@@ -1,8 +1,9 @@
 "use client";
 
+import { Reorder } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useId, useState } from "react";
+import { useId, useRef, useState } from "react";
 import { MAX_PHOTOS, UnreadableImage, addPhoto, preparePhoto, removePhoto } from "@/lib/photos";
 import { createClient } from "@/lib/supabase/client";
 import type { Photo } from "@/lib/types";
@@ -12,16 +13,50 @@ type PhotoManagerProps = {
   photos: Photo[]; // display order, hero first
 };
 
-// The Photos section of the edit page: every photo of a piece, the hero
-// first, plus an Add tile. Changes save straight away (they're uploads), then
-// the page re-reads the item so everything stays in step.
+const smallAction = "cursor-pointer text-label uppercase disabled:cursor-wait disabled:text-pebble";
+
+// The Photos section of the edit page. The first photo is the hero (the
+// cover in the grid). Reorder by dragging (motion's Reorder) or with the ← →
+// buttons; Make hero moves a photo to the front. Every change saves straight
+// away, then the page re-reads the item so everything stays in step.
 export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
   const router = useRouter();
   const inputId = useId();
+  const savedIds = photos.flatMap((p) => (p.id ? [p.id] : []));
+  const byId = new Map(photos.map((p) => [p.id, p]));
+  const [order, setOrder] = useState(savedIds); // photo IDs, as currently arranged
+  const latestOrder = useRef(order); // what was last dropped, for saving on release
   const [busy, setBusy] = useState<string | null>(null); // what's happening, e.g. "Adding…"
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const roomLeft = MAX_PHOTOS - photos.length;
+
+  function arrange(ids: string[]) {
+    latestOrder.current = ids;
+    setOrder(ids);
+  }
+
+  // Saves the order in one database call (all-or-nothing). On failure the
+  // tiles go back to the last saved order.
+  async function saveOrder(ids: string[]) {
+    if (ids.join() === savedIds.join()) return;
+    setError(null);
+    setBusy("Saving order…");
+    const { error } = await createClient().rpc("reorder_item_photos", { p_item_id: itemId, p_photo_ids: ids });
+    if (error) {
+      setError("Couldn't save the new order. Check your connection and try again.");
+      arrange(savedIds);
+    }
+    setBusy(null);
+    router.refresh();
+  }
+
+  function move(id: string, to: number) {
+    const ids = order.filter((x) => x !== id);
+    ids.splice(to, 0, id);
+    arrange(ids);
+    saveOrder(ids);
+  }
 
   async function add(files: FileList | null) {
     const chosen = [...(files ?? [])].slice(0, roomLeft);
@@ -76,85 +111,122 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
           {photos.length} of {MAX_PHOTOS}
         </p>
       </div>
-      <p className="mt-1 text-stone">Photo changes save straight away.</p>
+      <p className="mt-1 text-stone">
+        The first photo is the cover. Drag to reorder. Changes save straight away.
+      </p>
 
-      <ul className="mt-4 grid grid-cols-3 gap-2">
-        {photos.map((photo) => (
-          <li key={photo.id}>
-            <div className="relative aspect-square border border-rule">
-              <Image
-                src={photo.thumbSrc ?? photo.src}
-                alt={photo.isHero ? "Hero photo" : "Detail photo"}
-                fill
-                sizes="128px"
-                unoptimized={photo.unoptimized}
-                className="object-contain p-2"
-              />
-            </div>
-            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label uppercase">
-              {confirmingId === photo.id ? (
-                <>
+      <Reorder.Group
+        axis="xy"
+        values={order}
+        onReorder={arrange}
+        className="mt-4 grid grid-cols-3 gap-x-2 gap-y-4"
+      >
+        {order.map((id, index) => {
+          const photo = byId.get(id);
+          if (!photo) return null;
+          const isHero = index === 0;
+          return (
+            <Reorder.Item
+              key={id}
+              value={id}
+              dragListener={!busy}
+              onDragEnd={() => saveOrder(latestOrder.current)}
+              className="relative cursor-grab bg-canvas active:cursor-grabbing"
+            >
+              <div className="relative aspect-square border border-rule">
+                <Image
+                  src={photo.thumbSrc ?? photo.src}
+                  alt={isHero ? `Photo ${index + 1}, the cover` : `Photo ${index + 1}`}
+                  fill
+                  sizes="128px"
+                  unoptimized={photo.unoptimized}
+                  draggable={false}
+                  className="pointer-events-none object-contain p-2 select-none"
+                />
+              </div>
+
+              {confirmingId === id ? (
+                <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-label uppercase">
                   <span>Remove?</span>
-                  <button
-                    type="button"
-                    onClick={() => photo.id && remove(photo.id)}
-                    disabled={Boolean(busy)}
-                    className="cursor-pointer uppercase underline underline-offset-4 disabled:cursor-wait"
-                  >
+                  <button type="button" onClick={() => remove(id)} disabled={Boolean(busy)} className={`${smallAction} underline underline-offset-4`}>
                     Yes
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setConfirmingId(null)}
-                    className="cursor-pointer text-stone uppercase"
-                  >
+                  <button type="button" onClick={() => setConfirmingId(null)} className={`${smallAction} text-stone`}>
                     Keep
                   </button>
-                </>
+                </div>
               ) : (
                 <>
-                  {photo.isHero && <span>Hero</span>}
-                  {/* A piece always keeps at least one photo. */}
-                  {photos.length > 1 && (
+                  <div className="mt-2 text-label uppercase">
+                    {isHero ? (
+                      <span>Cover</span>
+                    ) : (
+                      <button type="button" onClick={() => move(id, 0)} disabled={Boolean(busy)} className={`${smallAction} underline-offset-4 hover:underline`}>
+                        Make cover
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-1 flex items-center gap-3 text-stone">
                     <button
                       type="button"
-                      onClick={() => setConfirmingId(photo.id ?? null)}
-                      disabled={Boolean(busy)}
-                      className="cursor-pointer text-stone uppercase underline-offset-4 hover:underline disabled:cursor-wait"
+                      onClick={() => move(id, index - 1)}
+                      disabled={index === 0 || Boolean(busy)}
+                      aria-label="Move earlier"
+                      className={`${smallAction} disabled:invisible`}
                     >
-                      Remove
+                      ←
                     </button>
-                  )}
+                    <button
+                      type="button"
+                      onClick={() => move(id, index + 1)}
+                      disabled={index === order.length - 1 || Boolean(busy)}
+                      aria-label="Move later"
+                      className={`${smallAction} disabled:invisible`}
+                    >
+                      →
+                    </button>
+                    {/* A piece always keeps at least one photo. */}
+                    {photos.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => setConfirmingId(id)}
+                        disabled={Boolean(busy)}
+                        className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </>
               )}
-            </div>
-          </li>
-        ))}
+            </Reorder.Item>
+          );
+        })}
+      </Reorder.Group>
 
-        {roomLeft > 0 && (
-          <li>
-            {/* The file input is visually hidden but focusable; the tile is its label. */}
-            <input
-              id={inputId}
-              type="file"
-              accept="image/*"
-              multiple
-              disabled={Boolean(busy)}
-              className="peer sr-only"
-              onChange={(event) => {
-                add(event.target.files);
-                event.target.value = ""; // so choosing the same file again still works
-              }}
-            />
-            <label
-              htmlFor={inputId}
-              className="flex aspect-square cursor-pointer items-center justify-center border border-rule p-2 text-center text-label uppercase peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink peer-disabled:cursor-wait"
-            >
-              {busy ?? "Add photo"}
-            </label>
-          </li>
-        )}
-      </ul>
+      {roomLeft > 0 && (
+        <div className="mt-4 grid grid-cols-3 gap-2">
+          {/* The file input is visually hidden but focusable; the tile is its label. */}
+          <input
+            id={inputId}
+            type="file"
+            accept="image/*"
+            multiple
+            disabled={Boolean(busy)}
+            className="peer sr-only"
+            onChange={(event) => {
+              add(event.target.files);
+              event.target.value = ""; // so choosing the same file again still works
+            }}
+          />
+          <label
+            htmlFor={inputId}
+            className="flex aspect-square cursor-pointer items-center justify-center border border-rule p-2 text-center text-label uppercase peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink peer-disabled:cursor-wait"
+          >
+            {busy ?? "Add photo"}
+          </label>
+        </div>
+      )}
 
       {error && (
         <p role="alert" className="mt-4">
