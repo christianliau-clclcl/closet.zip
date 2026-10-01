@@ -85,8 +85,14 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 4 — auth (email and password). Roadmap reordered
-  2026-09-26: grid and overlay were designed first on sample data.
+- Current milestone: 5 — add item (database, photo storage, add form, real
+  data in the grid). Roadmap reordered 2026-09-26: grid and overlay were
+  designed first on sample data.
+- Milestone 4 done (2026-09-30, live): email + password auth with
+  `@supabase/ssr`. One `/login` page (log in / sign up switch), email
+  confirmation via `/auth/confirm`, log out in the top bar, password reset
+  (`/forgot-password` → email → `/reset-password`). `proxy.ts` refreshes the
+  session. Logged-out visitors see the sample closet as a demo.
 - Milestone 3 done (2026-09-27): detail overlay (view only). Opens via
   `?item=<code>` so Back closes it and links work. Desktop: grid behind with
   scrim (ink 50% + 12px blur), garment floating left, canvas panel right with
@@ -110,6 +116,5 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
-- Next up: Milestone 4 auth. Parked decisions: one page or two for log in /
-  sign up, email confirmation, password reset. Later: previous/next arrows in
-  the overlay; detail-photo dots under the garment (Milestone 7).
+- Next up: Milestone 5 add item. Later: previous/next arrows in the
+  overlay; detail-photo dots under the garment (Milestone 7).

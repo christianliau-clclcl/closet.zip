@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { Suspense, useRef, useState } from "react";
+import HoverCaption from "@/components/HoverCaption";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
 import LogOutButton from "@/components/LogOutButton";
 import TopBar from "@/components/TopBar";
 import ZoomSlider from "@/components/ZoomSlider";
 import type { Item } from "@/lib/types";
-import type { Zoom } from "@/lib/zoom";
+import { zoomStyles, type Zoom } from "@/lib/zoom";
 
 // Runs in the browser so it can remember the zoom level as the slider moves
 // and open or close the detail overlay.
@@ -19,12 +20,13 @@ type ClosetViewProps = {
 
 export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
+  const [previewId, setPreviewId] = useState<string | null>(null);
   // True when the overlay was opened from the grid (so closing = going back),
   // false when the page was loaded straight from an item link.
   const openedFromGrid = useRef(false);
 
-  function openItem(code: string) {
-    window.history.pushState(null, "", `?item=${encodeURIComponent(code)}`);
+  function openItem(id: string) {
+    window.history.pushState(null, "", `?item=${encodeURIComponent(id)}`);
     openedFromGrid.current = true;
   }
 
@@ -52,8 +54,13 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
 
       <main className="p-4 md:p-8">
         <h1 className="sr-only">Closet</h1>
-        <ItemGrid items={items} zoom={zoom} onOpen={openItem} />
+        <ItemGrid items={items} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
       </main>
+
+      <HoverCaption
+        item={items.find((item) => item.id === previewId)}
+        nameShown={zoomStyles[zoom].showName}
+      />
 
       {/* Reading the address happens in the browser only; Suspense lets the
           grid above load first without waiting for it. */}

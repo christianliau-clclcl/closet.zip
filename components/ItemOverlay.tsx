@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import ItemDetails from "@/components/ItemDetails";
+import { itemTitle } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
 type ItemOverlayProps = {
@@ -11,7 +12,7 @@ type ItemOverlayProps = {
   onClose: () => void;
 };
 
-// The detail overlay. It opens whenever the address has ?item=<code>, so the
+// The detail overlay. It opens whenever the address has ?item=<id>, so the
 // phone's Back button closes it and a link can open a specific item.
 // It's a native <dialog>: Esc, focus trapping and returning focus to the
 // garment afterwards are handled by the browser.
@@ -20,8 +21,8 @@ type ItemOverlayProps = {
 // garment floats large on the left and the details sit in a panel on the right.
 // On phones: a full-screen canvas page, garment on top and details below.
 export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
-  const code = useSearchParams().get("item");
-  const item = items.find((i) => i.code === code);
+  const id = useSearchParams().get("item");
+  const item = items.find((i) => i.id === id);
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openedAt = useRef(0);
 
@@ -42,7 +43,7 @@ export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
   return (
     <dialog
       ref={dialogRef}
-      aria-label={item ? (item.name ?? item.code) : undefined}
+      aria-label={item ? itemTitle(item) : undefined}
       // Esc: close through the address, not directly, so history stays in step.
       onCancel={(event) => {
         event.preventDefault();
@@ -64,7 +65,7 @@ export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
           <div data-scrim className="relative aspect-square w-full md:aspect-auto md:h-full md:flex-1">
             <Image
               src={item.hero.src}
-              alt={item.name ?? `Item ${item.code}`}
+              alt={itemTitle(item)}
               fill
               sizes="(min-width: 768px) 60vw, 100vw"
               className="object-contain p-12 md:p-8"
@@ -84,8 +85,7 @@ export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
             >
               ✕
             </button>
-            <p className="text-label uppercase">{item.code}</p>
-            {item.name && <h2 className="mt-2 font-serif text-title">{item.name}</h2>}
+            {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
             <ItemDetails item={item} />
           </div>
         </>

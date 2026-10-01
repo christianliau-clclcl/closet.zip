@@ -17,7 +17,6 @@ export type Photo = {
 
 export type Item = {
   id: string;
-  code: string; // Index code, e.g. "OW-001" (see DESIGN.md)
   hero: Photo;
   name?: string;
   category?: Category;

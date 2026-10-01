@@ -8,7 +8,6 @@ import type { Item } from "@/lib/types";
 export const sampleItems: Item[] = [
   {
     id: "1",
-    code: "OW-001",
     hero: { src: "/sample/denim-jacket.webp" },
     name: "Denim jacket",
     category: "outerwear",
@@ -24,7 +23,6 @@ export const sampleItems: Item[] = [
   },
   {
     id: "2",
-    code: "SH-001",
     hero: { src: "/sample/green-sneakers.png" },
     name: "Jack Purcell leather sneakers",
     category: "shoes",
@@ -39,7 +37,6 @@ export const sampleItems: Item[] = [
   },
   {
     id: "3",
-    code: "BT-001",
     hero: { src: "/sample/grey-trousers.png" },
     name: "Pleated trousers",
     category: "bottoms",
@@ -51,7 +48,6 @@ export const sampleItems: Item[] = [
   },
   {
     id: "4",
-    code: "OW-002",
     hero: { src: "/sample/beige-jacket.webp" },
     name: "Padded jacket",
     category: "outerwear",
@@ -66,7 +62,6 @@ export const sampleItems: Item[] = [
   },
   {
     id: "5",
-    code: "BT-002",
     hero: { src: "/sample/khaki-jeans.webp" },
     name: "Wide jeans",
     category: "bottoms",
@@ -76,7 +71,6 @@ export const sampleItems: Item[] = [
   },
   {
     id: "6",
-    code: "AC-001",
     hero: { src: "/sample/black-bag.png" },
     name: "Leather shoulder bag",
     category: "accessories",

@@ -1,4 +1,18 @@
-import type { Category, MonthYear } from "@/lib/types";
+import type { Category, Item, MonthYear } from "@/lib/types";
+
+// What to call an item when a name is needed (alt text, screen readers):
+// its name, else its category, else "Untitled piece".
+export function itemTitle(item: Item): string {
+  return item.name ?? (item.category ? formatCategory(item.category) : "Untitled piece");
+}
+
+// The one-line summary shown on hover: "Denim jacket · Levi's · 2021".
+// Missing parts are skipped; the name can be left out when it's already shown.
+export function itemSummary(item: Item, { includeName = true } = {}): string {
+  return [includeName ? item.name : undefined, item.brand, item.acquired?.year]
+    .filter(Boolean)
+    .join(" · ");
+}
 
 // "Mar 2021"
 export function formatMonthYear({ month, year }: MonthYear): string {

@@ -11,9 +11,9 @@ designer to confirm or refine in Figma.
 1. **The clothes are the only colour.** The interface is black, white, cream and
    grey. Any colour on screen comes from garments, including in
    visualizations, which use each item's actual colour.
-2. **Catalog, not store.** Items read like entries in an archive: an index
-   number, a name, small precise type. No marketing voice.
-3. **Two voices:** monospace for catalog data (codes, dates, brands, labels),
+2. **Catalog, not store.** Items read like entries in an archive: a name,
+   small precise type, details on request. No marketing voice.
+3. **Two voices:** monospace for catalog data (dates, brands, labels),
    serif for the personal (the user's notes and page titles). Data is
    precise; memories are warm.
 4. **Flat and square.** No shadows, no rounded corners. Structure comes from
@@ -36,7 +36,8 @@ designer to confirm or refine in Figma.
 
 No accent colour. Selected and active states use `ink` (fill or underline);
 inactive options (tabs, toggles) use `stone`, because `pebble` on `canvas` is
-too faint to read. Error messages are `ink` mono text placed just above the
+too faint to read. Keyboard focus is a 1px `ink` outline on every interactive
+element (never the browser's default colour). Error messages are `ink` mono text placed just above the
 action they relate to, with no colour of their own.
 Archived items are shown with `pebble` labels and reduced image opacity (0.5).
 
@@ -44,7 +45,7 @@ Archived items are shown with `pebble` labels and reduced image opacity (0.5).
 
 | Role          | Font                  | Size  | Weight | Case      | Tracking |
 |---------------|-----------------------|-------|--------|-----------|----------|
-| Label / code  | Geist Mono            | 11px  | 400    | UPPERCASE | 0.04em   |
+| Label         | Geist Mono            | 11px  | 400    | UPPERCASE | 0.04em   |
 | Meta / body   | Geist Mono            | 13px  | 400    | Sentence  | 0        |
 | UI text       | Geist Mono            | 13px  | 500    | Sentence  | 0        |
 | Notes (story) | Fraunces              | 18px  | 350    | Sentence  | -0.01em  |
@@ -67,26 +68,29 @@ Archived items are shown with `pebble` labels and reduced image opacity (0.5).
 - Border radius: 0 everywhere.
 - Elevation: none. Layering is shown by `cell` on `canvas`, plus the scrim.
 
-## Grid & zoom levels (proposal)
+## Grid & zoom levels
 
-| Level  | Desktop columns | Mobile columns | Cell padding | Labels shown          |
-|--------|-----------------|----------------|--------------|-----------------------|
-| Small  | 10              | 4              | 8px          | None (hover: code)    |
-| Medium | 6               | 3              | 16px         | Index code            |
-| Large  | 3               | 1              | 48px         | Index code + name     |
+| Level  | Desktop columns | Mobile columns | Cell padding | Under the garment | Hover caption        |
+|--------|-----------------|----------------|--------------|-------------------|----------------------|
+| Small  | 10              | 4              | 8px          | Nothing           | Name · brand · year  |
+| Medium | 6               | 3              | 16px         | Nothing           | Name · brand · year  |
+| Large  | 3               | 1              | 48px         | Name              | Brand · year         |
 
 - Cells are square. Images use `object-fit: contain` so nothing is cropped.
 - Grid dots: a 3px `ink` dot at the top-left corner of each cell.
 
-## Index codes (proposal)
+## Item labels
 
-Each item gets a catalog code from its category and order of entry, shown in
-mono under the image:
-
-`TP-012` tops · `BT-004` bottoms · `OW-007` outerwear · `SH-003` shoes ·
-`AC-015` accessories · `XX-001` uncategorized
-
-Codes are assigned automatically and never reused, even if an item is archived.
+Decided 2026-09-30: items have no index codes or numbers. The grid shows only
+the garments (plus the name at Large), so every row is evenly spaced. Details
+appear in a single **hover caption** for the whole grid, like a museum wall
+label (see Components), composed from the item's own fields: "Denim jacket ·
+Levi's · 2021", skipping any that are missing, and leaving out the name when
+it's already under the garment. Composed lines are too long for grid cells,
+which is why they live in the caption. On touch screens there's no caption;
+tapping opens the overlay. Screen readers get the full line as each cell's
+label. When an item needs a title (alt
+text, screen readers), use its name, else its category, else "Untitled piece".
 
 ## Components
 
@@ -96,9 +100,13 @@ toggle, filter and add on the right. Text only, no pill, no background. A
 `rule` line underneath.
 
 **Item cell.** Square and transparent (no surface; the garment sits on the
-canvas), a grid dot at the top-left, image centred with contained fit, index
-code below the image inside the cell in mono 11px. Hover (desktop): name and brand appear under the code
-in `stone`. Tap (touch): opens the overlay.
+canvas), a grid dot at the top-left, image centred with contained fit, and
+the name under the image at Large zoom only. Hover or keyboard focus shows the
+item in the hover caption. Tap (touch): opens the overlay.
+
+**Hover caption.** One line fixed at the bottom-left of the screen (page
+margins: 16px mobile, 32px desktop), mono 13px `ink` on a `canvas` background,
+showing the hovered or focused garment. Only on devices that can hover.
 
 **Zoom toggle.** A minimal three-stop slider labelled "ZOOM": a 1px `ink`
 line with a 12px square `ink` handle.
@@ -117,7 +125,7 @@ items".
 stays visible behind, darkened and blurred by the scrim. Desktop: the garment
 floats large on the left directly on the scrim (no panel behind it; detail
 photo dots below it once detail photos exist), and a `canvas` panel on the
-right holds the index code, the name in Fraunces, then a Details section and a
+right holds the name in Fraunces, then a Details section and a
 Notes section. Mobile: no scrim; a full-screen `canvas` page with the garment
 on top and the details below, scrolling together.
 Details are a two-column list of mono label / value pairs separated by `rule`

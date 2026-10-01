@@ -55,3 +55,12 @@
 html:has(dialog[open]) {
   overflow: hidden;
 }
+
+/* Keyboard focus everywhere: a thin ink outline instead of the browser's
+   default (often orange or blue, which isn't in our palette). */
+@layer base {
+  :focus-visible {
+    outline: 1px solid var(--color-ink);
+    outline-offset: 2px;
+  }
+}
