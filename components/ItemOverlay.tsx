@@ -1,10 +1,10 @@
 "use client";
 
-import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
+import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
@@ -37,7 +37,9 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
       openedAt.current = performance.now();
       // Start on the panel rather than the ✕, so no focus box appears on the
       // ✕ and screen readers begin with the item itself.
-      dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus();
+      // preventScroll: on phones the panel sits below the garment, and
+      // focusing it would otherwise scroll the garment out of view.
+      dialog.querySelector<HTMLElement>("[data-autofocus]")?.focus({ preventScroll: true });
     }
     if (!item && dialog.open) dialog.close();
   }, [item]);
@@ -56,7 +58,11 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
       // garment can't open and immediately close the overlay.
       onClick={(event) => {
         const target = event.target as HTMLElement;
-        const onScrim = target === event.currentTarget || "scrim" in target.dataset;
+        // The space around the garment only counts as scrim on desktop; on
+        // phones the overlay is a full page, so tapping beside the photo (or
+        // a too-short swipe) shouldn't close it. Phones close with ✕ or Back.
+        const desktop = window.matchMedia("(min-width: 768px)").matches;
+        const onScrim = target === event.currentTarget || (desktop && "scrim" in target.dataset);
         const justOpened = performance.now() - openedAt.current < 300;
         if (onScrim && !justOpened) onClose();
       }}
@@ -64,16 +70,7 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
     >
       {item && (
         <>
-          <div data-scrim className="relative aspect-square w-full md:aspect-auto md:h-full md:flex-1">
-            <Image
-              src={item.hero.src}
-              alt={itemTitle(item)}
-              fill
-              sizes="(min-width: 768px) 60vw, 100vw"
-              unoptimized={item.hero.unoptimized}
-              className="object-contain p-12 md:p-8"
-            />
-          </div>
+          <PhotoViewer key={item.id} photos={item.photos ?? [item.hero]} title={itemTitle(item)} />
 
           <div
             data-autofocus

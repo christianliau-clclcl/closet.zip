@@ -95,6 +95,8 @@ Update this section at the end of each working session.
   full-screen cover on desktop (use `md:open:flex`). When testing clicks,
   check `document.elementFromPoint` at the click point, not just
   `element.click()`.
+  If the browser pane is hidden it doesn't draw frames, so React effects
+  (e.g. opening the overlay) wait until a screenshot forces one.
 - Milestone 5 done (2026-10-01, live, tested on phone): `/add` page with
   photo picker (resized in the browser to 1600px + 600px thumbnail, WebP or
   PNG, transparency kept) and all optional details (`ItemDetailsFields`,
