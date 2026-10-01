@@ -17,6 +17,24 @@ type ItemOverlayProps = {
   onUnitChange: (unit: Unit) => void;
 };
 
+// True when a click on a garment photo lands in the empty margin around the
+// picture: the <img> fills the whole photo area, but the picture itself is
+// scaled down inside its padding with object-contain, leaving space around it.
+function onPhotoMargin(img: HTMLImageElement, x: number, y: number): boolean {
+  if (!img.naturalWidth || !img.naturalHeight) return false; // not loaded yet
+  const box = img.getBoundingClientRect();
+  const padding = parseFloat(getComputedStyle(img).paddingLeft); // same on every side
+  const scale = Math.min(
+    (box.width - 2 * padding) / img.naturalWidth,
+    (box.height - 2 * padding) / img.naturalHeight,
+  );
+  const width = img.naturalWidth * scale;
+  const height = img.naturalHeight * scale;
+  const left = box.left + (box.width - width) / 2;
+  const top = box.top + (box.height - height) / 2;
+  return x < left || x > left + width || y < top || y > top + height;
+}
+
 // The detail overlay. It opens whenever the address has ?item=<id>, so the
 // phone's Back button closes it and a link can open a specific item.
 // It's a native <dialog>: Esc, focus trapping and returning focus to the
@@ -69,7 +87,12 @@ export default function ItemOverlay({ items, onClose, editable, unit, onUnitChan
         // phones the overlay is a full page, so tapping beside the photo (or
         // a too-short swipe) shouldn't close it. Phones close with ✕ or Back.
         const desktop = window.matchMedia("(min-width: 768px)").matches;
-        const onScrim = target === event.currentTarget || (desktop && "scrim" in target.dataset);
+        const aroundGarment =
+          "scrim" in target.dataset ||
+          (target instanceof HTMLImageElement &&
+            target.closest("[data-scrim]") !== null &&
+            onPhotoMargin(target, event.clientX, event.clientY));
+        const onScrim = target === event.currentTarget || (desktop && aroundGarment);
         const justOpened = performance.now() - openedAt.current < 300;
         if (onScrim && !justOpened) onClose();
       }}
