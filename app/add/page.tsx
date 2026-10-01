@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import AddItemForm from "@/components/AddItemForm";
@@ -5,6 +6,8 @@ import TopBar from "@/components/TopBar";
 import { getMyBrands } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "Add a piece" };
 
 // Add a piece to your closet. Logged-in only.
 export default async function AddPage() {

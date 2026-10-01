@@ -138,13 +138,19 @@ archive on their own phones and computers. The app is deployed on a public URL.
    - **9a:** view bar, archive section (archived pieces leave ALL), category
      rows, sort (Newest added, Date acquired, Brand, Price), filter drawer
      (category, brand, size, colour)
-   - **9b:** folders (cover grid, + New folder, Add to folder from the
-     overlay, multi-select Move to folder) and Arrange mode / My order, with
-     its own order per folder
-10. **Colour:** auto-detect on upload, manual adjustment, colour view
-11. **Style over time:** first visualization
-12. **Polish & test:** friend testing, accessibility pass, mobile refinements,
-    README and screenshots for the portfolio
+   - **9b:** moved to Milestone 12 (2026-10-01)
+10. **Polish & friend testing** (brought forward 2026-10-01; v1's definition
+    of done is already met): a short polish pass, then invite friends and
+    collect feedback before building more
+11. **Colour:** auto-detect on upload, manual adjustment, colour view, colour
+    dots in the filter drawer
+12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
+    folder from the overlay, multi-select Move to folder) and Arrange mode /
+    My order, with its own order per folder. Order of 12 and 13 to be decided
+    from friends' feedback.
+13. **Style over time:** first visualization
+14. **Final polish:** accessibility pass, mobile refinements, README and
+    screenshots for the portfolio
 
 ## Later (v2+)
 

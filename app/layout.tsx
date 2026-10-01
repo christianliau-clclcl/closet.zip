@@ -14,7 +14,8 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: "Closet.zip",
+  // Each page adds its own name: "Add a piece · Closet.zip".
+  title: { default: "Closet.zip", template: "%s · Closet.zip" },
   description: "A quiet archive of the clothes you own and have owned.",
 };
 

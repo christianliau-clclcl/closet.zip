@@ -1,8 +1,11 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import TopBar from "@/components/TopBar";
 import { loginNotices, type LoginNotice } from "@/lib/auth-messages";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "Log in" };
 
 // Log in / sign up. Already logged in? Go straight to the closet.
 export default async function LoginPage(props: PageProps<"/login">) {

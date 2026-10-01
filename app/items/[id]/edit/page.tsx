@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import EditItemForm from "@/components/EditItemForm";
@@ -6,6 +7,8 @@ import TopBar from "@/components/TopBar";
 import { getMyBrands, getMyItem } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "Edit piece" };
 
 // Edit one of your items: its photos (saved straight away) and its details.
 // Logged-in only; someone else's item (or a made-up

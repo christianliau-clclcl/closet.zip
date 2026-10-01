@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import ResetPasswordForm from "@/components/ResetPasswordForm";
 import TopBar from "@/components/TopBar";
 import { createClient } from "@/lib/supabase/server";
+
+export const metadata: Metadata = { title: "Choose a new password" };
 
 // Where a reset email's link ends up (via /auth/confirm, which logs the person
 // in). No session means the link didn't work: expired, already used, or
