@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
+import CategoryRows from "@/components/CategoryRows";
 import EmptyState from "@/components/EmptyState";
 import HoverCaption from "@/components/HoverCaption";
 import ItemGrid from "@/components/ItemGrid";
@@ -106,7 +107,11 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
       {shown.length > 0 ? (
         <main className="p-4 md:p-8">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
-          <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+          {view === "rows" ? (
+            <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+          ) : (
+            <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+          )}
         </main>
       ) : (
         <main className="flex flex-1 flex-col">

@@ -3,11 +3,12 @@ import type { Item } from "@/lib/types";
 // The closet's views (PRODUCT.md "Views"), kept in the address as ?view=…
 // so Back, reloading and links all keep them. "all" is the default and
 // isn't written into the address. More views join as they're built.
-export const views = ["all", "archive"] as const;
+export const views = ["all", "rows", "archive"] as const;
 export type View = (typeof views)[number];
 
 export const viewLabels: Record<View, string> = {
   all: "All",
+  rows: "Rows",
   archive: "Archive",
 };
 
@@ -16,8 +17,8 @@ export function readView(params: URLSearchParams): View {
   return views.includes(value as View) ? (value as View) : "all";
 }
 
-// The pieces a view shows: ALL is what's still in the closet; ARCHIVE is
-// what has left it.
+// The pieces a view shows: ALL and ROWS are what's still in the closet;
+// ARCHIVE is what has left it.
 export function itemsInView(items: Item[], view: View): Item[] {
   return items.filter((item) => (view === "archive") === (item.status === "archived"));
 }

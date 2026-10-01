@@ -9,6 +9,7 @@ type ItemCellProps = {
   zoom: Zoom;
   onOpen: (id: string) => void;
   onPreview: (id: string | null) => void; // hovered or focused: show in the caption
+  className?: string; // e.g. width and scroll snapping in a category row
 };
 
 // One square cell: the garment floats on the canvas, centred and never cropped,
@@ -16,14 +17,14 @@ type ItemCellProps = {
 // Hovering or focusing it shows "name · brand · year" in the HoverCaption.
 // It's a button so it can be focused with the keyboard, and clicking or
 // tapping it opens the detail overlay.
-export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProps) {
+export default function ItemCell({ item, zoom, onOpen, onPreview, className }: ItemCellProps) {
   const style = zoomStyles[zoom];
   const archived = item.status === "archived";
 
   return (
     // layout: when the zoom changes the columns, the cell glides to its new
     // place and size instead of jumping (timing from MotionConfig in ItemGrid).
-    <motion.li layout>
+    <motion.li layout className={className}>
       <button
         type="button"
         onClick={() => onOpen(item.id)}
