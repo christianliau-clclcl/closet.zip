@@ -60,7 +60,7 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
         const justOpened = performance.now() - openedAt.current < 300;
         if (onScrim && !justOpened) onClose();
       }}
-      className="m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto bg-canvas p-0 outline-none md:flex md:items-center md:gap-8 md:bg-transparent md:p-8 md:backdrop:bg-scrim md:backdrop:backdrop-blur-md"
+      className="m-0 h-dvh max-h-none w-full max-w-none overflow-y-auto bg-canvas p-0 outline-none md:open:flex md:items-center md:gap-8 md:bg-transparent md:p-8 md:backdrop:bg-scrim md:backdrop:backdrop-blur-md"
     >
       {item && (
         <>
