@@ -1,12 +1,13 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
+import type { Database } from "@/lib/database.types";
 
 // Supabase from the server: used by pages, server actions and route handlers
 // that need to know who is logged in. Create a new one for every request.
 export async function createClient() {
   const cookieStore = await cookies();
 
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {

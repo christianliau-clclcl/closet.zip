@@ -38,6 +38,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
             alt={itemTitle(item)}
             fill
             sizes={style.sizes}
+            unoptimized={item.hero.unoptimized}
             className="object-contain"
           />
         </span>

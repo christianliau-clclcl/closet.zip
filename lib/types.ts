@@ -7,12 +7,16 @@ export type ItemStatus = "in_closet" | "archived";
 
 // Dates are stored as month and year only.
 export type MonthYear = {
-  month: number; // 1–12
+  month?: number; // 1–12; optional, since "sometime in 2019" is allowed
   year: number;
 };
 
 export type Photo = {
   src: string;
+  // True for photos from Supabase Storage: they're already resized before
+  // upload, and their signed links change each visit, so Next.js shouldn't
+  // try to resize them again on the server.
+  unoptimized?: boolean;
 };
 
 export type Item = {

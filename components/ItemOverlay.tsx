@@ -68,6 +68,7 @@ export default function ItemOverlay({ items, onClose }: ItemOverlayProps) {
               alt={itemTitle(item)}
               fill
               sizes="(min-width: 768px) 60vw, 100vw"
+              unoptimized={item.hero.unoptimized}
               className="object-contain p-12 md:p-8"
             />
           </div>

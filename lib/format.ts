@@ -14,8 +14,9 @@ export function itemSummary(item: Item, { includeName = true } = {}): string {
     .join(" · ");
 }
 
-// "Mar 2021"
+// "Mar 2021", or just "2021" when there's no month
 export function formatMonthYear({ month, year }: MonthYear): string {
+  if (!month) return String(year);
   const date = new Date(year, month - 1);
   return date.toLocaleDateString("en", { month: "short", year: "numeric" });
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Suspense, useRef, useState } from "react";
+import EmptyState from "@/components/EmptyState";
 import HoverCaption from "@/components/HoverCaption";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
@@ -37,6 +38,17 @@ export default function ClosetView({ items, loggedIn }: ClosetViewProps) {
     } else {
       window.history.replaceState(null, "", window.location.pathname);
     }
+  }
+
+  if (items.length === 0) {
+    return (
+      <>
+        <TopBar>{loggedIn && <LogOutButton />}</TopBar>
+        <main className="flex flex-1 flex-col">
+          <EmptyState />
+        </main>
+      </>
+    );
   }
 
   return (
