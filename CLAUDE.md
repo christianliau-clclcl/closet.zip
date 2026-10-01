@@ -112,7 +112,15 @@ Update this section at the end of each working session.
   and built-in sender (editing them needs custom SMTP: an email service plus
   an owned domain). Consequences: generic wording, a low hourly email limit,
   and links must be opened in the same browser that requested them. Revisit
-  with a custom domain (Polish milestone or earlier).
+  with a custom domain (Polish milestone or earlier). Supabase's advisors
+  warn "leaked password protection disabled"; it's a paid-plan feature, left
+  off for now.
+- Database: migrations in `supabase/migrations/`, applied with
+  `npx supabase db push` (CLI linked to project athpbuqlqkvqreuinpvq).
+  Tables `items` and `item_photos` with owner-only RLS; private storage
+  bucket `item-photos` (WebP/PNG, 5MB max), files at
+  `<user id>/<item id>/<photo id>.<ext>`, owner-folder-only RLS. Both tested
+  with rolled-back SQL as two users and a logged-out visitor.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
