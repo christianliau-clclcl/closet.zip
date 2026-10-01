@@ -40,7 +40,7 @@ too faint to read. Keyboard focus is a 1px `ink` outline on every interactive
 element (never the browser's default colour). Error messages are `ink` mono text placed just above the
 action they relate to, with no colour of their own.
 Archived items live in their own ARCHIVE view, shown normally (no fading);
-their hover caption adds how and when they left.
+their hover label adds how and when they left.
 
 ## Typography (proposal)
 
@@ -71,11 +71,11 @@ their hover caption adds how and when they left.
 
 ## Grid & zoom levels
 
-| Level  | Desktop columns | Mobile columns | Cell padding | Under the garment | Hover caption        |
-|--------|-----------------|----------------|--------------|-------------------|----------------------|
-| Small  | 10              | 4              | 8px          | Nothing           | Name · brand · year  |
-| Medium | 6               | 3              | 16px         | Nothing           | Name · brand · year  |
-| Large  | 3               | 1              | 48px         | Name              | Brand · year         |
+| Level  | Desktop columns | Mobile columns | Cell padding | Under the garment |
+|--------|-----------------|----------------|--------------|-------------------|
+| Small  | 10              | 4              | 8px          | Nothing           |
+| Medium | 6               | 3              | 16px         | Nothing           |
+| Large  | 3               | 1              | 48px         | Name              |
 
 - Cells are square. Images use `object-fit: contain` so nothing is cropped.
 - Grid dots: a 3px `ink` dot at the top-left corner of each cell.
@@ -84,13 +84,12 @@ their hover caption adds how and when they left.
 
 Decided 2026-09-30: items have no index codes or numbers. The grid shows only
 the garments (plus the name at Large), so every row is evenly spaced. Details
-appear in a single **hover caption** for the whole grid, like a museum wall
-label (see Components), composed from the item's own fields: "Denim jacket ·
-Levi's · 2021", skipping any that are missing, and leaving out the name when
-it's already under the garment. Composed lines are too long for grid cells,
-which is why they live in the caption. On touch screens there's no caption;
-tapping opens the overlay. Screen readers get the full line as each cell's
-label. When an item needs a title (alt
+appear in a small **hover label** beside the pointer (see Components):
+"Levi's | 2021", from the item's own brand and year, or its name when it has
+neither. (Decided 2026-10-01; it replaced a caption fixed at the bottom-left
+of the screen.) On touch screens there's no label; tapping opens the overlay.
+Screen readers get the full line "Denim jacket · Levi's · 2021" as each
+cell's label. When an item needs a title (alt
 text, screen readers), use its name, else its category, else "Untitled piece".
 
 ## Motion
@@ -118,11 +117,13 @@ line, centred.
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and
 the name under the image at Large zoom only. Hover or keyboard focus shows the
-item in the hover caption. Tap (touch): opens the overlay.
+item in the hover label. Tap (touch): opens the overlay.
 
-**Hover caption.** One line fixed at the bottom-left of the screen (page
-margins: 16px mobile, 32px desktop), mono 13px `ink` on a `canvas` background,
-showing the hovered or focused garment. Only on devices that can hover.
+**Hover label.** One square label, mono 13px `ink` on `canvas`, 8px × 4px
+padding, no border, 320px wide at most (cut off with …). It sits 16px below
+and right of the pointer, flipping to the other side near the screen's edges.
+With keyboard focus it hangs under the focused cell's bottom-left corner
+instead. Only on devices that can hover.
 
 **Zoom toggle.** A minimal three-stop slider labelled "ZOOM": a 1px `ink`
 line with a 12px square `ink` handle.
@@ -138,7 +139,8 @@ colour next to the name. A full-width `ink` button at the bottom: "Show 24
 items". Built (Milestone 9a): sections
 Category · Brand · Size · Colour, options taken from the person's own pieces
 with a count each; "or" within a section, "and" across; CLEAR ALL above the
-button; slides in with the app's motion style; scrim behind. Colour dots wait
+button; slides in with the app's motion style; scrim behind. On phones it's a
+full-screen `cell` page with no scrim (decided 2026-10-01). Colour dots wait
 for detected colours (Milestone 10). **Sort** is a small list under SORT in the
 view bar (Newest added · Date acquired · Brand A–Z · Price), not in the drawer;
 the bar reads "SORT · BRAND" / "FILTER · 2" while they're in use.

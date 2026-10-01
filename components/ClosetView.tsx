@@ -6,7 +6,7 @@ import { Suspense, useRef, useState } from "react";
 import CategoryRows from "@/components/CategoryRows";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
-import HoverCaption from "@/components/HoverCaption";
+import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
 import LogOutButton from "@/components/LogOutButton";
@@ -30,7 +30,7 @@ import {
   type Sort,
 } from "@/lib/sort-filter";
 import { itemsInView, readView, withParam, withParams, type View } from "@/lib/views";
-import { zoomStyles, type Zoom } from "@/lib/zoom";
+import type { Zoom } from "@/lib/zoom";
 
 // Runs in the browser so it can remember the zoom level as the slider moves,
 // switch views and open or close the detail overlay. The view and the open
@@ -43,7 +43,10 @@ type ClosetViewProps = {
 
 export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
-  const [previewId, setPreviewId] = useState<string | null>(null);
+  // The hovered or focused piece, and the cell itself when focused by keyboard.
+  const [preview, setPreview] = useState<{ id: string; anchor: HTMLElement | null } | null>(null);
+  const showPreview = (id: string | null, anchor?: HTMLElement) =>
+    setPreview(id ? { id, anchor: anchor ?? null } : null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const params = useSearchParams();
   const view = readView(params);
@@ -163,9 +166,9 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         <main className="p-4 md:p-8">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
           {view === "rows" ? (
-            <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+            <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
           ) : (
-            <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+            <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
           )}
         </main>
       ) : (
@@ -188,10 +191,7 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         </main>
       )}
 
-      <HoverCaption
-        item={items.find((item) => item.id === previewId)}
-        nameShown={zoomStyles[zoom].showName}
-      />
+      <HoverLabel item={items.find((item) => item.id === preview?.id)} anchor={preview?.anchor ?? null} />
 
       {/* Reading the address happens in the browser only; Suspense lets the
           grid above load first without waiting for it. */}

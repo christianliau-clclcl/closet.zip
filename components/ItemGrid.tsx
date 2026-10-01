@@ -8,7 +8,7 @@ type ItemGridProps = {
   items: Item[];
   zoom: Zoom;
   onOpen: (id: string) => void;
-  onPreview: (id: string | null) => void;
+  onPreview: (id: string | null, anchor?: HTMLElement) => void;
 };
 
 // The closet grid: 8px between cells, column count set by the zoom level.

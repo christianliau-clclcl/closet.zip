@@ -11,7 +11,7 @@ type CategoryRowsProps = {
   items: Item[];
   zoom: Zoom;
   onOpen: (id: string) => void;
-  onPreview: (id: string | null) => void;
+  onPreview: (id: string | null, anchor?: HTMLElement) => void;
 };
 
 // The ROWS view (DESIGN.md "Category row"): one shelf per category, like a

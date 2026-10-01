@@ -59,7 +59,8 @@ export default function FilterDrawer({ items, filters, onApply, onClose }: Filte
           event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom;
         if (event.target === event.currentTarget && outside) onClose();
       }}
-      className="m-0 ml-auto h-dvh max-h-none w-full max-w-sm flex-col bg-cell p-0 outline-none transition-transform duration-400 ease-[cubic-bezier(0.2,0,0,1)] open:flex starting:open:translate-x-full motion-reduce:transition-none backdrop:bg-scrim backdrop:backdrop-blur-md"
+      // Phones: a full-screen page with no scrim. Desktop: a 384px drawer over the scrim.
+      className="m-0 ml-auto h-dvh max-h-none w-full max-w-none flex-col bg-cell p-0 outline-none transition-transform duration-400 ease-[cubic-bezier(0.2,0,0,1)] open:flex starting:open:translate-x-full motion-reduce:transition-none backdrop:bg-transparent md:max-w-sm md:backdrop:bg-scrim md:backdrop:backdrop-blur-md"
     >
       <div className="flex items-center justify-between border-b border-rule px-4 py-3 md:px-8">
         <h2 className="text-label uppercase">Filter</h2>

@@ -14,6 +14,15 @@ export function itemSummary(item: Item, { includeName = true } = {}): string {
     .join(" · ");
 }
 
+// The hover label beside the pointer: "Levi's | 2021". Falls back to the name
+// when there's no brand or year; archived pieces add how and when they left.
+export function hoverLabel(item: Item): string {
+  const archived = item.status === "archived" && (leftSummary(item) ?? "Archived");
+  return [[item.brand, item.acquired?.year].filter(Boolean).join(" | ") || item.name, archived]
+    .filter(Boolean)
+    .join(" | ");
+}
+
 // "Mar 2021", or just "2021" when there's no month
 export function formatMonthYear({ month, year }: MonthYear): string {
   if (!month) return String(year);

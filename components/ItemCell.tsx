@@ -8,13 +8,15 @@ type ItemCellProps = {
   item: Item;
   zoom: Zoom;
   onOpen: (id: string) => void;
-  onPreview: (id: string | null) => void; // hovered or focused: show in the caption
+  // Hovered or focused: show in the hover label. `anchor` is the cell when it
+  // was focused with the keyboard, so the label sits under it, not the pointer.
+  onPreview: (id: string | null, anchor?: HTMLElement) => void;
   className?: string; // e.g. width and scroll snapping in a category row
 };
 
 // One square cell: the garment floats on the canvas, centred and never cropped,
 // with a grid dot at the top-left and, at Large zoom, its name underneath.
-// Hovering or focusing it shows "name · brand · year" in the HoverCaption.
+// Hovering or focusing it shows "brand | year" in the HoverLabel.
 // It's a button so it can be focused with the keyboard, and clicking or
 // tapping it opens the detail overlay.
 export default function ItemCell({ item, zoom, onOpen, onPreview, className }: ItemCellProps) {
@@ -30,9 +32,13 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
         onClick={() => onOpen(item.id)}
         onMouseEnter={() => onPreview(item.id)}
         onMouseLeave={() => onPreview(null)}
-        onFocus={() => onPreview(item.id)}
+        // Only keyboard focus (:focus-visible) moves the label under the cell;
+        // a click also focuses the button, but the label should stay at the pointer.
+        onFocus={(event) => {
+          if (event.currentTarget.matches(":focus-visible")) onPreview(item.id, event.currentTarget);
+        }}
         onBlur={() => onPreview(null)}
-        // Screen readers hear the full line, since the caption is visual only.
+        // Screen readers hear the full line, since the hover label is visual only.
         aria-label={[itemSummary(item) || itemTitle(item), archived && "Archived"].filter(Boolean).join(" · ")}
         className={`relative flex aspect-square w-full cursor-pointer flex-col ${style.padding} focus-visible:outline-1 focus-visible:outline-ink`}
       >
