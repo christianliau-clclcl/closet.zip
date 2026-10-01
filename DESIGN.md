@@ -34,7 +34,10 @@ designer to confirm or refine in Figma.
 | `rule`           | `#0d0d0d` at 12% opacity | Dividers, input borders, row lines |
 | `scrim`          | `#0d0d0d` at 50% opacity + 12px blur | Behind the detail overlay. 50% keeps both light and dark garments readable on it; the blur turns the grid into soft shapes |
 
-No accent colour. Selected and active states use `ink` (fill or underline).
+No accent colour. Selected and active states use `ink` (fill or underline);
+inactive options (tabs, toggles) use `stone`, because `pebble` on `canvas` is
+too faint to read. Error messages are `ink` mono text placed just above the
+action they relate to, with no colour of their own.
 Archived items are shown with `pebble` labels and reduced image opacity (0.5).
 
 ## Typography (proposal)
@@ -97,8 +100,8 @@ canvas), a grid dot at the top-left, image centred with contained fit, index
 code below the image inside the cell in mono 11px. Hover (desktop): name and brand appear under the code
 in `stone`. Tap (touch): opens the overlay.
 
-**Zoom toggle.** Three small square icons (dense, medium, large grid) or a
-minimal slider. The active state is `ink`; inactive states are `pebble`.
+**Zoom toggle.** A minimal three-stop slider labelled "ZOOM": a 1px `ink`
+line with a 12px square `ink` handle.
 
 **Category row.** Section heading in mono 11px uppercase with a count
 (`OUTERWEAR — 07`), a `rule` line, then one horizontal scrolling row of cells.
@@ -128,6 +131,13 @@ text only with an underline on hover.
 
 **Inputs.** `cell` fill, 1px `rule` border, square, mono 13px. The label
 sits above in mono 11px uppercase. Focus: border becomes `ink`.
+
+**Log in / sign up.** One page, a single centred column (full width on phones,
+384px on desktop). A "LOG IN · SIGN UP" text switch (active `ink` with an
+underline, inactive `stone`), a Fraunces title ("Welcome back" / "Start your
+archive"), email and password inputs (password has a SHOW / HIDE text toggle
+at the label's right), and a full-width primary button. Sign-up success
+replaces the form with "Check your email".
 
 **Empty state.** Centred on the canvas: a Fraunces title ("Your archive is
 empty"), one line of mono text, and a primary "Add your first piece" button.

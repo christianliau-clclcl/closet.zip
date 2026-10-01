@@ -102,7 +102,14 @@ Update this section at the end of each working session.
 - Known issues: `README.md` is still the create-next-app boilerplate; favicon
   is the Next.js default; ESLint 9 deprecation warning comes from the Next.js
   template. Sample item details in `lib/sample-items.ts` are placeholders
-  (photos in `public/sample/`).
+  (photos in `public/sample/`). Auth emails use Supabase's default templates
+  and built-in sender (editing them needs custom SMTP: an email service plus
+  an owned domain). Consequences: generic wording, a low hourly email limit,
+  and links must be opened in the same browser that requested them. Revisit
+  with a custom domain (Polish milestone or earlier).
+- Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
+  Site URL https://closet-zip.vercel.app, redirect URLs
+  http://localhost:3000/** and https://closet-zip.vercel.app/**.
 - Next up: Milestone 4 auth. Parked decisions: one page or two for log in /
   sign up, email confirmation, password reset. Later: previous/next arrows in
   the overlay; detail-photo dots under the garment (Milestone 7).
