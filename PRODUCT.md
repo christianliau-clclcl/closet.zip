@@ -28,8 +28,11 @@ a record of it. First testers: the designer's friends.
 
 ## Non-goals (not in v1)
 
-- Sharing closets or viewing other users' closets
-- Stylist tools / digital outfit building (v2 idea)
+Sharing, selling and styling were non-goals for v1; decided 2026-10-01 to
+build them before friend testing (see Roadmap 15–17).
+
+- Browsing or discovering other users' closets (sharing is only ever by a
+  link the owner chooses to give out)
 - Automatic background removal (users remove backgrounds themselves for now)
 - User-created custom fields or categories (the fixed category list stays;
   personal **folders** are the one exception, see Views)
@@ -87,9 +90,10 @@ a record of it. First testers: the designer's friends.
   finish). Tapping opens pieces only outside Arrange mode.
 - **Folders** (decided 2026-10-01): personal collections on top of the fixed
   categories ("Grails", "Summer 2024", "To sell"). A piece can be in several
-  folders; one level only (no folders inside folders). Each folder's cover is
+  folders, and folders can hold folders. Each folder's cover is
   one of its garments by default, or a custom image the person uploads.
-  "All" (the whole closet) stays the default view.
+  "All" (the whole closet) stays the default view. (Folders inside folders
+  decided 2026-10-01; it was one level only.)
 - **Filters:** narrow the grid by details (category, colour, brand, size…),
   in the filter drawer from DESIGN.md.
 - **Smooth zoom:** changing the zoom level animates each piece to its new
@@ -139,22 +143,38 @@ archive on their own phones and computers. The app is deployed on a public URL.
      rows, sort (Newest added, Date acquired, Brand, Price), filter drawer
      (category, brand, size, colour)
    - **9b:** moved to Milestone 12 (2026-10-01)
-10. **Polish & friend testing** (brought forward 2026-10-01; v1's definition
-    of done is already met): a short polish pass, then invite friends and
-    collect feedback before building more
+10. **Polish** (2026-10-01; v1's definition of done is already met): error
+    pages, favicon, overlay and filter refinements, demo text, photo
+    fade-in, a quick accessibility check. Friend testing moved to 19
+    (decided 2026-10-01: build the features below first, so friends see
+    the full product).
 11. **Colour:** auto-detect on upload, manual adjustment, colour view, colour
     dots in the filter drawer
 12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
     folder from the overlay, multi-select Move to folder) and Arrange mode /
-    My order, with its own order per folder. Order of 12 and 13 to be decided
-    from friends' feedback.
+    My order, with its own order per folder. Folders inside folders
+    (added 2026-10-01).
 13. **Style over time:** first visualization
-14. **Final polish:** accessibility pass, mobile refinements, README and
-    screenshots for the portfolio
+14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
+    expensive pieces, and others
+15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
+    link to your closet or a folder, which you can switch off. The first
+    deliberate exception to "every closet is private"; nothing is ever
+    listed or searchable.
+16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below;
+    listing links reuse the sharing from 15.
+17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
+    outfits or a styling project. Details to design.
+18. **Final polish:** accessibility pass, mobile refinements, README and
+    screenshots for the portfolio, and a short intro above the demo closet
+    for logged-out visitors (what you can do, in the archive's own voice)
+19. **Friend testing:** invite a few friends at a time, with a feedback
+    link (Google Form). Consider a custom domain and email service first:
+    Supabase's built-in sender allows only a few emails per hour.
 
-## Later (v2+)
+## Sell to friends (Milestone 16)
 
-- **Sell to friends** (idea, 2026-10-01): low-key, local, among friends and
+- Idea, 2026-10-01: low-key, local, among friends and
   friends of friends. A "For sale" toggle and list price per piece; a private,
   unguessable share link per listing that can be forwarded. The shared page
   shows the contact the owner chooses (e.g. "e-transfer to … / message me
@@ -166,12 +186,10 @@ archive on their own phones and computers. The app is deployed on a public URL.
   a deliberate exception to "every closet is private" (only shared listings,
   only via the link), spam protection, and a policy for buyers' contact data.
 
-- Stylist tools: putting outfits together digitally
-- Shareable closets
+## Later (v2+)
+
 - Automatic background removal
-- More visualizations: colour palettes, most expensive pieces, and others
 - Custom fields, and custom replacements for the fixed category list
-- Folders inside folders
 
 ## Open questions
 

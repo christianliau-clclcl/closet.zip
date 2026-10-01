@@ -85,8 +85,9 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 10 — polish & friend testing (brought forward; folders
-  and Arrange moved to 12). See PRODUCT.md roadmap.
+- Current milestone: 10 — polish. Roadmap changed 2026-10-01: sharing,
+  selling, styling/outfits, more visualizations and folders inside folders
+  come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar
   (`ViewBar`, `lib/views.ts`) with ALL · ROWS · ARCHIVE; archived pieces only
   in ARCHIVE; ROWS = category shelves (`CategoryRows`); SORT list
@@ -162,37 +163,34 @@ Update this section at the end of each working session.
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
 - Milestone 10 in progress (polish pass, decided 2026-10-01):
-  1. Done: on-brand `app/not-found.tsx` and `app/error.tsx` (shared
-     `StatusPage`; Next 16 error prop is `retry`, not `reset`); page titles
-     via the layout template "%s · Closet.zip".
-  2. Next: placeholder favicon (the user will design the real one later).
-  3. Demo text: remove the "Placeholder note." prefixes in
-     `lib/sample-items.ts`, keep fictional but natural details (the user will
-     edit the details there themselves).
-  4. Photos fade in when they load (motion style from `lib/motion.ts`,
+  Done (2026-10-01): on-brand `app/not-found.tsx` and `app/error.tsx`
+  (shared `StatusPage`; Next 16 error prop is `retry`, not `reset`); page
+  titles via the layout template "%s · Closet.zip"; placeholder favicon
+  `app/icon.svg` (the user will design the real one); filter drawer full
+  screen on phones; `HoverLabel` beside the pointer ("brand | year", square,
+  max 320px; under the cell for keyboard focus) replaced the bottom-left
+  caption; overlay photos slide in the direction you move (`PhotoViewer`);
+  desktop ← → buttons beside the garment, dots kept; clicking the empty
+  margin around the garment closes the overlay (`onPhotoMargin`).
+  Left:
+  1. Next: demo text: remove the "Placeholder note." prefixes in
+     `lib/sample-items.ts`, keep fictional but natural details (the user
+     will edit them), drop the PLACEHOLDER header comment.
+  2. Photos fade in when they load (motion style from `lib/motion.ts`,
      respect Reduce motion).
-  5. Accessibility check by hand: contrast (`pebble` placeholders on white),
+  3. Accessibility check by hand: contrast (`pebble` placeholders on white),
      keyboard order, screen-reader labels, Reduce motion. No new tools
      without asking.
-  6. Feedback link to the user's Google Form: build it hidden until they
-     send the form's address.
-  7. User's notes (2026-10-01), before friend testing:
-     a. Filter drawer on phones: full screen, no scrim (desktop keeps the
-        384px drawer over the scrim).
-     b. Desktop hover: a small label near the pointer showing
-        "brand | year" (truncated). Ask the user first: replace the
-        bottom-left caption (suggested) or keep both; include the name or
-        only brand | year; rounded "pill" (an exception to DESIGN.md's no
-        rounded corners) or a square label (suggested).
-     c. Overlay photos: motion when moving between them (slide, following
-        swipe direction; respect Reduce motion).
-     d. Overlay on desktop: ← → arrow buttons beside the garment instead of
-        dots (easier to click); phones keep dots + swipe. Ask: keep tiny
-        dots on desktop as an indicator (suggested) or arrows only.
-  Then friend testing: invite a few friends at a time (Supabase's built-in
-  email sender allows only a few emails per hour). Workshop the tester note
-  with the user later (a draft of "what a first-time user should know" was
-  written in chat: getting started, background removal tips, archive vs
-  delete, IN/CM, emails are slow).
+  Moved to Milestone 18: intro above the demo closet for logged-out
+  visitors (a band above the grid: Fraunces title, a few mono lines,
+  "Start your archive" + Log in, then "SAMPLE CLOSET"). The user's points:
+  everything at a glance (capsule wardrobe, styling project), sort your way
+  (brand, colour, year, category, folders), private (share only if you
+  want), sell from your closet (e-transfer + contact, no money through the
+  app). Only describe what's built when it ships.
+  Moved to Milestone 19: friend testing and the Google Form feedback link
+  (build hidden until the user sends the form's address). Workshop the
+  tester note with the user (draft written in chat: getting started,
+  background removal tips, archive vs delete, IN/CM, emails are slow).
 - Later: previous/next item arrows in the overlay; clothing-size order in
-  filters (XS, S, M…); sell-to-friends (PRODUCT.md "Later").
+  filters (XS, S, M…).
