@@ -84,7 +84,10 @@ build them before friend testing (see Roadmap 15–17).
   fields hidden. Detail photos appear here once built.
 - **Category rows:** one row per category, each scrolling sideways, like
   shelves in a closet.
-- **Colour view:** items ordered by hue so the collection reads as a gradient.
+- **Colour order:** "Colour" in the SORT list (decided 2026-10-01, instead
+  of a separate view) orders pieces by hue so the collection reads as a
+  gradient: red → orange → yellow → green → blue → purple → pink, then the
+  neutrals (beige, white, grey, black); pieces without a colour last.
 - **Sort:** date acquired, brand, price, and **My order**: a hand-made order
   set in an **Arrange** mode (drag pieces in the grid, or use ← →; Done to
   finish). Tapping opens pieces only outside Arrange mode.
@@ -148,8 +151,22 @@ archive on their own phones and computers. The app is deployed on a public URL.
     fade-in, a quick accessibility check. Friend testing moved to 19
     (decided 2026-10-01: build the features below first, so friends see
     the full product).
-11. **Colour:** auto-detect on upload, manual adjustment, colour view, colour
-    dots in the filter drawer
+11. **Colour** (planned 2026-10-01). Each piece keeps its colour *name*
+    (free text, the person's own word) and gains the colour itself
+    (`items.colour_hex`). A **family** (black, grey, white, beige/brown,
+    red, orange, yellow, green, blue, purple, pink) is worked out from the
+    hex, never stored. No new libraries.
+    - **11a:** `colour_hex` column (migration), types, demo colours
+    - **11b:** detection in the browser when a photo is chosen (most common
+      colour among non-transparent pixels) on Add, and when the cover
+      changes on Edit; adjust by tapping the garment in the photo preview
+      (eyedropper)
+    - **11c:** colour dot beside the colour in the overlay; filter drawer's
+      Colour section lists families, each dot the average of the person's
+      own pieces in that family
+    - **11d:** SORT · Colour (see "Colour order")
+    - **11e:** colours for pieces uploaded before 11 (detected on Edit, or a
+      one-time button)
 12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
     folder from the overlay, multi-select Move to folder) and Arrange mode /
     My order, with its own order per folder. Folders inside folders
