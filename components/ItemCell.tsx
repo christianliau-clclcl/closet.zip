@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import Image from "next/image";
 import { itemSummary, itemTitle } from "@/lib/format";
 import type { Item } from "@/lib/types";
@@ -20,7 +21,9 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
   const archived = item.status === "archived";
 
   return (
-    <li>
+    // layout: when the zoom changes the columns, the cell glides to its new
+    // place and size instead of jumping (timing from MotionConfig in ItemGrid).
+    <motion.li layout>
       <button
         type="button"
         onClick={() => onOpen(item.id)}
@@ -47,6 +50,6 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
           <span className={`mt-2 block truncate text-center ${archived ? "text-pebble" : ""}`}>{item.name}</span>
         )}
       </button>
-    </li>
+    </motion.li>
   );
 }

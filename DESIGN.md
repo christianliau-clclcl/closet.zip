@@ -92,6 +92,14 @@ tapping opens the overlay. Screen readers get the full line as each cell's
 label. When an item needs a title (alt
 text, screen readers), use its name, else its category, else "Untitled piece".
 
+## Motion
+
+- One motion style for the whole app, in `lib/motion.ts`: 0.4s, easing
+  `cubic-bezier(0.2, 0, 0, 1)` (quick to start, gentle to settle).
+- Movement explains a change of layout; it's never decoration. First use:
+  changing the zoom level glides each garment to its new place and size.
+- Respect "Reduce motion": anyone with it switched on gets instant changes.
+
 ## Components
 
 **Top bar.** A single thin row: `CLOSET.ZIP` wordmark left (mono, 11px,

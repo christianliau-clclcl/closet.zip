@@ -60,6 +60,8 @@ a record of it. First testers: the designer's friends.
 | Date acquired    | No       | Month and year                                         |
 | Acquired from    | No       | Store, person, website, thrift, etc.                   |
 | Price            | No       |                                                        |
+| Size             | No       | The label size as written: "M", "32 × 30", "EU 42"     |
+| Measurements     | No       | The garment's own measurements, rows by category (tops: chest, length, shoulder, sleeve; bottoms: waist, rise, inseam, leg opening, length; accessories: width, height, depth). Stored in cm; shown and entered in each person's chosen unit (cm or in), switchable in the overlay |
 | Notes            | No       | Long-form: what you love about it, how you found it, what it reminds you of |
 | Status           | —        | "In closet" (default) or "Archived"                    |
 | Date archived    | No       | Month and year the item left the closet                |
@@ -79,7 +81,13 @@ a record of it. First testers: the designer's friends.
 - **Category rows:** one row per category, each scrolling sideways, like
   shelves in a closet.
 - **Colour view:** items ordered by hue so the collection reads as a gradient.
-- **Sort:** date acquired, brand, price.
+- **Sort:** date acquired, brand, price, and **My order**: a hand-made order
+  set in an **Arrange** mode (drag pieces in the grid, or use ← →; Done to
+  finish). Tapping opens pieces only outside Arrange mode.
+- **Filters:** narrow the grid by details (category, colour, brand, size…),
+  in the filter drawer from DESIGN.md.
+- **Smooth zoom:** changing the zoom level animates each piece to its new
+  place and size instead of jumping.
 - **Archive section:** items no longer in the closet, kept with their details.
 - **Style over time:** the first visualization; items laid out by month and
   year acquired.
@@ -113,10 +121,16 @@ archive on their own phones and computers. The app is deployed on a public URL.
    real data; empty state
 6. **Edit & archive:** edit, delete, archive/unarchive from the overlay
 7. **Detail photos:** add, reorder, remove, and change the hero photo
-8. **Views:** category rows, sorting, archive section
-9. **Colour:** auto-detect on upload, manual adjustment, colour view
-10. **Style over time:** first visualization
-11. **Polish & test:** friend testing, accessibility pass, mobile refinements,
+   (the first photo is the cover)
+   - *Polish (added 2026-10-01):* smooth zoom animation in the grid
+8. **Size & measurements** (added 2026-10-01): size label and garment
+   measurements per piece; each person chooses cm or in, with instant
+   conversion in the overlay
+9. **Views:** category rows, sorting (incl. My order via Arrange mode),
+   filters on details, archive section
+10. **Colour:** auto-detect on upload, manual adjustment, colour view
+11. **Style over time:** first visualization
+12. **Polish & test:** friend testing, accessibility pass, mobile refinements,
     README and screenshots for the portfolio
 
 ## Later (v2+)
