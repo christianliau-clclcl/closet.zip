@@ -88,8 +88,11 @@ export default function ItemOverlay({ items, onClose, editable }: ItemOverlayPro
             >
               ✕
             </button>
+            {item.status === "archived" && (
+              <p className="mb-2 text-label text-stone uppercase">Archived</p>
+            )}
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
-            {editable && <ItemActions item={item} />}
+            {editable && <ItemActions key={item.id} item={item} />}
             <ItemDetails item={item} />
           </div>
         </>

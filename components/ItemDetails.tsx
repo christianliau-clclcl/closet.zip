@@ -1,4 +1,4 @@
-import { formatCategory, formatMonthYear, formatPrice } from "@/lib/format";
+import { formatCategory, formatMonthYear, formatPrice, leftSummary } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
 // The details panel content: a list of label / value rows separated by rule
@@ -13,7 +13,7 @@ export default function ItemDetails({ item }: { item: Item }) {
     ["Acquired", item.acquired && formatMonthYear(item.acquired)],
     ["From", item.acquiredFrom],
     ["Price", item.price !== undefined ? formatPrice(item.price) : undefined],
-    ["Archived", item.archived && formatMonthYear(item.archived)],
+    ["Left", leftSummary(item)],
   ];
   const filled = rows.filter(([, value]) => value);
 

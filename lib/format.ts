@@ -21,6 +21,14 @@ export function formatMonthYear({ month, year }: MonthYear): string {
   return date.toLocaleDateString("en", { month: "short", year: "numeric" });
 }
 
+// For archived pieces: "Sold, Mar 2026", or just one part if that's all there is.
+export function leftSummary(item: Item): string | undefined {
+  if (item.status !== "archived") return undefined;
+  const how = item.leftVia && item.leftVia.charAt(0).toUpperCase() + item.leftVia.slice(1);
+  const when = item.archived && formatMonthYear(item.archived);
+  return [how, when].filter(Boolean).join(", ") || undefined;
+}
+
 // 240 → "$240", 89.5 → "$89.50". Currency is $ for now.
 export function formatPrice(price: number): string {
   return price.toLocaleString("en-US", {

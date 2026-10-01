@@ -17,6 +17,7 @@ type ItemCellProps = {
 // tapping it opens the detail overlay.
 export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProps) {
   const style = zoomStyles[zoom];
+  const archived = item.status === "archived";
 
   return (
     <li>
@@ -28,11 +29,11 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
         onFocus={() => onPreview(item.id)}
         onBlur={() => onPreview(null)}
         // Screen readers hear the full line, since the caption is visual only.
-        aria-label={itemSummary(item) || itemTitle(item)}
+        aria-label={[itemSummary(item) || itemTitle(item), archived && "Archived"].filter(Boolean).join(" · ")}
         className={`relative flex aspect-square w-full cursor-pointer flex-col ${style.padding} focus-visible:outline-1 focus-visible:outline-ink`}
       >
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
-        <span className="relative block flex-1">
+        <span className={`relative block flex-1 ${archived ? "opacity-50" : ""}`}>
           <Image
             src={item.hero.thumbSrc ?? item.hero.src}
             alt={itemTitle(item)}
@@ -43,7 +44,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
           />
         </span>
         {style.showName && item.name && (
-          <span className="mt-2 block truncate text-center">{item.name}</span>
+          <span className={`mt-2 block truncate text-center ${archived ? "text-pebble" : ""}`}>{item.name}</span>
         )}
       </button>
     </li>

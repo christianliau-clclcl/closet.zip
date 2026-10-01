@@ -1,8 +1,11 @@
 import { useId } from "react";
-import CategoryPicker from "@/components/CategoryPicker";
 import FormField from "@/components/FormField";
 import MonthYearField from "@/components/MonthYearField";
+import OptionPicker from "@/components/OptionPicker";
 import type { ItemDraft } from "@/lib/item-draft";
+import type { Category } from "@/lib/types";
+
+const categories: Category[] = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
 
 type ItemDetailsFieldsProps = {
   draft: ItemDraft;
@@ -29,7 +32,12 @@ export default function ItemDetailsFields({ draft, onChange, brandSuggestions }:
 
       <FormField label="Name" value={draft.name} onChange={(e) => set("name", e.target.value)} />
 
-      <CategoryPicker value={draft.category} onChange={(category) => set("category", category)} />
+      <OptionPicker
+        legend="Category"
+        options={categories}
+        value={draft.category}
+        onChange={(category) => set("category", category)}
+      />
 
       <div>
         <FormField

@@ -52,14 +52,8 @@ export type DetailsRow = Omit<TablesInsert<"items">, "id" | "user_id">;
 // message instead if something can't be saved.
 export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: string } {
   const year = draft.acquiredYear.trim();
-  const thisYear = new Date().getFullYear();
-
-  if (draft.acquiredMonth && !year) {
-    return { error: "Add a year to go with the month you got it." };
-  }
-  if (year && (!/^\d{4}$/.test(year) || Number(year) < 1900 || Number(year) > thisYear)) {
-    return { error: `The year should be four digits, between 1900 and ${thisYear}.` };
-  }
+  const dateError = checkMonthYear(draft.acquiredMonth, year, "you got it");
+  if (dateError) return { error: dateError };
 
   const price = draft.price.trim().replace(/^\$/, "");
   if (price && !/^\d+(\.\d{1,2})?$/.test(price)) {
@@ -80,6 +74,17 @@ export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: str
       notes: text(draft.notes),
     },
   };
+}
+
+// Checks a month + year pair from a form. Both are optional, but a month
+// needs a year, and the year must be realistic. Returns an error or null.
+export function checkMonthYear(month: string, year: string, when: string): string | null {
+  const thisYear = new Date().getFullYear();
+  if (month && !year) return `Add a year to go with the month ${when}.`;
+  if (year && (!/^\d{4}$/.test(year) || Number(year) < 1900 || Number(year) > thisYear)) {
+    return `The year should be four digits, between 1900 and ${thisYear}.`;
+  }
+  return null;
 }
 
 // Blank (or only spaces) is saved as empty.

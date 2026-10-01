@@ -1,6 +1,6 @@
 import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
-import type { Category, Item, ItemStatus, MonthYear } from "@/lib/types";
+import type { Category, Item, ItemStatus, LeftVia, MonthYear } from "@/lib/types";
 
 // How long a photo's signed link works. Long enough for a browsing session;
 // the page asks for fresh links each time it loads.
@@ -12,7 +12,8 @@ type PhotoRow = Pick<Tables<"item_photos">, "storage_path" | "thumb_path" | "is_
 type ItemRow = Tables<"items"> & { item_photos: PhotoRow[] };
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
-// The logged-in person's items, newest first, ready for the grid and overlay.
+// The logged-in person's items, newest first, with archived pieces after the
+// ones still in the closet (until the Archive section exists, Milestone 8).
 // Row Level Security already limits the query to their own rows.
 export async function getMyItems(): Promise<Item[]> {
   const supabase = await createClient();
@@ -21,7 +22,9 @@ export async function getMyItems(): Promise<Item[]> {
     .select(ITEM_COLUMNS)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return withPhotos(supabase, rows);
+  const items = await withPhotos(supabase, rows);
+  // A stable sort: each group keeps its newest-first order.
+  return items.sort((a, b) => Number(a.status === "archived") - Number(b.status === "archived"));
 }
 
 // One of the logged-in person's items, or null if it doesn't exist or isn't
@@ -101,6 +104,7 @@ function toItem(row: ItemRow, src: string, thumbSrc: string | undefined): Item {
     notes: text(row.notes),
     status: row.status as ItemStatus,
     archived: monthYear(row.archived_month, row.archived_year),
+    leftVia: (row.left_via as LeftVia | null) ?? undefined,
   };
 }
 

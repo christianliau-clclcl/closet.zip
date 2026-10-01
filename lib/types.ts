@@ -5,6 +5,9 @@ export type Category = "tops" | "bottoms" | "outerwear" | "shoes" | "accessories
 
 export type ItemStatus = "in_closet" | "archived";
 
+// How an archived piece left the closet.
+export type LeftVia = "sold" | "donated" | "gifted" | "lost" | "other";
+
 // Dates are stored as month and year only.
 export type MonthYear = {
   month?: number; // 1–12; optional, since "sometime in 2019" is allowed
@@ -33,5 +36,6 @@ export type Item = {
   price?: number;
   notes?: string;
   status: ItemStatus;
-  archived?: MonthYear;
+  archived?: MonthYear; // when it left the closet
+  leftVia?: LeftVia;
 };

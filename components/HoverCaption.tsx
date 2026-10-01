@@ -11,7 +11,11 @@ type HoverCaptionProps = {
 // Only on devices that can hover; on touch screens tapping opens the overlay.
 // Hidden from screen readers, which hear the same text as each cell's label.
 export default function HoverCaption({ item, nameShown }: HoverCaptionProps) {
-  const text = item ? itemSummary(item, { includeName: !nameShown }) : "";
+  const text = item
+    ? [itemSummary(item, { includeName: !nameShown }), item.status === "archived" && "Archived"]
+        .filter(Boolean)
+        .join(" · ")
+    : "";
   if (!text) return null;
 
   return (
