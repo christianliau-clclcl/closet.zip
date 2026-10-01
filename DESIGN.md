@@ -98,6 +98,8 @@ text, screen readers), use its name, else its category, else "Untitled piece".
   `cubic-bezier(0.2, 0, 0, 1)` (quick to start, gentle to settle).
 - Movement explains a change of layout; it's never decoration. First use:
   changing the zoom level glides each garment to its new place and size.
+  Second: in the overlay, photos slide in from the side you're moving
+  towards (swipe, ← →, or dots), like a strip of film.
 - Respect "Reduce motion": anyone with it switched on gets instant changes.
 
 ## Components
