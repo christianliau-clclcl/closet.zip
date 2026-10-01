@@ -36,7 +36,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
         className={`relative flex aspect-square w-full cursor-pointer flex-col ${style.padding} focus-visible:outline-1 focus-visible:outline-ink`}
       >
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
-        <span className={`relative block flex-1 ${archived ? "opacity-50" : ""}`}>
+        <span className="relative block flex-1">
           <Image
             src={item.hero.thumbSrc ?? item.hero.src}
             alt={itemTitle(item)}
@@ -47,7 +47,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview }: ItemCellProp
           />
         </span>
         {style.showName && item.name && (
-          <span className={`mt-2 block truncate text-center ${archived ? "text-pebble" : ""}`}>{item.name}</span>
+          <span className="mt-2 block truncate text-center">{item.name}</span>
         )}
       </button>
     </motion.li>

@@ -39,7 +39,8 @@ inactive options (tabs, toggles) use `stone`, because `pebble` on `canvas` is
 too faint to read. Keyboard focus is a 1px `ink` outline on every interactive
 element (never the browser's default colour). Error messages are `ink` mono text placed just above the
 action they relate to, with no colour of their own.
-Archived items are shown with `pebble` labels and reduced image opacity (0.5).
+Archived items live in their own ARCHIVE view, shown normally (no fading);
+their hover caption adds how and when they left.
 
 ## Typography (proposal)
 
@@ -106,6 +107,13 @@ text, screen readers), use its name, else its category, else "Untitled piece".
 uppercase); view switcher centre (Grid · Rows · Colour · Time · Archive); zoom
 toggle, filter and add on the right. Text only, no pill, no background. A
 `rule` line underneath.
+
+**View bar.** A second thin row under the top bar, same type as the top bar
+(mono 11px uppercase): the views on the left (ALL · ARCHIVE, then ROWS and
+FOLDERS as they're built), active in `ink` with an underline, others in
+`stone`; SORT · FILTER · ARRANGE on the right. A `rule` line underneath. On
+narrow phones the views scroll sideways. An empty view shows one `stone`
+line, centred.
 
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and

@@ -1,4 +1,4 @@
-import { itemSummary } from "@/lib/format";
+import { itemSummary, leftSummary } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
 type HoverCaptionProps = {
@@ -12,7 +12,7 @@ type HoverCaptionProps = {
 // Hidden from screen readers, which hear the same text as each cell's label.
 export default function HoverCaption({ item, nameShown }: HoverCaptionProps) {
   const text = item
-    ? [itemSummary(item, { includeName: !nameShown }), item.status === "archived" && "Archived"]
+    ? [itemSummary(item, { includeName: !nameShown }), item.status === "archived" && (leftSummary(item) ?? "Archived")]
         .filter(Boolean)
         .join(" · ")
     : "";

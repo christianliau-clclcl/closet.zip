@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
 import EmptyState from "@/components/EmptyState";
 import HoverCaption from "@/components/HoverCaption";
@@ -8,14 +9,18 @@ import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
 import LogOutButton from "@/components/LogOutButton";
 import TopBar from "@/components/TopBar";
+import ViewBar from "@/components/ViewBar";
+import ViewEmpty from "@/components/ViewEmpty";
 import ZoomSlider from "@/components/ZoomSlider";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import type { Item } from "@/lib/types";
+import { itemsInView, readView, withParam, type View } from "@/lib/views";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
 
-// Runs in the browser so it can remember the zoom level as the slider moves
-// and open or close the detail overlay.
+// Runs in the browser so it can remember the zoom level as the slider moves,
+// switch views and open or close the detail overlay. The view and the open
+// piece live in the address (?view=…&item=…), so Back and links work.
 type ClosetViewProps = {
   items: Item[];
   loggedIn: boolean;
@@ -26,6 +31,13 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
   const [zoom, setZoom] = useState<Zoom>("medium");
   const [previewId, setPreviewId] = useState<string | null>(null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
+  const view = readView(useSearchParams());
+  const shown = itemsInView(items, view);
+
+  // Instant: every piece is already loaded, so this only filters them.
+  function changeView(next: View) {
+    window.history.pushState(null, "", withParam("view", next === "all" ? null : next));
+  }
 
   // Kept while browsing, so every piece opens in the same unit; remembered in
   // the profile for logged-in people (demo visitors can switch, unsaved).
@@ -38,7 +50,7 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
   const openedFromGrid = useRef(false);
 
   function openItem(id: string) {
-    window.history.pushState(null, "", `?item=${encodeURIComponent(id)}`);
+    window.history.pushState(null, "", withParam("item", id));
     openedFromGrid.current = true;
   }
 
@@ -47,7 +59,7 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
       openedFromGrid.current = false;
       window.history.back();
     } else {
-      window.history.replaceState(null, "", window.location.pathname);
+      window.history.replaceState(null, "", withParam("item", null));
     }
   }
 
@@ -89,10 +101,25 @@ export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewP
         )}
       </TopBar>
 
-      <main className="p-4 md:p-8">
-        <h1 className="sr-only">Closet</h1>
-        <ItemGrid items={items} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
-      </main>
+      <ViewBar view={view} onChange={changeView} />
+
+      {shown.length > 0 ? (
+        <main className="p-4 md:p-8">
+          <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
+          <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={setPreviewId} />
+        </main>
+      ) : (
+        <main className="flex flex-1 flex-col">
+          <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
+          <ViewEmpty
+            message={
+              view === "archive"
+                ? "Nothing archived. Pieces you no longer own will appear here."
+                : "Nothing in your closet right now."
+            }
+          />
+        </main>
+      )}
 
       <HoverCaption
         item={items.find((item) => item.id === previewId)}

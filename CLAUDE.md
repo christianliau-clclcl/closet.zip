@@ -85,7 +85,22 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 7 — detail photos (add, reorder, remove, change hero).
+- Current milestone: 9 — views (folders, category rows, sort incl. My order
+  via Arrange mode, filters, archive section). Roadmap renumbered
+  2026-10-01; see PRODUCT.md.
+- Milestone 8 done (2026-10-01, live, tested on phone): size label and
+  garment measurements per piece (`items.size_label`, `items.measurements`
+  jsonb in cm; rows by category in `lib/measurements.ts`). Unit per person in
+  the new `profiles` table (default inches; owner-only RLS, tested), CM · IN
+  switch on Add/Edit and in the overlay, fractions in inches. Untouched values
+  keep their stored cm (no rounding drift).
+- Milestone 7 done (2026-10-01, live): detail photos. Edit page "Photos"
+  (`PhotoManager`): add (up to 8), remove (with confirm), reorder by drag
+  (`motion` Reorder; kept on for touch too) or ← →, "Make cover"; the first
+  photo is the cover. Order saved in one transaction via the
+  `reorder_item_photos` database function (tested). Overlay: bare dots,
+  swipe on phones, ← → keys (`PhotoViewer`). Smooth zoom: grid cells use
+  motion `layout` (timing in `lib/motion.ts`, DESIGN.md "Motion").
 - Milestone 6 done (2026-10-01, live, tested on phone and Mac): overlay
   actions for your own items (`ItemActions`): EDIT → `/items/<id>/edit`
   (same fields as Add); ARCHIVE in-panel form (left month/year + optional
@@ -141,4 +156,6 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
-- Next up: Milestone 7. Later: previous/next item arrows in the overlay.
+- Next up: Milestone 9 proposal (how folders, rows, sort, filters and
+  Arrange share the space above the grid). Later: previous/next item arrows
+  in the overlay; sell-to-friends (PRODUCT.md "Later").

@@ -132,8 +132,15 @@ archive on their own phones and computers. The app is deployed on a public URL.
 8. **Size & measurements** (added 2026-10-01): size label and garment
    measurements per piece; each person chooses cm or in, with instant
    conversion in the overlay
-9. **Views:** folders, category rows, sorting (incl. My order via Arrange mode),
-   filters on details, archive section
+9. **Views** (split 2026-10-01). A view bar under the top bar:
+   ALL · FOLDERS · ROWS · ARCHIVE, with SORT · FILTER · ARRANGE on the right;
+   choices live in the address (`?view=…&sort=…`).
+   - **9a:** view bar, archive section (archived pieces leave ALL), category
+     rows, sort (Newest added, Date acquired, Brand, Price), filter drawer
+     (category, brand, size, colour)
+   - **9b:** folders (cover grid, + New folder, Add to folder from the
+     overlay, multi-select Move to folder) and Arrange mode / My order, with
+     its own order per folder
 10. **Colour:** auto-detect on upload, manual adjustment, colour view
 11. **Style over time:** first visualization
 12. **Polish & test:** friend testing, accessibility pass, mobile refinements,
@@ -165,8 +172,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
 - In style over time, where do items without a date acquired go?
 - ~~For archived items, should we record how it left (sold, donated, gifted, lost)?~~
   Decided 2026-10-01: yes, optional: sold, donated, gifted, lost or other.
-  Until the Archive section exists (Milestone 8), archived items stay in the
-  grid, faded to 50% and sorted after the pieces you own.
+  Archived pieces live in the ARCHIVE view (Milestone 9a), not in ALL.
 - Should there be a limit on photos per item, or per account, to manage storage?
 - ~~Login method: email and password, or a magic link sent by email?~~
   Decided 2026-09-26: email and password.
