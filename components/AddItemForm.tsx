@@ -4,16 +4,14 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
 import PhotoPicker from "@/components/PhotoPicker";
-import { FULL_SIZE, THUMB_SIZE, loadImage, resizeImage } from "@/lib/image";
 import { draftToRow, emptyDraft, type DetailsRow, type ItemDraft } from "@/lib/item-draft";
+import { UnreadableImage, addPhoto, preparePhoto } from "@/lib/photos";
 import { createClient } from "@/lib/supabase/client";
 
-const BUCKET = "item-photos";
-
 // The Add page's form: the photo, then every optional detail. Saving: check
-// the details, resize the photo into two sizes in the browser, create the item, upload both files to the owner's private folder,
-// then record the photo. If any step fails, whatever was already created is
-// removed again, so there's never a half-saved item.
+// the details, resize the photo in the browser, create the item, then upload
+// and record the photo (lib/photos.ts). If any step fails, whatever was
+// already created is removed again, so there's never a half-saved item.
 export default function AddItemForm({ brandSuggestions }: { brandSuggestions: string[] }) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
@@ -76,17 +74,9 @@ export default function AddItemForm({ brandSuggestions }: { brandSuggestions: st
   );
 }
 
-class UnreadableImage extends Error {}
-
 async function saveItem(file: File, details: DetailsRow) {
   // 1. Resize first: if the file isn't a readable image, nothing is created.
-  let full, thumb;
-  try {
-    const image = await loadImage(file);
-    [full, thumb] = await Promise.all([resizeImage(image, FULL_SIZE), resizeImage(image, THUMB_SIZE)]);
-  } catch {
-    throw new UnreadableImage();
-  }
+  const photo = await preparePhoto(file);
 
   const supabase = createClient();
   const { data: auth } = await supabase.auth.getClaims();
@@ -97,34 +87,10 @@ async function saveItem(file: File, details: DetailsRow) {
   const { data: item, error: itemError } = await supabase.from("items").insert(details).select("id").single();
   if (itemError) throw itemError;
 
-  // Files go in the owner's folder: <user id>/<item id>/<photo name>.<ext>
-  const photoName = `${Date.now().toString(36)}`;
-  const fullPath = `${userId}/${item.id}/${photoName}.${full.extension}`;
-  const thumbPath = `${userId}/${item.id}/${photoName}-thumb.${thumb.extension}`;
-  const storage = supabase.storage.from(BUCKET);
-
+  // 3. Upload and record the hero photo. If that fails, remove the item again.
   try {
-    // 3. Upload both sizes.
-    for (const [path, image] of [
-      [fullPath, full],
-      [thumbPath, thumb],
-    ] as const) {
-      const { error } = await storage.upload(path, image.blob, { contentType: image.blob.type });
-      if (error) throw error;
-    }
-
-    // 4. Record the photo as the item's hero.
-    const { error: photoError } = await supabase.from("item_photos").insert({
-      item_id: item.id,
-      storage_path: fullPath,
-      thumb_path: thumbPath,
-      is_hero: true,
-      position: 0,
-    });
-    if (photoError) throw photoError;
+    await addPhoto(supabase, { userId, itemId: item.id, photo, isHero: true, position: 0 });
   } catch (cause) {
-    // Undo: remove any uploaded files, then the item itself.
-    await storage.remove([fullPath, thumbPath]);
     await supabase.from("items").delete().eq("id", item.id);
     throw cause;
   }

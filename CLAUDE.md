@@ -85,8 +85,16 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 6 — edit & archive (edit, archive/unarchive, delete
-  from the overlay).
+- Current milestone: 7 — detail photos (add, reorder, remove, change hero).
+- Milestone 6 done (2026-10-01, live, tested on phone and Mac): overlay
+  actions for your own items (`ItemActions`): EDIT → `/items/<id>/edit`
+  (same fields as Add); ARCHIVE in-panel form (left month/year + optional
+  how: `left_via`), UN-ARCHIVE; DELETE with in-panel confirm, removes photo
+  files too. Archived items are faded and sorted last until Milestone 8.
+  Bug fixed: `md:flex` on the closed `<dialog>` made it an invisible
+  full-screen cover on desktop (use `md:open:flex`). When testing clicks,
+  check `document.elementFromPoint` at the click point, not just
+  `element.click()`.
 - Milestone 5 done (2026-10-01, live, tested on phone): `/add` page with
   photo picker (resized in the browser to 1600px + 600px thumbnail, WebP or
   PNG, transparency kept) and all optional details (`ItemDetailsFields`,
@@ -131,5 +139,4 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
-- Next up: Milestone 6. Later: previous/next arrows in the overlay;
-  detail-photo dots under the garment (Milestone 7).
+- Next up: Milestone 7. Later: previous/next item arrows in the overlay.

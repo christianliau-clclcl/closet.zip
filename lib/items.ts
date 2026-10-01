@@ -1,14 +1,14 @@
 import type { Tables } from "@/lib/database.types";
 import { createClient } from "@/lib/supabase/server";
-import type { Category, Item, ItemStatus, LeftVia, MonthYear } from "@/lib/types";
+import type { Category, Item, ItemStatus, LeftVia, MonthYear, Photo } from "@/lib/types";
 
 // How long a photo's signed link works. Long enough for a browsing session;
 // the page asks for fresh links each time it loads.
 const SIGNED_URL_SECONDS = 60 * 60;
 
-const ITEM_COLUMNS = "*, item_photos(storage_path, thumb_path, is_hero)";
+const ITEM_COLUMNS = "*, item_photos(id, storage_path, thumb_path, is_hero, position)";
 
-type PhotoRow = Pick<Tables<"item_photos">, "storage_path" | "thumb_path" | "is_hero">;
+type PhotoRow = Pick<Tables<"item_photos">, "id" | "storage_path" | "thumb_path" | "is_hero" | "position">;
 type ItemRow = Tables<"items"> & { item_photos: PhotoRow[] };
 type Supabase = Awaited<ReturnType<typeof createClient>>;
 
@@ -54,14 +54,13 @@ export async function getMyBrands(): Promise<string[]> {
   return [...byKey.values()].sort((a, b) => a.localeCompare(b));
 }
 
-// Adds signed photo links (full size and thumbnail) to item rows.
-// Items without a hero photo, or whose file is missing, are left out rather
-// than shown as broken images.
+// Adds signed links (full size and thumbnail) for every photo of each item.
+// Photos whose file is missing are skipped; items left without a hero are
+// left out rather than shown as broken images.
 async function withPhotos(supabase: Supabase, rows: ItemRow[]): Promise<Item[]> {
-  const paths = rows.flatMap((row) => {
-    const hero = heroPhoto(row);
-    return hero ? [hero.storage_path, hero.thumb_path].filter((p): p is string => Boolean(p)) : [];
-  });
+  const paths = rows.flatMap((row) =>
+    row.item_photos.flatMap((p) => [p.storage_path, p.thumb_path].filter((x): x is string => Boolean(x))),
+  );
   if (paths.length === 0) return [];
 
   // One request for all the signed links, rather than one per photo.
@@ -75,24 +74,29 @@ async function withPhotos(supabase: Supabase, rows: ItemRow[]): Promise<Item[]> 
   );
 
   return rows.flatMap((row) => {
-    const hero = heroPhoto(row);
-    const src = hero && urlByPath.get(hero.storage_path);
-    if (!src) return [];
-    const thumbSrc = hero.thumb_path ? urlByPath.get(hero.thumb_path) : undefined;
-    return [toItem(row, src, thumbSrc)];
+    const photos = displayOrder(row.item_photos).flatMap((p): Photo[] => {
+      const src = urlByPath.get(p.storage_path);
+      if (!src) return [];
+      const thumbSrc = p.thumb_path ? urlByPath.get(p.thumb_path) : undefined;
+      return [{ id: p.id, isHero: p.is_hero, position: p.position, src, thumbSrc, unoptimized: true }];
+    });
+    const hero = photos.find((p) => p.isHero);
+    return hero ? [toItem(row, hero, photos)] : [];
   });
 }
 
-function heroPhoto(row: ItemRow): PhotoRow | undefined {
-  return row.item_photos.find((photo) => photo.is_hero);
+// The hero first (it's the cover), then the rest in the order chosen.
+function displayOrder(photos: PhotoRow[]): PhotoRow[] {
+  return [...photos].sort((a, b) => Number(b.is_hero) - Number(a.is_hero) || a.position - b.position);
 }
 
 // Database rows use snake_case and null for "empty"; the interface uses
 // camelCase and leaves empty fields out, so they're hidden automatically.
-function toItem(row: ItemRow, src: string, thumbSrc: string | undefined): Item {
+function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
   return {
     id: row.id,
-    hero: { src, thumbSrc, unoptimized: true },
+    hero,
+    photos,
     name: text(row.name),
     category: (row.category as Category | null) ?? undefined,
     brand: text(row.brand),

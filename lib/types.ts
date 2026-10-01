@@ -15,6 +15,9 @@ export type MonthYear = {
 };
 
 export type Photo = {
+  id?: string; // the item_photos row (database photos only)
+  isHero?: boolean;
+  position?: number; // order among the item's photos (database photos only)
   src: string; // full size, for the overlay
   thumbSrc?: string; // small version for the grid, when there is one
   // True for photos from Supabase Storage: they're already resized before
@@ -25,7 +28,8 @@ export type Photo = {
 
 export type Item = {
   id: string;
-  hero: Photo;
+  hero: Photo; // the cover photo, shown in the grid
+  photos?: Photo[]; // every photo in display order, hero first (database items)
   name?: string;
   category?: Category;
   brand?: string;
