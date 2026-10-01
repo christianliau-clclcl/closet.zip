@@ -4,20 +4,41 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
 import PhotoPicker from "@/components/PhotoPicker";
-import { draftToRow, emptyDraft, type DetailsRow, type ItemDraft } from "@/lib/item-draft";
+import {
+  convertDraftMeasurements,
+  draftToRow,
+  emptyDraft,
+  type DetailsRow,
+  type ItemDraft,
+} from "@/lib/item-draft";
+import type { Unit } from "@/lib/measurements";
 import { UnreadableImage, addPhoto, preparePhoto } from "@/lib/photos";
+import { saveMyUnit } from "@/lib/profile-client";
 import { createClient } from "@/lib/supabase/client";
 
 // The Add page's form: the photo, then every optional detail. Saving: check
 // the details, resize the photo in the browser, create the item, then upload
 // and record the photo (lib/photos.ts). If any step fails, whatever was
 // already created is removed again, so there's never a half-saved item.
-export default function AddItemForm({ brandSuggestions }: { brandSuggestions: string[] }) {
+type AddItemFormProps = {
+  brandSuggestions: string[];
+  initialUnit: Unit;
+};
+
+export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFormProps) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft);
+  const [unit, setUnit] = useState<Unit>(initialUnit);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Switching units converts what's already typed and remembers the choice.
+  function changeUnit(next: Unit) {
+    setDraft((d) => ({ ...d, measurements: convertDraftMeasurements(d.measurements, unit, next) }));
+    setUnit(next);
+    saveMyUnit(next);
+  }
 
   function choose(chosen: File) {
     setFile(chosen);
@@ -29,7 +50,7 @@ export default function AddItemForm({ brandSuggestions }: { brandSuggestions: st
     if (!file) return;
 
     // Check the details first: instant, and nothing is uploaded if they're off.
-    const checked = draftToRow(draft);
+    const checked = draftToRow(draft, unit);
     if ("error" in checked) {
       setError(checked.error);
       return;
@@ -55,7 +76,13 @@ export default function AddItemForm({ brandSuggestions }: { brandSuggestions: st
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <PhotoPicker onChange={choose} />
-      <ItemDetailsFields draft={draft} onChange={setDraft} brandSuggestions={brandSuggestions} />
+      <ItemDetailsFields
+        draft={draft}
+        onChange={setDraft}
+        brandSuggestions={brandSuggestions}
+        unit={unit}
+        onUnitChange={changeUnit}
+      />
       <div>
         {error && (
           <p role="alert" className="mb-4">

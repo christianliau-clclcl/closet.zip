@@ -3,26 +3,37 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
-import { draftToRow, itemToDraft, type ItemDraft } from "@/lib/item-draft";
+import { convertDraftMeasurements, draftToRow, itemToDraft, type ItemDraft } from "@/lib/item-draft";
+import type { Unit } from "@/lib/measurements";
+import { saveMyUnit } from "@/lib/profile-client";
 import { createClient } from "@/lib/supabase/client";
 import type { Item } from "@/lib/types";
 
 type EditItemFormProps = {
   item: Item;
   brandSuggestions: string[];
+  initialUnit: Unit;
 };
 
 // Edit an item's details (the same fields as Add, already filled in).
 // Saving returns to the closet with this item's overlay open.
-export default function EditItemForm({ item, brandSuggestions }: EditItemFormProps) {
+export default function EditItemForm({ item, brandSuggestions, initialUnit }: EditItemFormProps) {
   const router = useRouter();
-  const [draft, setDraft] = useState<ItemDraft>(() => itemToDraft(item));
+  const [unit, setUnit] = useState<Unit>(initialUnit);
+  const [draft, setDraft] = useState<ItemDraft>(() => itemToDraft(item, initialUnit));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Switching units converts what's already typed and remembers the choice.
+  function changeUnit(next: Unit) {
+    setDraft((d) => ({ ...d, measurements: convertDraftMeasurements(d.measurements, unit, next) }));
+    setUnit(next);
+    saveMyUnit(next);
+  }
+
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const checked = draftToRow(draft);
+    const checked = draftToRow(draft, unit, item.measurements);
     if ("error" in checked) {
       setError(checked.error);
       return;
@@ -42,7 +53,13 @@ export default function EditItemForm({ item, brandSuggestions }: EditItemFormPro
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
-      <ItemDetailsFields draft={draft} onChange={setDraft} brandSuggestions={brandSuggestions} />
+      <ItemDetailsFields
+        draft={draft}
+        onChange={setDraft}
+        brandSuggestions={brandSuggestions}
+        unit={unit}
+        onUnitChange={changeUnit}
+      />
       <div>
         {error && (
           <p role="alert" className="mb-4">

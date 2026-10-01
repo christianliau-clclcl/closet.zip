@@ -1,3 +1,5 @@
+import type { Measurements } from "@/lib/measurements";
+
 // The shape of an item, following the "Item data" table in PRODUCT.md.
 // Only the hero photo is required; every other field is optional.
 
@@ -38,6 +40,8 @@ export type Item = {
   acquired?: MonthYear;
   acquiredFrom?: string;
   price?: number;
+  size?: string; // as on the label: "M", "32 × 30"
+  measurements?: Measurements; // garment measurements, in cm
   notes?: string;
   status: ItemStatus;
   archived?: MonthYear; // when it left the closet

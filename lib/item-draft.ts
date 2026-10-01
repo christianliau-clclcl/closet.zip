@@ -1,4 +1,13 @@
 import type { TablesInsert } from "@/lib/database.types";
+import {
+  fromCm,
+  measurementRows,
+  parseMeasurement,
+  toCm,
+  type MeasurementKey,
+  type Measurements,
+  type Unit,
+} from "@/lib/measurements";
 import type { Category, Item } from "@/lib/types";
 
 // What's typed into the details form, before it's checked and saved.
@@ -13,6 +22,8 @@ export type ItemDraft = {
   acquiredYear: string;
   acquiredFrom: string;
   price: string;
+  size: string;
+  measurements: Partial<Record<MeasurementKey, string>>; // as typed, in the form's unit
   notes: string;
 };
 
@@ -26,11 +37,14 @@ export const emptyDraft: ItemDraft = {
   acquiredYear: "",
   acquiredFrom: "",
   price: "",
+  size: "",
+  measurements: {},
   notes: "",
 };
 
-// A saved item turned back into form fields, for editing.
-export function itemToDraft(item: Item): ItemDraft {
+// A saved item turned back into form fields, for editing, with
+// measurements shown in the person's unit.
+export function itemToDraft(item: Item, unit: Unit): ItemDraft {
   return {
     name: item.name ?? "",
     category: item.category ?? "",
@@ -41,16 +55,41 @@ export function itemToDraft(item: Item): ItemDraft {
     acquiredYear: item.acquired ? String(item.acquired.year) : "",
     acquiredFrom: item.acquiredFrom ?? "",
     price: item.price !== undefined ? item.price.toFixed(Number.isInteger(item.price) ? 0 : 2) : "",
+    size: item.size ?? "",
+    measurements: Object.fromEntries(
+      Object.entries(item.measurements ?? {}).map(([key, cm]) => [key, String(fromCm(cm, unit))]),
+    ),
     notes: item.notes ?? "",
   };
+}
+
+// When the unit is switched on the form, converts what's already typed.
+// Anything that isn't a valid number yet is left as it is.
+export function convertDraftMeasurements(
+  measurements: ItemDraft["measurements"],
+  from: Unit,
+  to: Unit,
+): ItemDraft["measurements"] {
+  return Object.fromEntries(
+    Object.entries(measurements).map(([key, text]) => {
+      const value = parseMeasurement(text ?? "");
+      return [key, value === null ? text : String(fromCm(toCm(value, from), to))];
+    }),
+  );
 }
 
 // The item columns the details form fills in.
 export type DetailsRow = Omit<TablesInsert<"items">, "id" | "user_id">;
 
 // Checks the draft and turns it into database columns. Returns an error
-// message instead if something can't be saved.
-export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: string } {
+// message instead if something can't be saved. When editing, pass the saved
+// measurements: any left exactly as shown keep their stored value, so opening
+// and saving never shifts them through unit rounding.
+export function draftToRow(
+  draft: ItemDraft,
+  unit: Unit,
+  saved: Measurements = {},
+): { row: DetailsRow } | { error: string } {
   const year = draft.acquiredYear.trim();
   const dateError = checkMonthYear(draft.acquiredMonth, year, "you got it");
   if (dateError) return { error: dateError };
@@ -58,6 +97,21 @@ export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: str
   const price = draft.price.trim().replace(/^\$/, "");
   if (price && !/^\d+(\.\d{1,2})?$/.test(price)) {
     return { error: "The price should be an amount like 120 or 89.50." };
+  }
+
+  // Only the rows shown for this category are saved, converted to cm.
+  const measurements: Partial<Record<MeasurementKey, number>> = {};
+  for (const key of measurementRows(draft.category)) {
+    const typed = draft.measurements[key]?.trim();
+    if (!typed) continue;
+    const original = saved[key];
+    if (original !== undefined && typed === String(fromCm(original, unit))) {
+      measurements[key] = original; // untouched: keep exactly what was stored
+      continue;
+    }
+    const value = parseMeasurement(typed);
+    if (value === null) return { error: "Measurements should be numbers, like 22.5 or 22 1/4." };
+    measurements[key] = toCm(value, unit);
   }
 
   return {
@@ -71,6 +125,8 @@ export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: str
       acquired_year: year ? Number(year) : null,
       acquired_from: text(draft.acquiredFrom),
       price: price ? Number(price) : null,
+      size_label: text(draft.size),
+      measurements,
       notes: text(draft.notes),
     },
   };

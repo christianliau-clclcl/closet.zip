@@ -4,6 +4,7 @@ import EditItemForm from "@/components/EditItemForm";
 import PhotoManager from "@/components/PhotoManager";
 import TopBar from "@/components/TopBar";
 import { getMyBrands, getMyItem } from "@/lib/items";
+import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 
 // Edit one of your items: its photos (saved straight away) and its details.
@@ -15,7 +16,7 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
   if (!data?.claims) redirect("/login");
 
   const { id } = await props.params;
-  const [item, brands] = await Promise.all([getMyItem(id), getMyBrands()]);
+  const [item, brands, unit] = await Promise.all([getMyItem(id), getMyBrands(), getMyUnit()]);
   if (!item) notFound();
 
   return (
@@ -37,7 +38,7 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
           />
         </div>
         <div className="mt-12">
-          <EditItemForm item={item} brandSuggestions={brands} />
+          <EditItemForm item={item} brandSuggestions={brands} initialUnit={unit} />
         </div>
       </main>
     </>

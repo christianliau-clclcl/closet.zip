@@ -1,4 +1,5 @@
 import type { Tables } from "@/lib/database.types";
+import { readMeasurements } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/server";
 import type { Category, Item, ItemStatus, LeftVia, MonthYear, Photo } from "@/lib/types";
 
@@ -105,6 +106,8 @@ function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
     acquired: monthYear(row.acquired_month, row.acquired_year),
     acquiredFrom: text(row.acquired_from),
     price: row.price ?? undefined,
+    size: text(row.size_label),
+    measurements: readMeasurements(row.measurements),
     notes: text(row.notes),
     status: row.status as ItemStatus,
     archived: monthYear(row.archived_month, row.archived_year),

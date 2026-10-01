@@ -31,7 +31,8 @@ a record of it. First testers: the designer's friends.
 - Sharing closets or viewing other users' closets
 - Stylist tools / digital outfit building (v2 idea)
 - Automatic background removal (users remove backgrounds themselves for now)
-- User-created custom fields or categories
+- User-created custom fields or categories (the fixed category list stays;
+  personal **folders** are the one exception, see Views)
 - Shopping links, price tracking, or store integrations
 - Native mobile app (responsive web only)
 
@@ -84,6 +85,11 @@ a record of it. First testers: the designer's friends.
 - **Sort:** date acquired, brand, price, and **My order**: a hand-made order
   set in an **Arrange** mode (drag pieces in the grid, or use ← →; Done to
   finish). Tapping opens pieces only outside Arrange mode.
+- **Folders** (decided 2026-10-01): personal collections on top of the fixed
+  categories ("Grails", "Summer 2024", "To sell"). A piece can be in several
+  folders; one level only (no folders inside folders). Each folder's cover is
+  one of its garments by default, or a custom image the person uploads.
+  "All" (the whole closet) stays the default view.
 - **Filters:** narrow the grid by details (category, colour, brand, size…),
   in the filter drawer from DESIGN.md.
 - **Smooth zoom:** changing the zoom level animates each piece to its new
@@ -126,7 +132,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
 8. **Size & measurements** (added 2026-10-01): size label and garment
    measurements per piece; each person chooses cm or in, with instant
    conversion in the overlay
-9. **Views:** category rows, sorting (incl. My order via Arrange mode),
+9. **Views:** folders, category rows, sorting (incl. My order via Arrange mode),
    filters on details, archive section
 10. **Colour:** auto-detect on upload, manual adjustment, colour view
 11. **Style over time:** first visualization
@@ -151,7 +157,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
 - Shareable closets
 - Automatic background removal
 - More visualizations: colour palettes, most expensive pieces, and others
-- Custom fields and categories
+- Custom fields, and custom replacements for the fixed category list
+- Folders inside folders
 
 ## Open questions
 

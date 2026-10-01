@@ -1,8 +1,10 @@
 import { useId } from "react";
 import FormField from "@/components/FormField";
+import MeasurementFields from "@/components/MeasurementFields";
 import MonthYearField from "@/components/MonthYearField";
 import OptionPicker from "@/components/OptionPicker";
 import type { ItemDraft } from "@/lib/item-draft";
+import type { Unit } from "@/lib/measurements";
 import type { Category } from "@/lib/types";
 
 const categories: Category[] = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
@@ -11,11 +13,19 @@ type ItemDetailsFieldsProps = {
   draft: ItemDraft;
   onChange: (draft: ItemDraft) => void;
   brandSuggestions: string[]; // brands already used in this closet
+  unit: Unit; // for measurements
+  onUnitChange: (unit: Unit) => void;
 };
 
 // Every optional detail of an item, in the order of PRODUCT.md's "Item data"
 // table. Used by the Add page now, and by editing in Milestone 6.
-export default function ItemDetailsFields({ draft, onChange, brandSuggestions }: ItemDetailsFieldsProps) {
+export default function ItemDetailsFields({
+  draft,
+  onChange,
+  brandSuggestions,
+  unit,
+  onUnitChange,
+}: ItemDetailsFieldsProps) {
   const brandListId = useId();
   const notesId = useId();
 
@@ -80,6 +90,21 @@ export default function ItemDetailsFields({ draft, onChange, brandSuggestions }:
         placeholder="0.00"
         value={draft.price}
         onChange={(e) => set("price", e.target.value)}
+      />
+
+      <FormField
+        label="Size"
+        placeholder="As on the label: M, 32 × 30, EU 42"
+        value={draft.size}
+        onChange={(e) => set("size", e.target.value)}
+      />
+
+      <MeasurementFields
+        category={draft.category}
+        unit={unit}
+        onUnitChange={onUnitChange}
+        values={draft.measurements}
+        onChange={(key, text) => set("measurements", { ...draft.measurements, [key]: text })}
       />
 
       <div>
