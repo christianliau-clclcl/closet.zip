@@ -15,6 +15,7 @@ import TopBar from "@/components/TopBar";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
 import ZoomSlider from "@/components/ZoomSlider";
+import { useColourBackfill } from "@/lib/colour-backfill";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import type { Item } from "@/lib/types";
@@ -43,6 +44,8 @@ type ClosetViewProps = {
 
 export default function ClosetView({ items, loggedIn, initialUnit }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
+  // Your own pieces saved before colours existed get one in the background.
+  useColourBackfill(items, loggedIn);
   // The hovered or focused piece, and the cell itself when focused by keyboard.
   const [preview, setPreview] = useState<{ id: string; anchor: HTMLElement | null } | null>(null);
   const showPreview = (id: string | null, anchor?: HTMLElement) =>

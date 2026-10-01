@@ -172,10 +172,14 @@ archive on their own phones and computers. The app is deployed on a public URL.
       person's own pieces in that family (`colourFamily` in
       `lib/colour.ts`: hue, saturation and brightness; olive counts as
       green, burgundy as red)
-    - **11d:** SORT · Colour (see "Colour order")
-    - **11e:** colours for pieces uploaded before 11: detected when their
-      Edit page opens (built in 11b); decide whether a one-time "detect all"
-      is still needed
+    - **11d (done 2026-10-01):** SORT · Colour (see "Colour order"):
+      by family, then by hue within colourful families; neutrals by
+      brightness so the end fades chocolate → beige → white → grey → black
+    - **11e (done 2026-10-01):** pieces without a colour get one in the
+      background when their owner opens the closet (`useColourBackfill`):
+      detected from the grid thumbnail and saved one at a time, only into
+      empty colours; then the closet refreshes. The Edit page also detects
+      for pieces without one.
 12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
     folder from the overlay, multi-select Move to folder) and Arrange mode /
     My order, with its own order per folder. Folders inside folders

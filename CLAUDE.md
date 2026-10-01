@@ -85,7 +85,7 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 11 — colour (Milestone 10 done). Roadmap changed 2026-10-01: sharing,
+- Current milestone: 12 — folders & Arrange (Milestone 11 done). Roadmap changed 2026-10-01: sharing,
   selling, styling/outfits, more visualizations and folders inside folders
   come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar
@@ -165,6 +165,20 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
+- Milestone 11 done (2026-10-01, colour; details in PRODUCT.md roadmap):
+  `items.colour_hex` ("#rrggbb", checked by the database) beside the typed
+  colour name. `lib/colour.ts`: detection (most common colour among
+  non-transparent pixels, preferring a real colour when ≥15% of the garment
+  has one), eyedropper sampling, families (`colourFamily`, gradient order
+  in `families`), `averageColour`. `ColourField` (swatch + name, PICK FROM
+  PHOTO / DETECT AGAIN / CLEAR), `Swatch` (12px by text, 16px in the form),
+  filter drawer by family, SORT · Colour, background backfill
+  (`lib/colour-backfill.ts`). Photos with a background detect badly; the
+  eyedropper fixes it. Supabase signed photo links allow reading pixels
+  (crossOrigin "anonymous"). TypeScript scratch tests run with
+  `JITI_ALIAS='{"@/":"<repo>/"}' npx jiti file.ts` (jiti comes with
+  Tailwind; no test framework installed).
+  Hover label flipped to `canvas` on `ink` (user's request).
 - Milestone 10 done (2026-10-01, polish pass): on-brand `app/not-found.tsx`
   and `app/error.tsx` (shared `StatusPage`; Next 16 error prop is `retry`,
   not `reset`); page titles via the layout template "%s · Closet.zip";
