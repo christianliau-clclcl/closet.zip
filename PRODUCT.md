@@ -180,10 +180,36 @@ archive on their own phones and computers. The app is deployed on a public URL.
       detected from the grid thumbnail and saved one at a time, only into
       empty colours; then the closet refreshes. The Edit page also detects
       for pieces without one.
-12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
-    folder from the overlay, multi-select Move to folder) and Arrange mode /
-    My order, with its own order per folder. Folders inside folders
-    (added 2026-10-01).
+12. **Folders & Arrange** (was 9b; planned 2026-10-01). Data: `folders`
+    (owner, name, parent folder, cover piece or uploaded cover image, place
+    among its neighbours), `folder_items` (piece ↔ folder links, each with
+    its place in that folder's My order), `items.sort_position` (My order
+    for ALL). Owner-only RLS; the database also refuses links to someone
+    else's pieces or folders, and a folder inside itself. Uploaded covers
+    live in the existing private photo storage under the owner's folder.
+    Decisions (2026-10-01):
+    - Opening a folder shows the folders inside it first, then only the
+      pieces added to it directly.
+    - Deleting a folder deletes the folders inside it too, after a confirm
+      that says how many; pieces are never deleted.
+    - Folder cells: the same square cell with the cover garment, and the
+      name and count always underneath ("GRAILS — 07", label style).
+    - SELECT mode: ADD TO FOLDER (pieces stay in their other folders) and,
+      inside a folder, REMOVE FROM FOLDER. No "move".
+    - My order: new pieces go first (an empty place sorts first, newest
+      first). Once ALL or a folder has been arranged, it opens in My order
+      by default. Arranging: drag (also on phones, like the photo manager)
+      and ← → under each piece; DONE to finish.
+    Steps:
+    - **12a:** tables, privacy rules and checks; tested as two users and a
+      logged-out visitor
+    - **12b:** FOLDERS view: cover grid, + NEW FOLDER, open a folder (path
+      "FOLDERS / SEASONS / SUMMER"), rename, delete
+    - **12c:** add to / remove from folders in the overlay (checklist)
+    - **12d:** SELECT mode in the grid (add to folder, remove from folder)
+    - **12e:** covers: pick a garment or upload an image
+    - **12f:** folders inside folders: create inside, move a folder
+    - **12g:** ARRANGE and My order, for ALL and each folder
 13. **Style over time:** first visualization
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
     expensive pieces, and others
