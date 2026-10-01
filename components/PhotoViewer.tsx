@@ -1,8 +1,8 @@
 "use client";
 
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import FadeImage from "@/components/FadeImage";
 import { layoutTransition } from "@/lib/motion";
 import type { Photo } from "@/lib/types";
 
@@ -104,7 +104,7 @@ export default function PhotoViewer({ photos, title }: PhotoViewerProps) {
             exit="exit"
             className="absolute inset-0"
           >
-            <Image
+            <FadeImage
               src={photo.src}
               alt={count > 1 ? `${title}, photo ${index + 1} of ${count}` : title}
               fill

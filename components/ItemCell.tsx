@@ -1,5 +1,5 @@
 import { motion } from "motion/react";
-import Image from "next/image";
+import FadeImage from "@/components/FadeImage";
 import { itemSummary, itemTitle } from "@/lib/format";
 import type { Item } from "@/lib/types";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
@@ -44,7 +44,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
       >
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
         <span className="relative block flex-1">
-          <Image
+          <FadeImage
             src={item.hero.thumbSrc ?? item.hero.src}
             alt={itemTitle(item)}
             fill

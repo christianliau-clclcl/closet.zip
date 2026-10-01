@@ -100,6 +100,8 @@ text, screen readers), use its name, else its category, else "Untitled piece".
   changing the zoom level glides each garment to its new place and size.
   Second: in the overlay, photos slide in from the side you're moving
   towards (swipe, ← →, or dots), like a strip of film.
+  Third: photos fade in once loaded (opacity only), in the grid and the
+  overlay, instead of popping in.
 - Respect "Reduce motion": anyone with it switched on gets instant changes.
 
 ## Components
