@@ -65,6 +65,7 @@ export type Database = {
           brand: string | null
           category: string | null
           colour: string | null
+          colour_hex: string | null
           created_at: string
           id: string
           left_via: string | null
@@ -87,6 +88,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           colour?: string | null
+          colour_hex?: string | null
           created_at?: string
           id?: string
           left_via?: string | null
@@ -109,6 +111,7 @@ export type Database = {
           brand?: string | null
           category?: string | null
           colour?: string | null
+          colour_hex?: string | null
           created_at?: string
           id?: string
           left_via?: string | null

@@ -17,6 +17,7 @@ export type ItemDraft = {
   category: Category | "";
   brand: string;
   colour: string;
+  colourHex: string; // "" or "#rrggbb", set by detection or the eyedropper (11b)
   material: string;
   acquiredMonth: string; // "" or "1"–"12"
   acquiredYear: string;
@@ -32,6 +33,7 @@ export const emptyDraft: ItemDraft = {
   category: "",
   brand: "",
   colour: "",
+  colourHex: "",
   material: "",
   acquiredMonth: "",
   acquiredYear: "",
@@ -50,6 +52,7 @@ export function itemToDraft(item: Item, unit: Unit): ItemDraft {
     category: item.category ?? "",
     brand: item.brand ?? "",
     colour: item.colour ?? "",
+    colourHex: item.colourHex ?? "",
     material: item.material ?? "",
     acquiredMonth: item.acquired?.month ? String(item.acquired.month) : "",
     acquiredYear: item.acquired ? String(item.acquired.year) : "",
@@ -120,6 +123,8 @@ export function draftToRow(
       category: draft.category || null,
       brand: text(draft.brand),
       colour: text(draft.colour),
+      // Only a valid colour code is saved (the database checks this too).
+      colour_hex: /^#[0-9a-f]{6}$/.test(draft.colourHex) ? draft.colourHex : null,
       material: text(draft.material),
       acquired_month: draft.acquiredMonth ? Number(draft.acquiredMonth) : null,
       acquired_year: year ? Number(year) : null,

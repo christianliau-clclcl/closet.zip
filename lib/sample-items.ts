@@ -2,7 +2,8 @@ import type { Item } from "@/lib/types";
 
 // The demo closet that logged-out visitors see on the home page. The photos
 // are real; the other details (measurements in cm) and notes are fictional
-// but meant to read naturally. Edit them freely.
+// but meant to read naturally. Edit them freely. colourHex values were
+// measured from each photo (the garment's most common colour).
 // Some fields are left out on purpose: real closets have gaps, and the demo
 // shows that empty fields are simply hidden.
 export const sampleItems: Item[] = [
@@ -13,6 +14,7 @@ export const sampleItems: Item[] = [
     category: "outerwear",
     brand: "Levi's",
     colour: "Indigo",
+    colourHex: "#1a2834",
     material: "Cotton denim",
     acquired: { month: 3, year: 2021 },
     acquiredFrom: "Vintage shop",
@@ -30,6 +32,7 @@ export const sampleItems: Item[] = [
     category: "shoes",
     brand: "Converse",
     colour: "Green",
+    colourHex: "#27352a",
     material: "Leather",
     acquired: { month: 6, year: 2023 },
     acquiredFrom: "Online",
@@ -43,6 +46,7 @@ export const sampleItems: Item[] = [
     name: "Pleated trousers",
     category: "bottoms",
     colour: "Charcoal",
+    colourHex: "#373737",
     material: "Wool blend",
     acquired: { month: 10, year: 2022 },
     price: 210,
@@ -55,6 +59,7 @@ export const sampleItems: Item[] = [
     category: "outerwear",
     brand: "Stone Island",
     colour: "Stone",
+    colourHex: "#9b9586",
     material: "Nylon",
     acquired: { month: 11, year: 2024 },
     acquiredFrom: "Gift",
@@ -68,6 +73,7 @@ export const sampleItems: Item[] = [
     name: "Wide jeans",
     category: "bottoms",
     colour: "Khaki",
+    colourHex: "#938c79",
     acquired: { month: 4, year: 2020 },
     size: "32 × 30",
     measurements: { waist: 82, rise: 30.5, inseam: 76, leg_opening: 24, length: 107 },
@@ -79,6 +85,7 @@ export const sampleItems: Item[] = [
     name: "Leather shoulder bag",
     category: "accessories",
     colour: "Black",
+    colourHex: "#272627",
     material: "Leather",
     acquiredFrom: "Flea market",
     price: 45,

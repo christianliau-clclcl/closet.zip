@@ -35,7 +35,8 @@ export type Item = {
   name?: string;
   category?: Category;
   brand?: string;
-  colour?: string;
+  colour?: string; // the colour's name, in the person's own words: "Indigo"
+  colourHex?: string; // the colour itself, detected or picked: "#2b3a55"
   material?: string;
   acquired?: MonthYear;
   acquiredFrom?: string;

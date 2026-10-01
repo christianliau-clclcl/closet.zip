@@ -102,6 +102,7 @@ function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
     category: (row.category as Category | null) ?? undefined,
     brand: text(row.brand),
     colour: text(row.colour),
+    colourHex: text(row.colour_hex),
     material: text(row.material),
     acquired: monthYear(row.acquired_month, row.acquired_year),
     acquiredFrom: text(row.acquired_from),
