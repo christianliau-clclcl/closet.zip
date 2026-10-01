@@ -1,0 +1,72 @@
+import type { TablesInsert } from "@/lib/database.types";
+import type { Category } from "@/lib/types";
+
+// What's typed into the details form, before it's checked and saved.
+// Everything is a string (or empty) while editing; empty means "not filled in".
+export type ItemDraft = {
+  name: string;
+  category: Category | "";
+  brand: string;
+  colour: string;
+  material: string;
+  acquiredMonth: string; // "" or "1"–"12"
+  acquiredYear: string;
+  acquiredFrom: string;
+  price: string;
+  notes: string;
+};
+
+export const emptyDraft: ItemDraft = {
+  name: "",
+  category: "",
+  brand: "",
+  colour: "",
+  material: "",
+  acquiredMonth: "",
+  acquiredYear: "",
+  acquiredFrom: "",
+  price: "",
+  notes: "",
+};
+
+// The item columns the details form fills in.
+export type DetailsRow = Omit<TablesInsert<"items">, "id" | "user_id">;
+
+// Checks the draft and turns it into database columns. Returns an error
+// message instead if something can't be saved.
+export function draftToRow(draft: ItemDraft): { row: DetailsRow } | { error: string } {
+  const year = draft.acquiredYear.trim();
+  const thisYear = new Date().getFullYear();
+
+  if (draft.acquiredMonth && !year) {
+    return { error: "Add a year to go with the month you got it." };
+  }
+  if (year && (!/^\d{4}$/.test(year) || Number(year) < 1900 || Number(year) > thisYear)) {
+    return { error: `The year should be four digits, between 1900 and ${thisYear}.` };
+  }
+
+  const price = draft.price.trim().replace(/^\$/, "");
+  if (price && !/^\d+(\.\d{1,2})?$/.test(price)) {
+    return { error: "The price should be an amount like 120 or 89.50." };
+  }
+
+  return {
+    row: {
+      name: text(draft.name),
+      category: draft.category || null,
+      brand: text(draft.brand),
+      colour: text(draft.colour),
+      material: text(draft.material),
+      acquired_month: draft.acquiredMonth ? Number(draft.acquiredMonth) : null,
+      acquired_year: year ? Number(year) : null,
+      acquired_from: text(draft.acquiredFrom),
+      price: price ? Number(price) : null,
+      notes: text(draft.notes),
+    },
+  };
+}
+
+// Blank (or only spaces) is saved as empty.
+function text(value: string): string | null {
+  return value.trim() || null;
+}

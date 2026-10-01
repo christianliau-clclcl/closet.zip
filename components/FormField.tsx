@@ -24,7 +24,7 @@ export default function FormField({ label, hint, action, id, ...inputProps }: Fo
       <input
         id={inputId}
         aria-describedby={hint ? hintId : undefined}
-        className="mt-2 w-full border border-rule bg-cell px-3 py-3 outline-none focus:border-ink"
+        className="mt-2 w-full border border-rule bg-cell px-3 py-3 outline-none placeholder:text-pebble focus:border-ink"
         {...inputProps}
       />
       {hint && (

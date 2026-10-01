@@ -80,3 +80,18 @@ function text(value: string | null): string | undefined {
 function monthYear(month: number | null, year: number | null): MonthYear | undefined {
   return year ? { month: month ?? undefined, year } : undefined;
 }
+
+// Brands already used in this closet, for suggestions while typing.
+// "Levi's" and "levi's" count as one; the first spelling seen is kept.
+export async function getMyBrands(): Promise<string[]> {
+  const supabase = await createClient();
+  const { data, error } = await supabase.from("items").select("brand").not("brand", "is", null);
+  if (error) throw error;
+
+  const byKey = new Map<string, string>();
+  for (const { brand } of data) {
+    const trimmed = brand?.trim();
+    if (trimmed && !byKey.has(trimmed.toLowerCase())) byKey.set(trimmed.toLowerCase(), trimmed);
+  }
+  return [...byKey.values()].sort((a, b) => a.localeCompare(b));
+}

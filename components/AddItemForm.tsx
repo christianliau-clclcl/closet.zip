@@ -2,19 +2,22 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import ItemDetailsFields from "@/components/ItemDetailsFields";
 import PhotoPicker from "@/components/PhotoPicker";
 import { FULL_SIZE, THUMB_SIZE, loadImage, resizeImage } from "@/lib/image";
+import { draftToRow, emptyDraft, type DetailsRow, type ItemDraft } from "@/lib/item-draft";
 import { createClient } from "@/lib/supabase/client";
 
 const BUCKET = "item-photos";
 
-// The Add page's form. Saving: resize the photo into two sizes in the
-// browser, create the item, upload both files to the owner's private folder,
+// The Add page's form: the photo, then every optional detail. Saving: check
+// the details, resize the photo into two sizes in the browser, create the item, upload both files to the owner's private folder,
 // then record the photo. If any step fails, whatever was already created is
 // removed again, so there's never a half-saved item.
-export default function AddItemForm() {
+export default function AddItemForm({ brandSuggestions }: { brandSuggestions: string[] }) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
+  const [draft, setDraft] = useState<ItemDraft>(emptyDraft);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -26,11 +29,19 @@ export default function AddItemForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!file) return;
+
+    // Check the details first: instant, and nothing is uploaded if they're off.
+    const checked = draftToRow(draft);
+    if ("error" in checked) {
+      setError(checked.error);
+      return;
+    }
+
     setBusy(true);
     setError(null);
 
     try {
-      await saveItem(file);
+      await saveItem(file, checked.row);
       router.push("/");
       router.refresh();
     } catch (cause) {
@@ -46,6 +57,7 @@ export default function AddItemForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-8">
       <PhotoPicker onChange={choose} />
+      <ItemDetailsFields draft={draft} onChange={setDraft} brandSuggestions={brandSuggestions} />
       <div>
         {error && (
           <p role="alert" className="mb-4">
@@ -66,7 +78,7 @@ export default function AddItemForm() {
 
 class UnreadableImage extends Error {}
 
-async function saveItem(file: File) {
+async function saveItem(file: File, details: DetailsRow) {
   // 1. Resize first: if the file isn't a readable image, nothing is created.
   let full, thumb;
   try {
@@ -81,8 +93,8 @@ async function saveItem(file: File) {
   const userId = auth?.claims?.sub;
   if (!userId) throw new Error("Not logged in");
 
-  // 2. Create the item (every detail empty for now) to get its ID.
-  const { data: item, error: itemError } = await supabase.from("items").insert({}).select("id").single();
+  // 2. Create the item with its details, to get its ID.
+  const { data: item, error: itemError } = await supabase.from("items").insert(details).select("id").single();
   if (itemError) throw itemError;
 
   // Files go in the owner's folder: <user id>/<item id>/<photo name>.<ext>
