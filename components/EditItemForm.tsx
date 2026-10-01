@@ -1,8 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
+import { detectColour, loadImageFromUrl } from "@/lib/colour";
 import { convertDraftMeasurements, draftToRow, itemToDraft, type ItemDraft } from "@/lib/item-draft";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
@@ -23,6 +24,22 @@ export default function EditItemForm({ item, brandSuggestions, initialUnit }: Ed
   const [draft, setDraft] = useState<ItemDraft>(() => itemToDraft(item, initialUnit));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Pieces saved before colours existed: detect from the cover photo once,
+  // shown in the form and saved with the next Save. Never replaces a colour.
+  useEffect(() => {
+    if (item.colourHex) return;
+    let current = true;
+    loadImageFromUrl(item.hero.src)
+      .then(detectColour)
+      .catch(() => null)
+      .then((hex) => {
+        if (current && hex) setDraft((d) => (d.colourHex ? d : { ...d, colourHex: hex }));
+      });
+    return () => {
+      current = false;
+    };
+  }, [item.colourHex, item.hero.src]);
 
   // Switching units converts what's already typed and remembers the choice.
   function changeUnit(next: Unit) {
@@ -56,6 +73,7 @@ export default function EditItemForm({ item, brandSuggestions, initialUnit }: Ed
       <ItemDetailsFields
         draft={draft}
         onChange={setDraft}
+        photoSrc={item.hero.src}
         brandSuggestions={brandSuggestions}
         unit={unit}
         onUnitChange={changeUnit}

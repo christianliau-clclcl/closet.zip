@@ -1,4 +1,5 @@
 import { useId } from "react";
+import ColourField from "@/components/ColourField";
 import FormField from "@/components/FormField";
 import MeasurementFields from "@/components/MeasurementFields";
 import MonthYearField from "@/components/MonthYearField";
@@ -11,7 +12,10 @@ const categories: Category[] = ["tops", "bottoms", "outerwear", "shoes", "access
 
 type ItemDetailsFieldsProps = {
   draft: ItemDraft;
-  onChange: (draft: ItemDraft) => void;
+  // A state setter: updates start from the latest draft, so a colour detected
+  // in the background never undoes what was typed in the meantime.
+  onChange: React.Dispatch<React.SetStateAction<ItemDraft>>;
+  photoSrc?: string; // the cover photo, for the colour eyedropper
   brandSuggestions: string[]; // brands already used in this closet
   unit: Unit; // for measurements
   onUnitChange: (unit: Unit) => void;
@@ -22,6 +26,7 @@ type ItemDetailsFieldsProps = {
 export default function ItemDetailsFields({
   draft,
   onChange,
+  photoSrc,
   brandSuggestions,
   unit,
   onUnitChange,
@@ -30,7 +35,7 @@ export default function ItemDetailsFields({
   const notesId = useId();
 
   function set<K extends keyof ItemDraft>(key: K, value: ItemDraft[K]) {
-    onChange({ ...draft, [key]: value });
+    onChange((current) => ({ ...current, [key]: value }));
   }
 
   return (
@@ -65,7 +70,13 @@ export default function ItemDetailsFields({
         </datalist>
       </div>
 
-      <FormField label="Colour" value={draft.colour} onChange={(e) => set("colour", e.target.value)} />
+      <ColourField
+        name={draft.colour}
+        hex={draft.colourHex}
+        onNameChange={(name) => set("colour", name)}
+        onHexChange={(hex) => set("colourHex", hex)}
+        photoSrc={photoSrc}
+      />
 
       <FormField label="Material" value={draft.material} onChange={(e) => set("material", e.target.value)} />
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
 import PhotoPicker from "@/components/PhotoPicker";
 import {
@@ -12,6 +12,7 @@ import {
   type ItemDraft,
 } from "@/lib/item-draft";
 import type { Unit } from "@/lib/measurements";
+import { detectColour, loadImageFromUrl } from "@/lib/colour";
 import { UnreadableImage, addPhoto, preparePhoto } from "@/lib/photos";
 import { saveMyUnit } from "@/lib/profile-client";
 import { createClient } from "@/lib/supabase/client";
@@ -28,6 +29,8 @@ type AddItemFormProps = {
 export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFormProps) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
+  const [photoUrl, setPhotoUrl] = useState<string>(); // the chosen photo, for colour
+  const photoUrlRef = useRef<string | null>(null);
   const [draft, setDraft] = useState<ItemDraft>(emptyDraft);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const [busy, setBusy] = useState(false);
@@ -40,9 +43,26 @@ export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFo
     saveMyUnit(next);
   }
 
+  // Free the photo's memory when leaving the page.
+  useEffect(() => () => {
+    if (photoUrlRef.current) URL.revokeObjectURL(photoUrlRef.current);
+  }, []);
+
+  // A new photo is a new garment: detect its colour, replacing any earlier one.
   function choose(chosen: File) {
     setFile(chosen);
     setError(null);
+    if (photoUrlRef.current) URL.revokeObjectURL(photoUrlRef.current);
+    const url = URL.createObjectURL(chosen);
+    photoUrlRef.current = url;
+    setPhotoUrl(url);
+    loadImageFromUrl(url)
+      .then(detectColour)
+      .catch(() => null) // not a readable image: saving will say so
+      .then((hex) => {
+        // Only if this is still the chosen photo (a quick second choice wins).
+        if (photoUrlRef.current === url) setDraft((d) => ({ ...d, colourHex: hex ?? "" }));
+      });
   }
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -79,6 +99,7 @@ export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFo
       <ItemDetailsFields
         draft={draft}
         onChange={setDraft}
+        photoSrc={photoUrl}
         brandSuggestions={brandSuggestions}
         unit={unit}
         onUnitChange={changeUnit}

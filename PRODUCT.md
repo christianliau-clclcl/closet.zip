@@ -157,16 +157,22 @@ archive on their own phones and computers. The app is deployed on a public URL.
     red, orange, yellow, green, blue, purple, pink) is worked out from the
     hex, never stored. No new libraries.
     - **11a:** `colour_hex` column (migration), types, demo colours
-    - **11b:** detection in the browser when a photo is chosen (most common
-      colour among non-transparent pixels) on Add, and when the cover
-      changes on Edit; adjust by tapping the garment in the photo preview
-      (eyedropper)
+    - **11b (done 2026-10-01):** detection in the browser (`lib/colour.ts`):
+      the most common colour among non-transparent pixels, preferring a
+      real colour when at least 15% of the garment has one (so white soles
+      don't win over green leather). Runs when a photo is chosen on Add,
+      and on Edit for pieces without a colour. `ColourField`: square
+      swatch beside the name; PICK FROM PHOTO opens the cover photo under
+      the field, tap the garment to pick (eyedropper); DETECT AGAIN (e.g.
+      after changing the cover); CLEAR. The name is never filled in
+      automatically.
     - **11c:** colour dot beside the colour in the overlay; filter drawer's
       Colour section lists families, each dot the average of the person's
       own pieces in that family
     - **11d:** SORT · Colour (see "Colour order")
-    - **11e:** colours for pieces uploaded before 11 (detected on Edit, or a
-      one-time button)
+    - **11e:** colours for pieces uploaded before 11: detected when their
+      Edit page opens (built in 11b); decide whether a one-time "detect all"
+      is still needed
 12. **Folders & Arrange** (was 9b): folders (cover grid, + New folder, Add to
     folder from the overlay, multi-select Move to folder) and Arrange mode /
     My order, with its own order per folder. Folders inside folders

@@ -6,6 +6,7 @@ import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
+import { containedBox } from "@/lib/image";
 import type { Unit } from "@/lib/measurements";
 import type { Item } from "@/lib/types";
 
@@ -18,21 +19,11 @@ type ItemOverlayProps = {
 };
 
 // True when a click on a garment photo lands in the empty margin around the
-// picture: the <img> fills the whole photo area, but the picture itself is
-// scaled down inside its padding with object-contain, leaving space around it.
+// picture (the <img> fills the whole photo area; the picture sits inside it).
 function onPhotoMargin(img: HTMLImageElement, x: number, y: number): boolean {
-  if (!img.naturalWidth || !img.naturalHeight) return false; // not loaded yet
-  const box = img.getBoundingClientRect();
-  const padding = parseFloat(getComputedStyle(img).paddingLeft); // same on every side
-  const scale = Math.min(
-    (box.width - 2 * padding) / img.naturalWidth,
-    (box.height - 2 * padding) / img.naturalHeight,
-  );
-  const width = img.naturalWidth * scale;
-  const height = img.naturalHeight * scale;
-  const left = box.left + (box.width - width) / 2;
-  const top = box.top + (box.height - height) / 2;
-  return x < left || x > left + width || y < top || y > top + height;
+  const picture = containedBox(img);
+  if (!picture) return false; // not loaded yet
+  return x < picture.left || x > picture.right || y < picture.top || y > picture.bottom;
 }
 
 // The detail overlay. It opens whenever the address has ?item=<id>, so the

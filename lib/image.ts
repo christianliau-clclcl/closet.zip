@@ -49,3 +49,20 @@ export async function resizeImage(image: HTMLImageElement, maxSize: number): Pro
 function toBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 }
+
+// Where the picture actually sits inside an <img> drawn with object-contain
+// and the same padding on every side, in screen coordinates. The <img> box is
+// bigger than the picture: the padding and the empty bands around it belong
+// to the box too. Null until the image has loaded.
+export function containedBox(img: HTMLImageElement): DOMRect | null {
+  if (!img.naturalWidth || !img.naturalHeight) return null;
+  const box = img.getBoundingClientRect();
+  const padding = parseFloat(getComputedStyle(img).paddingLeft);
+  const scale = Math.min(
+    (box.width - 2 * padding) / img.naturalWidth,
+    (box.height - 2 * padding) / img.naturalHeight,
+  );
+  const width = img.naturalWidth * scale;
+  const height = img.naturalHeight * scale;
+  return new DOMRect(box.left + (box.width - width) / 2, box.top + (box.height - height) / 2, width, height);
+}
