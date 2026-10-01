@@ -149,8 +149,10 @@ the bar reads "SORT · BRAND" / "FILTER · 2" while they're in use.
 
 **Detail overlay.** A layer over the closet, not a separate page: the grid
 stays visible behind, darkened and blurred by the scrim. Desktop: the garment
-floats large on the left directly on the scrim (no panel behind it; detail
-photo dots below it once detail photos exist), and a `canvas` panel on the
+floats large on the left directly on the scrim (no panel behind it), with
+small dots below it showing which photo is on screen and, with several
+photos, ← → buttons either side of it: 32px square `canvas` buttons with an
+`ink` arrow, like the ✕ (decided 2026-10-01; phones keep dots and swipe), and a `canvas` panel on the
 right holds the name in Fraunces, then a Details section and a
 Notes section. Mobile: no scrim; a full-screen `canvas` page with the garment
 on top and the details below, scrolling together.

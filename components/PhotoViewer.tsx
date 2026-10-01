@@ -24,7 +24,7 @@ const slide = {
 
 // The garment side of the detail overlay. With several photos: bare dots
 // under the garment (tap or click to switch), swipe left/right on phones, and
-// the ← → keys on desktop. One photo: just the garment, no dots.
+// on desktop ← → buttons beside the garment plus the ← → keys. One photo: just the garment, no dots.
 // Photos slide in the direction you're moving (instantly with Reduce motion).
 // Clicks on the empty space around the garment still close the overlay
 // (data-scrim), except at the end of a swipe.
@@ -116,6 +116,30 @@ export default function PhotoViewer({ photos, title }: PhotoViewerProps) {
           </motion.div>
         </AnimatePresence>
       </MotionConfig>
+
+      {count > 1 && (
+        // Desktop only: ← → buttons in the padding either side of the photo
+        // box, whose edges are at 50% ± min(50cqw, 50cqh) (see the dots below).
+        // Square canvas buttons like the ✕, so they read on the dark scrim.
+        <>
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Previous photo"
+            className="absolute top-1/2 left-[calc(50%-min(50cqw,50cqh))] hidden size-8 -translate-y-1/2 cursor-pointer items-center justify-center bg-canvas focus-visible:outline-1 focus-visible:outline-ink md:flex"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="Next photo"
+            className="absolute top-1/2 right-[calc(50%-min(50cqw,50cqh))] hidden size-8 -translate-y-1/2 cursor-pointer items-center justify-center bg-canvas focus-visible:outline-1 focus-visible:outline-ink md:flex"
+          >
+            →
+          </button>
+        </>
+      )}
 
       {count > 1 && (
         // Phones: in the padding under the photo. Desktop: just under the photo
