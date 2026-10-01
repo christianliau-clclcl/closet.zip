@@ -162,6 +162,16 @@ Update this section at the end of each working session.
   bucket `item-photos` (WebP/PNG, 5MB max), files at
   `<user id>/<item id>/<photo id>.<ext>`, owner-folder-only RLS. Both tested
   with rolled-back SQL as two users and a logged-out visitor.
+  Testing a migration before applying it (no Docker here): one `do` block
+  that `execute`s the migration, creates test users in `auth.users`,
+  switches with `set_config('request.jwt.claims', …)` + `set local role
+  authenticated|anon`, records results, and ends with `raise exception`
+  so everything rolls back; run with `npx supabase db query --linked -f
+  file.sql` and read the results from the error message.
+- Folders (12a, 2026-10-01): tables `folders` (parent_id, cover_item_id,
+  cover_path, position) and `folder_items` (position), `items.sort_position`;
+  "same owner" enforced by (id, user_id) foreign keys; loop check trigger
+  `prevent_folder_loops`. 20 rolled-back checks passed before applying.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.

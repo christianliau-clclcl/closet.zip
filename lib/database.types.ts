@@ -14,6 +14,96 @@ export type Database = {
   }
   public: {
     Tables: {
+      folder_items: {
+        Row: {
+          created_at: string
+          folder_id: string
+          item_id: string
+          position: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          folder_id: string
+          item_id: string
+          position?: number | null
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          folder_id?: string
+          item_id?: string
+          position?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folder_items_folder_fkey"
+            columns: ["folder_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "folder_items_item_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      folders: {
+        Row: {
+          cover_item_id: string | null
+          cover_path: string | null
+          created_at: string
+          id: string
+          name: string
+          parent_id: string | null
+          position: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_item_id?: string | null
+          cover_path?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          parent_id?: string | null
+          position?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          cover_item_id?: string | null
+          cover_path?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          parent_id?: string | null
+          position?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "folders_cover_item_fkey"
+            columns: ["cover_item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "folders_parent_fkey"
+            columns: ["parent_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "folders"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
       item_photos: {
         Row: {
           created_at: string
@@ -75,6 +165,7 @@ export type Database = {
           notes: string | null
           price: number | null
           size_label: string | null
+          sort_position: number | null
           status: string
           updated_at: string
           user_id: string
@@ -98,6 +189,7 @@ export type Database = {
           notes?: string | null
           price?: number | null
           size_label?: string | null
+          sort_position?: number | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -121,6 +213,7 @@ export type Database = {
           notes?: string | null
           price?: number | null
           size_label?: string | null
+          sort_position?: number | null
           status?: string
           updated_at?: string
           user_id?: string
