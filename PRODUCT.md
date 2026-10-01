@@ -135,6 +135,18 @@ archive on their own phones and computers. The app is deployed on a public URL.
 
 ## Later (v2+)
 
+- **Sell to friends** (idea, 2026-10-01): low-key, local, among friends and
+  friends of friends. A "For sale" toggle and list price per piece; a private,
+  unguessable share link per listing that can be forwarded. The shared page
+  shows the contact the owner chooses (e.g. "e-transfer to … / message me
+  at …"), plus an optional "I'm interested" button that gives the owner an
+  in-app notification. Email alerts later: email services have free tiers,
+  but need a custom domain (the same one parked for login emails).
+  No payments or pickup in the product: those happen outside it (e.g.
+  e-transfer). Selling a piece could end with archiving it as "Sold". Needs:
+  a deliberate exception to "every closet is private" (only shared listings,
+  only via the link), spam protection, and a policy for buyers' contact data.
+
 - Stylist tools: putting outfits together digitally
 - Shareable closets
 - Automatic background removal

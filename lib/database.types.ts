@@ -69,9 +69,11 @@ export type Database = {
           id: string
           left_via: string | null
           material: string | null
+          measurements: Json
           name: string | null
           notes: string | null
           price: number | null
+          size_label: string | null
           status: string
           updated_at: string
           user_id: string
@@ -89,9 +91,11 @@ export type Database = {
           id?: string
           left_via?: string | null
           material?: string | null
+          measurements?: Json
           name?: string | null
           notes?: string | null
           price?: number | null
+          size_label?: string | null
           status?: string
           updated_at?: string
           user_id?: string
@@ -109,12 +113,35 @@ export type Database = {
           id?: string
           left_via?: string | null
           material?: string | null
+          measurements?: Json
           name?: string | null
           notes?: string | null
           price?: number | null
+          size_label?: string | null
           status?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          measurement_unit: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          measurement_unit?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          measurement_unit?: string
+          updated_at?: string
         }
         Relationships: []
       }
