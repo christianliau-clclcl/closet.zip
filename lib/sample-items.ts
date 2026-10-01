@@ -1,11 +1,10 @@
 import type { Item } from "@/lib/types";
 
-// A hard-coded sample closet for designing the grid and overlay before
-// the database exists (Milestones 2–3). Replaced by real data in Milestone 5.
-// PLACEHOLDER: colour, material, acquired, acquiredFrom, price, size,
-// measurements (cm) and notes are made up
-// for layout testing. Replace them with the real details.
-// Some fields are left out on purpose, to test that empty fields are hidden.
+// The demo closet that logged-out visitors see on the home page. The photos
+// are real; the other details (measurements in cm) and notes are fictional
+// but meant to read naturally. Edit them freely.
+// Some fields are left out on purpose: real closets have gaps, and the demo
+// shows that empty fields are simply hidden.
 export const sampleItems: Item[] = [
   {
     id: "1",
@@ -21,7 +20,7 @@ export const sampleItems: Item[] = [
     size: "M",
     measurements: { chest: 56.5, length: 62, shoulder: 47, sleeve: 61 },
     notes:
-      "Placeholder note. The first piece I bought that I actually wanted to keep for a long time. It has faded exactly where I lean on things, and the cuffs are starting to fray in a way I like.",
+      "The first piece I bought that I actually wanted to keep for a long time. It has faded exactly where I lean on things, and the cuffs are starting to fray in a way I like.",
     status: "in_closet",
   },
   {
@@ -35,7 +34,7 @@ export const sampleItems: Item[] = [
     acquired: { month: 6, year: 2023 },
     acquiredFrom: "Online",
     price: 89.5,
-    notes: "Placeholder note. Wore these every day one summer.",
+    notes: "Wore these every day one summer.",
     status: "in_closet",
   },
   {
@@ -60,7 +59,7 @@ export const sampleItems: Item[] = [
     acquired: { month: 11, year: 2024 },
     acquiredFrom: "Gift",
     notes:
-      "Placeholder note. A birthday present. Warmer than it looks, and the badge comes off when I want it quieter.",
+      "A birthday present. Warmer than it looks, and the badge comes off when I want it quieter.",
     status: "in_closet",
   },
   {
@@ -83,7 +82,7 @@ export const sampleItems: Item[] = [
     material: "Leather",
     acquiredFrom: "Flea market",
     price: 45,
-    notes: "Placeholder note. Carries everything, including this laptop.",
+    notes: "Carries everything, including this laptop.",
     status: "in_closet",
   },
 ];
