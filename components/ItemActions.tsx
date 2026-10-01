@@ -4,16 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import ArchiveForm from "@/components/ArchiveForm";
+import DeleteConfirm from "@/components/DeleteConfirm";
 import { createClient } from "@/lib/supabase/client";
 import type { Item } from "@/lib/types";
 
 const actionClass = "cursor-pointer text-label uppercase underline underline-offset-4 disabled:cursor-wait";
 
-// The owner's actions in the overlay panel, under the item's name.
-// Delete joins these in the next step of Milestone 6.
+// The owner's actions in the overlay panel, under the item's name:
+// Edit, Archive / Un-archive, and (quieter, set apart) Delete.
 export default function ItemActions({ item }: { item: Item }) {
   const router = useRouter();
   const [archiving, setArchiving] = useState(false);
+  const [confirmingDelete, setConfirmingDelete] = useState(false);
   const [busy, setBusy] = useState(false);
   const archived = item.status === "archived";
 
@@ -28,6 +30,10 @@ export default function ItemActions({ item }: { item: Item }) {
       .eq("id", item.id);
     router.refresh();
     setBusy(false);
+  }
+
+  if (confirmingDelete) {
+    return <DeleteConfirm item={item} onKeep={() => setConfirmingDelete(false)} />;
   }
 
   return (
@@ -47,6 +53,16 @@ export default function ItemActions({ item }: { item: Item }) {
             </button>
           )
         )}
+        <button
+          type="button"
+          onClick={() => {
+            setArchiving(false);
+            setConfirmingDelete(true);
+          }}
+          className="ml-auto cursor-pointer text-label text-stone uppercase underline-offset-4 hover:underline"
+        >
+          Delete
+        </button>
       </div>
       {archiving && !archived && <ArchiveForm item={item} onCancel={() => setArchiving(false)} />}
     </>
