@@ -224,20 +224,26 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          is_public: boolean
           measurement_unit: string
           updated_at: string
+          username: string | null
         }
         Insert: {
           created_at?: string
           id?: string
+          is_public?: boolean
           measurement_unit?: string
           updated_at?: string
+          username?: string | null
         }
         Update: {
           created_at?: string
           id?: string
+          is_public?: boolean
           measurement_unit?: string
           updated_at?: string
+          username?: string | null
         }
         Relationships: []
       }
@@ -255,6 +261,7 @@ export type Database = {
         Args: { p_item_id: string; p_photo_ids: string[] }
         Returns: undefined
       }
+      username_available: { Args: { p_username: string }; Returns: boolean }
     }
     Enums: {
       [_ in never]: never

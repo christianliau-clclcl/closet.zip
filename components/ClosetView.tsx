@@ -30,6 +30,7 @@ import {
   saveFolderOrder,
 } from "@/lib/folders-client";
 import type { Unit } from "@/lib/measurements";
+import type { PublicProfile } from "@/lib/profile";
 import { saveMyUnit } from "@/lib/profile-client";
 import { searchItems } from "@/lib/search";
 import { shelvesByBrand, shelvesByColour, shelvesByType } from "@/lib/shelves";
@@ -59,10 +60,11 @@ type ClosetViewProps = {
   items: Item[];
   folders: Folder[];
   closetName?: string; // shown in the top bar instead of CLOSET.ZIP
+  publicProfile: PublicProfile; // username and PUBLIC, set from MENU
   initialUnit: Unit; // for measurements in the overlay
 };
 
-export default function ClosetView({ items, folders, initialUnit, closetName }: ClosetViewProps) {
+export default function ClosetView({ items, folders, initialUnit, closetName, publicProfile }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   // Your own pieces saved before colours existed get one in the background.
   useColourBackfill(items);
@@ -433,7 +435,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
   if (items.length === 0) {
     return (
       <>
-        <ClosetTopBar closetName={closetName} />
+        <ClosetTopBar closetName={closetName} publicProfile={publicProfile} />
         <main className="flex flex-1 flex-col">
           <EmptyState />
         </main>
@@ -443,7 +445,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
 
   return (
     <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
-      <ClosetTopBar closetName={closetName} zoom={{ value: zoom, onChange: setZoom }} />
+      <ClosetTopBar closetName={closetName} publicProfile={publicProfile} zoom={{ value: zoom, onChange: setZoom }} />
 
       {/* Desktop: search, SORT BY and the rest on the right of the view bar.
           Phones: in the bottom bar instead (below), so the top stays uncrowded. */}

@@ -264,6 +264,13 @@ small modal like the folder one, with "12 of 30" under the field. Sign-up
 has an optional CLOSET NAME field first ("e.g. Sam’s Closet"; "Optional.
 You can name it later from the menu.").
 
+**Public profile modal** (15a, 2026-10-03). MENU → PUBLIC PROFILE (reads
+"PUBLIC PROFILE · ON" when on). Same shape as the closet name modal:
+USERNAME (an @ typed first is dropped; lowercased), whose hint is the
+address and live status ("…/@sam.closet is available." / "That username is
+taken." / the rule broken), then PUBLIC as two chips, OFF · ON, with a
+`stone` note on what visitors would see and that the page is coming soon.
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.

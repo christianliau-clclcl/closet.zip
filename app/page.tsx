@@ -4,7 +4,7 @@ import TopBar from "@/components/TopBar";
 import { closetNameFrom } from "@/lib/closet-name";
 import { getMyFolders } from "@/lib/folders";
 import { getMyItems } from "@/lib/items";
-import { getMyUnit } from "@/lib/profile";
+import { getMyPublicProfile, getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 
 // Homepage. Logged in: your closet. Logged out: one quiet line about what
@@ -30,8 +30,19 @@ export default async function Home() {
     );
   }
 
-  const [items, folders, unit] = await Promise.all([getMyItems(), getMyFolders(), getMyUnit()]);
+  const [items, folders, unit, publicProfile] = await Promise.all([
+    getMyItems(),
+    getMyFolders(),
+    getMyUnit(),
+    getMyPublicProfile(),
+  ]);
   return (
-    <ClosetView items={items} folders={folders} initialUnit={unit} closetName={closetNameFrom(data.claims)} />
+    <ClosetView
+      items={items}
+      folders={folders}
+      initialUnit={unit}
+      closetName={closetNameFrom(data.claims)}
+      publicProfile={publicProfile}
+    />
   );
 }

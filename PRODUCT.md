@@ -327,7 +327,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - Not listed or searchable: no directory, and pages ask search engines
       not to index them; people find a profile only from its link.
     Steps:
-    - **15a:** usernames and PUBLIC · ON/OFF in MENU
+    - **15a (built 2026-10-03):** usernames and PUBLIC · ON/OFF in MENU →
+      Public profile (`profiles.username`, `profiles.is_public`; rules in
+      the database and `lib/usernames.ts`; live availability check)
     - **15b:** hiding pieces and folders (details, folder modal, SELECT)
     - **15c:** the public door: database functions that return only a
       public profile's visible pieces and catalogue fields, and a storage
