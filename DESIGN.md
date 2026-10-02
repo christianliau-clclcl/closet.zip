@@ -118,15 +118,27 @@ FOLDERS as they're built), active in `ink` with an underline, others in
 narrow phones the views scroll sideways. An empty view shows one `stone`
 line, centred.
 
-**Phones: top bar, menu and bottom bar** (first version 2026-10-02; desktop
-is unchanged). Below 768px the top bar holds only `CLOSET.ZIP` and **MENU**
-(plus LOG IN for visitors). MENU opens a small panel like the SORT list with
-the zoom slider and LOG OUT. The view bar holds only the views. A **bottom
-bar** is fixed to the bottom of the screen: `canvas`, a `rule` line on top,
-the same 11px labels; SORT · FILTER on the left (SORT's list opens upwards),
-+ ADD on the right. SELECT and ARRANGE join it in Milestone 12, and in
-SELECT mode it becomes the action bar. Pages leave 80px at the bottom so the
-bar never covers the last row, plus the iPhone home-indicator area.
+**Phones: top bar, menu and bottom bar** (2026-10-02; desktop is
+unchanged). Below 768px the top bar holds only `CLOSET.ZIP` and **MENU**
+(LOG OUT for now, room for more later), or LOG IN for visitors. The view
+bar holds only the views. A **bottom bar** is fixed to the bottom of the
+screen: `canvas`, a `rule` line on top, the same 11px labels: **VIEW ·
+SELECT** on the left, **+ ADD** on the right. VIEW opens a panel upwards
+(256px wide) with the SORT options, FILTER → (opens the drawer) and the ZOOM
+slider; it reads "VIEW · 2" while filters or a sort are on (filters count
+one each, a non-default sort one). In SELECT mode the bar becomes the action
+bar. Pages leave 80px at the bottom so the bar never covers the last row,
+plus the iPhone home-indicator area.
+
+**SELECT mode** (Milestone 12d, 2026-10-02; your own closet only). SELECT
+sits after SORT · FILTER (after VIEW on phones). While on, tapping a piece selects it instead of
+opening it, and every piece shows a 12px square at its top-right: a 1px
+`ink` outline, filled `ink` when selected. The bar (view bar on desktop,
+bottom bar on phones) becomes "3 SELECTED · ADD TO FOLDER · REMOVE · DONE";
+REMOVE only inside a folder. ADD TO FOLDER opens a list of folders (indented
+by depth, + NEW FOLDER at the end; 256px wide, scrolls past 320px). After an
+action the mode ends and the bar says what happened for 4 seconds
+("3 PIECES ADDED TO GRAILS").
 
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and

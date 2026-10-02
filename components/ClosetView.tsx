@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
-import { Suspense, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useRef, useState } from "react";
 import BottomBar from "@/components/BottomBar";
 import CategoryRows from "@/components/CategoryRows";
 import ClosetTopBar from "@/components/ClosetTopBar";
@@ -12,13 +12,17 @@ import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
+import SelectActions from "@/components/SelectActions";
+import ViewMenu from "@/components/ViewMenu";
 import SortMenu from "@/components/SortMenu";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
 import { useColourBackfill } from "@/lib/colour-backfill";
 import { folderPath, itemsInFolder } from "@/lib/folder-tree";
+import { addManyToFolder, createFolder, removeManyFromFolder } from "@/lib/folders-client";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
+import { SelectionContext } from "@/lib/selection";
 import type { Folder, Item } from "@/lib/types";
 import {
   countFilters,
@@ -64,6 +68,48 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   const filters = readFilters(params);
   const filterCount = countFilters(filters);
   const [filterOpen, setFilterOpen] = useState(false);
+  const router = useRouter();
+
+  // SELECT mode (Milestone 12d): tap pieces to choose them, then add them to
+  // a folder or take them out of the open one. Not kept in the address: it's
+  // a moment's task, not a place.
+  const [selecting, setSelecting] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  // A short line in the bar after an action ("3 pieces added to Grails").
+  const [status, setStatus] = useState<string | null>(null);
+  useEffect(() => {
+    if (!status) return;
+    const timer = setTimeout(() => setStatus(null), 4000);
+    return () => clearTimeout(timer);
+  }, [status]);
+
+  function stopSelecting() {
+    setSelecting(false);
+    setSelected(new Set());
+  }
+
+  function toggleSelected(id: string) {
+    setSelected((current) => {
+      const next = new Set(current);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  // Runs a folder change for the selected pieces, then leaves SELECT mode
+  // and says what happened; on failure, stays in SELECT mode to try again.
+  async function changeSelected(save: (ids: string[]) => Promise<string>) {
+    try {
+      const message = await save([...selected]);
+      stopSelecting();
+      setStatus(message);
+      router.refresh();
+    } catch {
+      setStatus("Couldn't save. Check your connection and try again.");
+    }
+  }
+  const pieces = (n: number) => `${n} ${n === 1 ? "piece" : "pieces"}`;
   const inView = view === "folders" ? (folder ? itemsInFolder(items, folder) : []) : itemsInView(items, view);
   const shown = sortItems(filterItems(inView, filters), sort);
 
@@ -87,6 +133,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
 
   // Instant: every piece is already loaded, so this only filters them.
   function changeView(next: View) {
+    stopSelecting();
     window.history.pushState(
       null,
       "",
@@ -143,19 +190,98 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
 
   // The top of FOLDERS is just folders: nothing to sort or filter.
   const sortable = view !== "folders" || Boolean(folder);
-  // SORT and FILTER, shown in the view bar (desktop) or bottom bar (phones).
-  const tools = (inBottomBar: boolean) => (
-    <>
-      <SortMenu sort={sort} onChange={changeSort} opensUp={inBottomBar} />
-      <button
-        type="button"
-        onClick={() => setFilterOpen(true)}
-        className="cursor-pointer text-label whitespace-nowrap uppercase"
-      >
-        {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
-      </button>
-    </>
+  // SELECT, for your own pieces wherever there are some to choose.
+  const selectButton = loggedIn && sortable && (
+    <button
+      type="button"
+      onClick={() => setSelecting(true)}
+      className="cursor-pointer text-label whitespace-nowrap uppercase"
+    >
+      Select
+    </button>
   );
+
+  // The usual tools. Desktop (view bar): SORT · FILTER · SELECT. Phones
+  // (bottom bar): VIEW (sort, filter and zoom in one panel) · SELECT.
+  const tools = (inBottomBar: boolean) =>
+    inBottomBar ? (
+      <>
+        <ViewMenu
+          sortable={sortable}
+          sort={sort}
+          onSortChange={changeSort}
+          filterCount={filterCount}
+          onFilter={() => setFilterOpen(true)}
+          zoom={zoom}
+          onZoomChange={setZoom}
+        />
+        {selectButton}
+      </>
+    ) : (
+      sortable && (
+        <>
+          <SortMenu sort={sort} onChange={changeSort} />
+          <button
+            type="button"
+            onClick={() => setFilterOpen(true)}
+            className="cursor-pointer text-label whitespace-nowrap uppercase"
+          >
+            {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
+          </button>
+          {selectButton}
+        </>
+      )
+    );
+
+  // In SELECT mode the bar holds the selection's actions instead.
+  const selectActions = (inBottomBar: boolean) => (
+    <SelectActions
+      count={selected.size}
+      folders={folders}
+      inFolder={Boolean(folder)}
+      opensUp={inBottomBar}
+      onDone={stopSelecting}
+      onAdd={(folderId) =>
+        changeSelected(async (ids) => {
+          await addManyToFolder(folderId, ids);
+          // Pieces already in the folder were skipped; say so honestly.
+          const target = folders.find((f) => f.id === folderId);
+          const name = target?.name ?? "the folder";
+          const already = ids.filter((id) => target?.itemIds.includes(id)).length;
+          const added = ids.length - already;
+          if (added === 0) return `Already in ${name}`;
+          return `${pieces(added)} added to ${name}${already > 0 ? ` (${already} already there)` : ""}`;
+        })
+      }
+      onCreate={(name) =>
+        changeSelected(async (ids) => {
+          const folderId = await createFolder(name, undefined);
+          await addManyToFolder(folderId, ids);
+          return `${pieces(ids.length)} added to ${name.trim()}`;
+        })
+      }
+      onRemove={() =>
+        changeSelected(async (ids) => {
+          if (!folder) return "";
+          await removeManyFromFolder(folder.id, ids);
+          return `${pieces(ids.length)} removed from ${folder.name}`;
+        })
+      }
+    />
+  );
+
+  // What the bar shows: the selection's actions, a short status line after an
+  // action, or the usual tools.
+  const barContents = (inBottomBar: boolean) =>
+    selecting ? (
+      selectActions(inBottomBar)
+    ) : status ? (
+      <p role="status" className="text-label uppercase">
+        {status}
+      </p>
+    ) : (
+      tools(inBottomBar)
+    );
 
   if (items.length === 0) {
     return (
@@ -169,19 +295,20 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   }
 
   return (
-    <>
+    <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
       <ClosetTopBar loggedIn={loggedIn} zoom={{ value: zoom, onChange: setZoom }} />
 
       {/* Desktop: SORT and FILTER on the right of the view bar. Phones: in the
           bottom bar instead (below), so the bars up top stay uncrowded. */}
       <ViewBar view={view} options={viewOptions} onChange={changeView}>
-        {sortable && <div className="hidden items-center gap-6 md:flex">{tools(false)}</div>}
+        <div className="hidden items-center gap-6 md:flex">{barContents(false)}</div>
       </ViewBar>
 
       <BottomBar
-        tools={sortable && tools(true)}
+        tools={barContents(true)}
         action={
-          loggedIn && (
+          loggedIn &&
+          !selecting && (
             <Link href="/add" className="text-label uppercase">
               + Add
             </Link>
@@ -257,6 +384,6 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           onUnitChange={changeUnit}
         />
       </Suspense>
-    </>
+    </SelectionContext.Provider>
   );
 }

@@ -11,8 +11,8 @@ type ClosetTopBarProps = {
 };
 
 // The closet's top bar. Desktop: zoom, ADD and LOG OUT (or LOG IN) in a row.
-// Phones: only MENU (zoom, log out), plus LOG IN for visitors; ADD lives in
-// the bottom bar there (DESIGN.md "Bottom bar").
+// Phones: MENU (log out, with room for more later), or LOG IN for visitors;
+// zoom and ADD live in the bottom bar there (DESIGN.md "Phones").
 export default function ClosetTopBar({ loggedIn, zoom }: ClosetTopBarProps) {
   const login = (
     <Link href="/login" className="text-label uppercase">
@@ -36,12 +36,12 @@ export default function ClosetTopBar({ loggedIn, zoom }: ClosetTopBarProps) {
         )}
       </div>
       <div className="flex items-center gap-6 md:hidden">
-        {!loggedIn && login}
-        {(zoom || loggedIn) && (
+        {loggedIn ? (
           <PhoneMenu>
-            {zoom && <ZoomSlider value={zoom.value} onChange={zoom.onChange} />}
-            {loggedIn && <LogOutButton />}
+            <LogOutButton />
           </PhoneMenu>
+        ) : (
+          login
         )}
       </div>
     </TopBar>

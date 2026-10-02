@@ -40,3 +40,25 @@ export async function removeFromFolder(folderId: string, itemId: string): Promis
     .eq("item_id", itemId);
   if (error) throw error;
 }
+
+// SELECT mode: add several pieces in one request. Pieces already in the
+// folder are skipped (the link exists), and they stay in their other folders.
+export async function addManyToFolder(folderId: string, itemIds: string[]): Promise<void> {
+  const { error } = await createClient()
+    .from("folder_items")
+    .upsert(
+      itemIds.map((itemId) => ({ folder_id: folderId, item_id: itemId })),
+      { onConflict: "folder_id,item_id", ignoreDuplicates: true },
+    );
+  if (error) throw error;
+}
+
+// SELECT mode inside a folder: take several pieces out of it (only the links).
+export async function removeManyFromFolder(folderId: string, itemIds: string[]): Promise<void> {
+  const { error } = await createClient()
+    .from("folder_items")
+    .delete()
+    .eq("folder_id", folderId)
+    .in("item_id", itemIds);
+  if (error) throw error;
+}

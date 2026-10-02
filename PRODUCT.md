@@ -213,7 +213,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
       links ("Seasons / Summer"; tap to open), EDIT → checklist of every
       folder (indented by depth), saved on each tick; + NEW FOLDER creates
       a top-level folder with the piece in it
-    - **12d:** SELECT mode in the grid (add to folder, remove from folder)
+    - **12d:** SELECT mode in the grid (add to folder, remove from folder);
+      built 2026-10-02, see DESIGN.md "SELECT mode"
     - **12e:** covers: pick a garment or upload an image
     - **12f:** folders inside folders: create inside, move a folder
     - **12g:** ARRANGE and My order, for ALL and each folder
