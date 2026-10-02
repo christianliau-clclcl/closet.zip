@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
+import Chip from "@/components/Chip";
 import CoverChooser from "@/components/CoverChooser";
 import FolderDeleteConfirm from "@/components/FolderDeleteConfirm";
 import FormField from "@/components/FormField";
@@ -20,7 +21,8 @@ type FolderModalProps = {
 };
 
 // The folder modal (PRODUCT.md Milestone 12e) for + NEW FOLDER and EDIT:
-// name, cover (box, image or piece) and, when editing, DELETE. Phones: a
+// name, INSIDE, cover (box, image or piece), PUBLIC PAGE (shown or hidden,
+// 15b) and, when editing, DELETE. Phones: a
 // full-screen page like the filter drawer. Desktop: a 384px panel in the
 // middle over the scrim. A native <dialog>: Esc and focus are handled.
 // Mounted only while open, so it always starts from the saved folder.
@@ -37,6 +39,7 @@ export default function FolderModal({ folder, parentId, pieces, folders, onClose
         ? { kind: "piece", itemId: folder.coverItemId }
         : { kind: "box" },
   );
+  const [hidden, setHidden] = useState(Boolean(folder?.hidden));
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
@@ -57,7 +60,7 @@ export default function FolderModal({ folder, parentId, pieces, folders, onClose
     setBusy(true);
     setError(null);
     try {
-      await saveFolder({ id: folder?.id, name, parentId: inside || undefined, cover, currentCoverPath: folder?.coverPath });
+      await saveFolder({ id: folder?.id, name, parentId: inside || undefined, cover, currentCoverPath: folder?.coverPath, hidden });
       onSaved();
     } catch (cause) {
       setError(
@@ -120,6 +123,19 @@ export default function FolderModal({ folder, parentId, pieces, folders, onClose
             </div>
           </div>
           <CoverChooser value={cover} onChange={setCover} pieces={pieces} currentImageSrc={folder?.coverSrc} />
+          {/* Milestone 15b: hiding the folder leaves its pieces as they are. */}
+          <fieldset>
+            <legend className="text-label uppercase">Public page</legend>
+            <div className="mt-2 flex gap-2">
+              <Chip chosen={!hidden} onClick={() => setHidden(false)}>
+                Shown
+              </Chip>
+              <Chip chosen={hidden} onClick={() => setHidden(true)}>
+                Hidden
+              </Chip>
+            </div>
+            <p className="mt-2 text-stone">Hiding the folder doesn&rsquo;t hide the pieces in it.</p>
+          </fieldset>
 
           {folder &&
             (confirmingDelete ? (

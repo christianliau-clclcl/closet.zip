@@ -271,6 +271,14 @@ address and live status ("…/@sam.closet is available." / "That username is
 taken." / the rule broken), then PUBLIC as two chips, OFF · ON, with a
 `stone` note on what visitors would see and that the page is coming soon.
 
+**Hiding from public** (15b, 2026-10-03). A piece's details end with
+PUBLIC PAGE (`stone` label) and two chips, SHOWN · HIDDEN, saved on tap,
+above Folders. The folder modal has the same chips after the cover, with a
+`stone` note that the pieces inside aren't hidden. SELECT mode adds HIDE
+(SHOW when every chosen piece is already hidden). Hidden pieces and folders
+carry a 12px crossed-out eye in 1px `stone` lines at the cell's top-right
+(left of the select square in SELECT mode).
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.
@@ -321,7 +329,8 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   ARCHIVED · ON / OFF (13c) is now part of SORT BY and works everywhere
   (off by default).
 
-**OVERVIEW** (Milestone 14, 2026-10-02): a tab of summaries for what you
+**OVERVIEW** (Milestone 14, 2026-10-02; removed 2026-10-03, kept here for
+the record; the bar is ALL · FOLDERS and SORT BY picks the views): a tab of summaries for what you
 own now, one section each, made of the garments in plain grids. No tools in
 the bar. **By colour** (14a): one group per colour name typed for the
 pieces, most pieces first: a heading like a shelf ("■ BLACK — 02", the

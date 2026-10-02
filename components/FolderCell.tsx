@@ -1,6 +1,7 @@
 import { motion } from "motion/react";
 import BoxIcon from "@/components/BoxIcon";
 import FadeImage from "@/components/FadeImage";
+import HiddenIcon from "@/components/HiddenIcon";
 import { twoDigits, type FolderCover } from "@/lib/folder-tree";
 import type { Folder } from "@/lib/types";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
@@ -25,10 +26,11 @@ export default function FolderCell({ folder, cover, count, zoom, onOpen }: Folde
       <button
         type="button"
         onClick={() => onOpen(folder.id)}
-        aria-label={`${folder.name}, folder, ${count} ${count === 1 ? "piece" : "pieces"}`}
+        aria-label={`${folder.name}, folder, ${count} ${count === 1 ? "piece" : "pieces"}${folder.hidden ? ", hidden from public" : ""}`}
         className="relative flex aspect-square w-full cursor-pointer flex-col focus-visible:outline-1 focus-visible:outline-ink"
       >
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
+        {folder.hidden && <HiddenIcon className="absolute top-2 right-2" />}
         {/* The zoom level's padding goes around the cover only, so the label
             below can use the cell's full width (phone cells are narrow). */}
         <span className={`block flex-1 pb-0 ${style.padding}`}>

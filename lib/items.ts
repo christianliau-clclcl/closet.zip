@@ -142,6 +142,7 @@ function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
     archived: monthYear(row.archived_month, row.archived_year),
     leftVia: (row.left_via as LeftVia | null) ?? undefined,
     sortPosition: row.sort_position ?? undefined,
+    hidden: row.is_hidden || undefined,
   };
 }
 

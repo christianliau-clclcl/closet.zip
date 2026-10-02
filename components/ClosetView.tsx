@@ -13,7 +13,6 @@ import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
-import Overview from "@/components/Overview";
 import SearchField from "@/components/SearchField";
 import SelectActions from "@/components/SelectActions";
 import TimeView from "@/components/TimeView";
@@ -30,6 +29,7 @@ import {
   saveClosetOrder,
   saveFolderOrder,
 } from "@/lib/folders-client";
+import { setPiecesHidden } from "@/lib/hiding-client";
 import type { Unit } from "@/lib/measurements";
 import type { PublicProfile } from "@/lib/profile";
 import { saveMyUnit } from "@/lib/profile-client";
@@ -277,8 +277,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     }
   }
 
-  // The top of FOLDERS is just folders, and OVERVIEW is summaries: nothing to
-  // sort, filter or search there.
+  // The top of FOLDERS is just folders: nothing to sort, filter or search there.
   const sortable = view === "all" || Boolean(folder);
 
   // SELECT, for your own pieces wherever there are some to choose (not on
@@ -321,7 +320,6 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   // Phones (bottom bar): SORT BY · SEARCH · SELECT · ARRANGE.
   const tools = (inBottomBar: boolean) =>
     inBottomBar ? (
-      view !== "overview" && (
       <>
         {sortBy(true)}
         {sortable && (
@@ -339,7 +337,6 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
         {selectButton}
         {arrangeButton}
       </>
-      )
     ) : (
       sortable && (
         <>
@@ -357,6 +354,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
       count={selected.size}
       folders={folders}
       inFolder={Boolean(folder)}
+      allHidden={selected.size > 0 && items.every((item) => !selected.has(item.id) || item.hidden)}
       opensUp={inBottomBar}
       onDone={stopSelecting}
       onAdd={(folderId) =>
@@ -376,6 +374,12 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           const folderId = await createFolder(name, undefined);
           await addManyToFolder(folderId, ids);
           return `${pieces(ids.length)} added to ${name.trim()}`;
+        })
+      }
+      onHide={(hidden) =>
+        changeSelected(async (ids) => {
+          await setPiecesHidden(ids, hidden);
+          return `${pieces(ids.length)} ${hidden ? "hidden from" : "shown on"} your public page`;
         })
       }
       onRemove={() =>
@@ -484,16 +488,6 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
             Drag pieces into your order, or use ← →. On a phone, press and hold a piece to lift it.
           </p>
           <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
-        </main>
-      ) : view === "overview" ? (
-        <main className="p-4 pb-20 md:p-8">
-          {/* What you own now: archived pieces aren't counted. */}
-          <Overview
-            items={items.filter((item) => item.status !== "archived")}
-            zoom={zoom}
-            onOpen={openItem}
-            onPreview={showPreview}
-          />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">

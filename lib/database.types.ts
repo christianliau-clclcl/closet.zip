@@ -59,6 +59,7 @@ export type Database = {
           cover_path: string | null
           created_at: string
           id: string
+          is_hidden: boolean
           name: string
           parent_id: string | null
           position: number | null
@@ -70,6 +71,7 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
+          is_hidden?: boolean
           name: string
           parent_id?: string | null
           position?: number | null
@@ -81,6 +83,7 @@ export type Database = {
           cover_path?: string | null
           created_at?: string
           id?: string
+          is_hidden?: boolean
           name?: string
           parent_id?: string | null
           position?: number | null
@@ -158,6 +161,7 @@ export type Database = {
           colour_hex: string | null
           created_at: string
           id: string
+          is_hidden: boolean
           left_via: string | null
           material: string | null
           measurements: Json
@@ -182,6 +186,7 @@ export type Database = {
           colour_hex?: string | null
           created_at?: string
           id?: string
+          is_hidden?: boolean
           left_via?: string | null
           material?: string | null
           measurements?: Json
@@ -206,6 +211,7 @@ export type Database = {
           colour_hex?: string | null
           created_at?: string
           id?: string
+          is_hidden?: boolean
           left_via?: string | null
           material?: string | null
           measurements?: Json

@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
 import FadeImage from "@/components/FadeImage";
+import HiddenIcon from "@/components/HiddenIcon";
 import { itemSummary, itemTitle } from "@/lib/format";
 import { useSelection } from "@/lib/selection";
 import type { Item } from "@/lib/types";
@@ -21,6 +22,7 @@ type ItemCellProps = {
 // It's a button so it can be focused with the keyboard, and clicking or
 // tapping it opens the detail overlay. In SELECT mode, tapping selects it
 // instead, shown by a small square at the top-right (filled when chosen).
+// A piece hidden from your public page has a small crossed-out eye there.
 export default function ItemCell({ item, zoom, onOpen, onPreview, className }: ItemCellProps) {
   const style = zoomStyles[zoom];
   const archived = item.status === "archived";
@@ -44,7 +46,9 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
         }}
         onBlur={() => onPreview(null)}
         // Screen readers hear the full line, since the hover label is visual only.
-        aria-label={[itemSummary(item) || itemTitle(item), archived && "Archived"].filter(Boolean).join(" · ")}
+        aria-label={[itemSummary(item) || itemTitle(item), archived && "Archived", item.hidden && "Hidden from public"]
+          .filter(Boolean)
+          .join(" · ")}
         className={`relative flex aspect-square w-full cursor-pointer flex-col ${style.padding} focus-visible:outline-1 focus-visible:outline-ink`}
       >
         <span aria-hidden className="absolute top-2 left-2 size-0.75 rounded-full bg-ink" />
@@ -54,6 +58,8 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
             className={`absolute top-2 right-2 size-3 border border-ink ${selected ? "bg-ink" : "bg-transparent"}`}
           />
         )}
+        {/* Hidden from your public page (15b); beside the select square. */}
+        {item.hidden && <HiddenIcon className={`absolute top-2 ${selection.active ? "right-7" : "right-2"}`} />}
         <span className="relative block flex-1">
           <FadeImage
             src={item.hero.thumbSrc ?? item.hero.src}

@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import ItemFolders from "@/components/ItemFolders";
+import ItemPublic from "@/components/ItemPublic";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
 import { containedBox } from "@/lib/image";
@@ -122,6 +123,7 @@ export default function ItemOverlay({
             <ItemActions key={item.id} item={item} />
             <ItemDetails item={item} unit={unit} onUnitChange={onUnitChange} />
             {/* Keys start fresh for each piece; siblings need different keys. */}
+            <ItemPublic key={`public-${item.id}`} item={item} />
             <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
           </div>
         </>

@@ -85,10 +85,25 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 15 — sharing (Milestone 14 done 2026-10-02, with
-  Spending shelved). Still to try on a real phone: arranging by touch
-  (12g), PASTE with Copy Subject, the sign-up closet name field. The user
-  also has feedback from a handful of friends to go through next.
+- Current milestone: 15 — public profiles (2026-10-03: 15a and 15b done;
+  next 15c, the public door, then 15d, the /@username page). Paused for
+  the day while the user gathers more feedback. Also queued: 15¼ new
+  category list (13 flat categories replacing the five; ask where existing
+  pieces move) and 15½ onboarding (mockups on the "Onboarding
+  explorations" design canvas; step 3 depends on 15¼). Still to try on a
+  real phone: arranging by touch (12g), PASTE with Copy Subject, the
+  sign-up closet name field, saving a username.
+- 2026-10-03: 15a usernames + PUBLIC (`profiles.username`,
+  `profiles.is_public`, `username_available` function, `lib/usernames.ts`,
+  `PublicProfileModal` from MENU). 15b hiding (`items.is_hidden`,
+  `folders.is_hidden`; `ItemPublic` SHOWN · HIDDEN in details, the same
+  chips in `FolderModal`, HIDE/SHOW in `SelectActions`, `HiddenIcon` on
+  cells; `lib/hiding-client.ts`). + ADD is a filled chip (`chipClass`).
+  OVERVIEW tab removed (bar is ALL · FOLDERS; ?view=overview → Colour
+  shelves). Second friend-feedback round shipped faster logging (chips for
+  category, material, acquired; usual size fills in).
+  Gotcha: don't run Prettier on whole files; the code isn't
+  Prettier-formatted, so it rewrites far more than the edit.
 - Milestone 14 done (2026-10-02): OVERVIEW tab (ALL · FOLDERS · OVERVIEW;
   `Overview`, `lib/overview.ts`): By colour (grouped by the colour names
   typed, wrapping grids) and Brands (most-owned first). A colour-strip

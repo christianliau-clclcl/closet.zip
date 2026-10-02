@@ -48,6 +48,7 @@ export type Item = {
   archived?: MonthYear; // when it left the closet
   leftVia?: LeftVia;
   sortPosition?: number; // place in My order for the whole closet; none until arranged
+  hidden?: boolean; // left off your public page (Milestone 15b)
 };
 
 // A personal folder (Milestone 12). Pieces are linked, never copied, so a
@@ -61,4 +62,5 @@ export type Folder = {
   coverSrc?: string; // its signed link, to show it
   itemIds: string[]; // the pieces directly in it, in the folder's My order
   arranged: boolean; // its pieces have been arranged at least once
+  hidden?: boolean; // left off your public page; its pieces still show (15b)
 };

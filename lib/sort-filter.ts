@@ -45,7 +45,8 @@ export function layoutOf(sort: Sort): Layout {
 // Old links (before SORT BY, 2026-10-02) in today's terms: ?view=rows is
 // Type, ?view=time is Timeline (which showed archived pieces), ?view=archive
 // shows archived pieces, ?sort=acquired is Timeline, ?sort=colour is the
-// gradient. Returns the updated address, or null when nothing is old.
+// gradient, ?view=overview (removed 2026-10-03) is the Colour shelves.
+// Returns the updated address, or null when nothing is old.
 export function upgradeOldAddress(search: string): string | null {
   const params = new URLSearchParams(search);
   const before = params.toString();
@@ -60,6 +61,9 @@ export function upgradeOldAddress(search: string): string | null {
   } else if (view === "archive") {
     params.delete("view");
     params.set("archived", "show");
+  } else if (view === "overview") {
+    params.delete("view");
+    params.set("sort", "family");
   }
   if (params.get("archived") === "hide") params.delete("archived");
   if (params.get("sort") === "acquired") params.set("sort", "time");

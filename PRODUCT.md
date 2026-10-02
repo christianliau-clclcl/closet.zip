@@ -277,7 +277,10 @@ archive on their own phones and computers. The app is deployed on a public URL.
       gradient (one grid) · Brand (shelves per brand) · Price (high to low);
       then FILTER, ARCHIVED · ON/OFF (off by default everywhere, replacing
       the ARCHIVE tab), ZOOM. Old ?view= links redirect
-14. **More visualizations** (planned 2026-10-02): an OVERVIEW tab (ALL ·
+14. **More visualizations** (planned 2026-10-02; the OVERVIEW tab was
+    removed 2026-10-03 at the user's request: SORT BY's shelves are the
+    views now, and old ?view=overview links open Colour shelves; the code
+    is in git history, commits 0ffb69f and 2e3892b): an OVERVIEW tab (ALL ·
     FOLDERS · OVERVIEW), one scrolling page of simple sections in rows and
     grids, for what you own now (archived pieces left out; search and
     filters don't apply).
@@ -330,12 +333,23 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **15a (built 2026-10-03):** usernames and PUBLIC · ON/OFF in MENU →
       Public profile (`profiles.username`, `profiles.is_public`; rules in
       the database and `lib/usernames.ts`; live availability check)
-    - **15b:** hiding pieces and folders (details, folder modal, SELECT)
+    - **15b (built 2026-10-03):** hiding pieces and folders
+      (`items.is_hidden`, `folders.is_hidden`): PUBLIC PAGE · SHOWN / HIDDEN
+      in a piece's details and in the folder modal, HIDE / SHOW in SELECT
+      mode, a small crossed-out eye on hidden cells. Hiding a folder hides
+      only the folder; its pieces still show unless hidden themselves
     - **15c:** the public door: database functions that return only a
       public profile's visible pieces and catalogue fields, and a storage
       rule for their photos; tested as owner, visitor and another user
       before applying
     - **15d:** the visitor's page at /@username (read-only, noindex)
+15¼. **New category list** (decided 2026-10-03, to plan): the five
+    categories are replaced by one flat list of 13: Bags, Dresses, Jackets,
+    Knitwear, Shirts, Shoes, Skirts, Sneakers, Sunglasses, Sweatshirts,
+    T-Shirts, Tops, Trousers. To work out: where existing pieces move
+    (Bottoms → Trousers? Outerwear → Jackets? Accessories?), measurement rows
+    and usual sizes per new category, Type shelves and filters, and what
+    onboarding step 3 becomes.
 15½. **Onboarding** (planned 2026-10-03): an optional first-run flow that
     makes logging faster. Shown once at first login, SKIP on every step,
     everything editable later from MENU. Steps: (1) closet name (if skipped

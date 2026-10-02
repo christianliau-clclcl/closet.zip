@@ -40,13 +40,14 @@ type SaveFolderOptions = {
   parentId?: string; // the folder it goes in; none for the top level
   cover: CoverChoice;
   currentCoverPath?: string; // the image it has now, if any
+  hidden: boolean; // left off your public page (Milestone 15b)
 };
 
 // Creates or updates a folder with its name and cover. A new image is resized
 // in the browser (transparency kept) and stored privately at
 // <user id>/folders/<folder id>.<ext>; an image no longer used is deleted.
 // Returns the folder's ID. Throws UnreadableImage for a file that isn't an image.
-export async function saveFolder({ id, name, parentId, cover, currentCoverPath }: SaveFolderOptions): Promise<string> {
+export async function saveFolder({ id, name, parentId, cover, currentCoverPath, hidden }: SaveFolderOptions): Promise<string> {
   const supabase = createClient();
   const storage = supabase.storage.from(BUCKET);
 
@@ -81,6 +82,7 @@ export async function saveFolder({ id, name, parentId, cover, currentCoverPath }
       parent_id: parentId ?? null,
       cover_item_id: cover.kind === "piece" ? cover.itemId : null,
       cover_path: coverPath,
+      is_hidden: hidden,
     })
     .eq("id", folderId);
   if (error) throw error;

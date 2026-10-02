@@ -10,7 +10,7 @@ export async function getMyFolders(): Promise<Folder[]> {
   const { data, error } = await supabase
     .from("folders")
     .select(
-      "id, name, parent_id, cover_item_id, cover_path, position, created_at, folder_items(item_id, position, created_at)",
+      "id, name, parent_id, cover_item_id, cover_path, position, is_hidden, created_at, folder_items(item_id, position, created_at)",
     );
   if (error) throw error;
 
@@ -31,6 +31,7 @@ export async function getMyFolders(): Promise<Folder[]> {
     coverSrc: row.cover_path ? coverSrc.get(row.cover_path) : undefined,
     itemIds: [...row.folder_items].sort(byMyOrder).map((link) => link.item_id),
     arranged: row.folder_items.some((link) => link.position !== null),
+    hidden: row.is_hidden || undefined,
   }));
 }
 
