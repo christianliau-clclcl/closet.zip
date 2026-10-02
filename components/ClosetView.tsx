@@ -104,6 +104,20 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     window.history.pushState(null, "", withParam("folder", id ?? null));
   }
 
+  // From a piece's details: close it and open the folder (Back returns to it).
+  function openFolderFromItem(id: string) {
+    openedFromGrid.current = false;
+    window.history.pushState(
+      null,
+      "",
+      withParams((p) => {
+        p.delete("item");
+        p.set("view", "folders");
+        p.set("folder", id);
+      }),
+    );
+  }
+
   // Kept while browsing, so every piece opens in the same unit; remembered in
   // the profile for logged-in people (demo visitors can switch, unsaved).
   function changeUnit(next: Unit) {
@@ -242,7 +256,9 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       <Suspense fallback={null}>
         <ItemOverlay
           items={items}
+          folders={folders}
           onClose={closeItem}
+          onOpenFolder={openFolderFromItem}
           editable={loggedIn}
           unit={unit}
           onUnitChange={changeUnit}

@@ -38,6 +38,22 @@ export function folderCover(items: Item[], folder: Folder): Item | undefined {
   return inFolder.find((item) => item.id === folder.coverItemId) ?? inFolder[0];
 }
 
+// Every folder, top-level first, each followed by the folders inside it,
+// with how deep it sits (0 = top level): for indented checklists.
+export function folderTree(folders: Folder[], parentId?: string, depth = 0): { folder: Folder; depth: number }[] {
+  return childFolders(folders, parentId).flatMap((folder) => [
+    { folder, depth },
+    ...folderTree(folders, folder.id, depth + 1),
+  ]);
+}
+
+// The folders a piece is in, in tree order.
+export function foldersContaining(folders: Folder[], itemId: string): Folder[] {
+  return folderTree(folders)
+    .map(({ folder }) => folder)
+    .filter((folder) => folder.itemIds.includes(itemId));
+}
+
 // "07": counts in labels are two digits, like the category rows.
 export function twoDigits(count: number): string {
   return String(count).padStart(2, "0");

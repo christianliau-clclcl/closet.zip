@@ -25,3 +25,18 @@ export async function deleteFolder(id: string): Promise<void> {
   const { error } = await createClient().from("folders").delete().eq("id", id);
   if (error) throw error;
 }
+
+export async function addToFolder(folderId: string, itemId: string): Promise<void> {
+  const { error } = await createClient().from("folder_items").insert({ folder_id: folderId, item_id: itemId });
+  if (error) throw error;
+}
+
+// Only the link goes; the piece stays in the closet and its other folders.
+export async function removeFromFolder(folderId: string, itemId: string): Promise<void> {
+  const { error } = await createClient()
+    .from("folder_items")
+    .delete()
+    .eq("folder_id", folderId)
+    .eq("item_id", itemId);
+  if (error) throw error;
+}

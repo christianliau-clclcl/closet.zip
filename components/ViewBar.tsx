@@ -13,7 +13,9 @@ type ViewBarProps = {
 export default function ViewBar({ view, options, onChange, children }: ViewBarProps) {
   return (
     <nav aria-label="Views" className="flex items-center justify-between gap-6 border-b border-rule px-4 py-3 md:px-8">
-      <div className="flex gap-6 overflow-x-auto">
+      {/* Swipe sideways on narrow phones; no scrollbar (the cut-off view
+          at the edge hints there's more). */}
+      <div className="flex gap-6 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {options.map((option) => (
           <button
             key={option}

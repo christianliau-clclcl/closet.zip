@@ -4,15 +4,18 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
+import ItemFolders from "@/components/ItemFolders";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
 import { containedBox } from "@/lib/image";
 import type { Unit } from "@/lib/measurements";
-import type { Item } from "@/lib/types";
+import type { Folder, Item } from "@/lib/types";
 
 type ItemOverlayProps = {
   items: Item[];
+  folders: Folder[];
   onClose: () => void;
+  onOpenFolder: (id: string) => void; // closes the overlay and opens the folder
   editable: boolean; // your own items: show Edit etc. (never in the demo)
   unit: Unit;
   onUnitChange: (unit: Unit) => void;
@@ -34,7 +37,15 @@ function onPhotoMargin(img: HTMLImageElement, x: number, y: number): boolean {
 // Layout on desktop: the grid stays visible behind, darkened and blurred; the
 // garment floats large on the left and the details sit in a panel on the right.
 // On phones: a full-screen canvas page, garment on top and details below.
-export default function ItemOverlay({ items, onClose, editable, unit, onUnitChange }: ItemOverlayProps) {
+export default function ItemOverlay({
+  items,
+  folders,
+  onClose,
+  onOpenFolder,
+  editable,
+  unit,
+  onUnitChange,
+}: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -112,6 +123,10 @@ export default function ItemOverlay({ items, onClose, editable, unit, onUnitChan
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
             {editable && <ItemActions key={item.id} item={item} />}
             <ItemDetails item={item} unit={unit} onUnitChange={onUnitChange} />
+            {/* Keys start fresh for each piece; siblings need different keys. */}
+            {editable && (
+              <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
+            )}
           </div>
         </>
       )}

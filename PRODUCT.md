@@ -208,7 +208,11 @@ archive on their own phones and computers. The app is deployed on a public URL.
       up; Back too), + NEW FOLDER (inside the open folder), RENAME, DELETE;
       one grid with the folders inside first, then the folder's own pieces
       (archived ones included); SORT and FILTER only inside a folder
-    - **12c:** add to / remove from folders in the overlay (checklist)
+    - **12c (done 2026-10-01):** a Folders section at the end of the
+      detail panel (own pieces only): the folders the piece is in as path
+      links ("Seasons / Summer"; tap to open), EDIT → checklist of every
+      folder (indented by depth), saved on each tick; + NEW FOLDER creates
+      a top-level folder with the piece in it
     - **12d:** SELECT mode in the grid (add to folder, remove from folder)
     - **12e:** covers: pick a garment or upload an image
     - **12f:** folders inside folders: create inside, move a folder
