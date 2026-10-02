@@ -254,6 +254,9 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   then for months with pieces the short month name in `stone` ("JUN") and
   the pieces in a row that wraps. Empty months are 12px rows. "N.D." at
   the bottom after a 48px gap.
+  ARCHIVED · ON / OFF (13c): in TIME only, after FILTER on desktop and as a
+  row in the VIEW panel on phones; hiding archived pieces counts as one in
+  "VIEW · N".
 
 ## Do's and don'ts
 

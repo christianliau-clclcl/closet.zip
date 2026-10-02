@@ -121,6 +121,12 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     }
   }
   const pieces = (n: number) => `${n} ${n === 1 ? "piece" : "pieces"}`;
+  // TIME shows archived pieces too, unless switched off (?archived=hide).
+  const hideArchived = view === "time" && params.get("archived") === "hide";
+  function toggleArchived() {
+    window.history.pushState(null, "", withParam("archived", hideArchived ? null : "hide"));
+  }
+
   // A folder's pieces in the closet's newest-first order; its own My order
   // is folder.itemIds.
   const inView =
@@ -129,7 +135,9 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
         ? items.filter((item) => folder.itemIds.includes(item.id))
         : []
       : view === "time"
-        ? items // every piece, archived ones too (a switch comes in 13c)
+        ? hideArchived
+          ? items.filter((item) => item.status !== "archived")
+          : items // every piece, including those that left the closet
         : itemsInView(items, view);
 
   // ARRANGE (Milestone 12g): drag pieces into My order; DONE saves it in one go.
@@ -193,6 +201,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       "",
       withParams((p) => {
         p.delete("folder");
+        p.delete("archived"); // TIME's switch
         if (next === "all") p.delete("view");
         else p.set("view", next);
       }),
@@ -280,6 +289,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           onFilter={() => setFilterOpen(true)}
           zoom={zoom}
           onZoomChange={setZoom}
+          archived={view === "time" ? { shown: !hideArchived, onToggle: toggleArchived } : undefined}
         />
         {selectButton}
         {arrangeButton}
@@ -295,6 +305,16 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           >
             {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
           </button>
+          {view === "time" && (
+            <button
+              type="button"
+              aria-pressed={!hideArchived}
+              onClick={toggleArchived}
+              className="cursor-pointer text-label whitespace-nowrap uppercase"
+            >
+              Archived · {hideArchived ? "Off" : "On"}
+            </button>
+          )}
           {selectButton}
           {arrangeButton}
         </>

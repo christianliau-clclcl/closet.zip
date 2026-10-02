@@ -247,7 +247,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **13b (built 2026-10-02):** phone layout: the axis runs down the left
       side, newest at the top; a row per month (empty months 12px, so gaps
       show), years beside the line, month names for months with pieces
-    - **13c:** archived switch and filtering
+    - **13c (built 2026-10-02):** ARCHIVED · ON / OFF (on by default; in the
+      address as ?archived=hide; desktop: after FILTER; phones: in VIEW,
+      counted in "VIEW · N"). FILTER works in TIME
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
     expensive pieces, and others
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only

@@ -85,8 +85,8 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 13 — style over time (Milestone 12 done 2026-10-02;
-  arranging by touch still to try on a real phone). Roadmap changed 2026-10-01: sharing,
+- Current milestone: 14 — more visualizations (Milestone 13 done
+  2026-10-02). Still to try on a real phone: arranging by touch (12g). Roadmap changed 2026-10-01: sharing,
   selling, styling/outfits, more visualizations and folders inside folders
   come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar
@@ -176,6 +176,11 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
+- Milestone 13 done (2026-10-02, style over time): TIME view
+  (`lib/timeline.ts` slots in real time, year-only slot before January,
+  "N.D." at the end; `TimeView`: horizontal on desktop opening at the
+  recent end, vertical down the left on phones, newest first). ARCHIVED ·
+  ON/OFF (?archived=hide). No SORT/SELECT/ARRANGE in TIME; FILTER works.
 - Milestone 12 done (2026-10-02, folders & Arrange; details in PRODUCT.md
   roadmap 12a–12g). Folders view (`FolderView`, `FolderCell`, `FolderModal`
   with name, INSIDE, cover BOX · IMAGE · PIECE, delete), folders from a

@@ -15,6 +15,7 @@ type ViewMenuProps = {
   onFilter: () => void; // opens the filter drawer
   zoom: Zoom;
   onZoomChange: (zoom: Zoom) => void;
+  archived?: { shown: boolean; onToggle: () => void }; // TIME only (Milestone 13c)
 };
 
 // VIEW in the phone's bottom bar (DESIGN.md "Phones"): how you're looking at
@@ -31,9 +32,11 @@ export default function ViewMenu({
   onFilter,
   zoom,
   onZoomChange,
+  archived,
 }: ViewMenuProps) {
   const { open, setOpen, wrapper } = usePopover();
-  const active = (filterable ? filterCount : 0) + (sortable && sort !== defaultSort ? 1 : 0);
+  const active =
+    (filterable ? filterCount : 0) + (sortable && sort !== defaultSort ? 1 : 0) + (archived && !archived.shown ? 1 : 0);
 
   return (
     <div ref={wrapper} className="relative">
@@ -81,6 +84,16 @@ export default function ViewMenu({
               className={`cursor-pointer text-left text-label uppercase ${sortable ? "border-t border-rule pt-4" : ""}`}
             >
               {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"} →
+            </button>
+          )}
+          {archived && (
+            <button
+              type="button"
+              aria-pressed={archived.shown}
+              onClick={archived.onToggle}
+              className="cursor-pointer border-t border-rule pt-4 text-left text-label uppercase"
+            >
+              Archived · {archived.shown ? "On" : "Off"}
             </button>
           )}
           <div className={sortable || filterable ? "border-t border-rule pt-4" : ""}>
