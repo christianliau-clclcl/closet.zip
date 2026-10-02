@@ -222,7 +222,10 @@ archive on their own phones and computers. The app is deployed on a public URL.
       of the folder's pieces. + NEW FOLDER and EDIT open a folder modal
       (name, cover BOX · IMAGE · PIECE, DELETE when editing); the quick
       inline + NEW FOLDER stays in the piece checklist and SELECT list
-    - **12f:** folders inside folders: create inside, move a folder
+    - **12f (built 2026-10-02):** INSIDE in the folder modal: a dropdown of
+      "Folders (top level)" and every folder (indented), leaving out the
+      folder itself and the folders inside it; saving moves the folder with
+      everything in it. Also sets where a new folder goes
     - **12g:** ARRANGE and My order, for ALL and each folder
 13. **Style over time:** first visualization
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most

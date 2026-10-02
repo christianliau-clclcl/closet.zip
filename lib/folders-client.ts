@@ -37,7 +37,7 @@ export type CoverChoice =
 type SaveFolderOptions = {
   id?: string; // none: create a new folder
   name: string;
-  parentId?: string; // where a new folder goes
+  parentId?: string; // the folder it goes in; none for the top level
   cover: CoverChoice;
   currentCoverPath?: string; // the image it has now, if any
 };
@@ -77,6 +77,8 @@ export async function saveFolder({ id, name, parentId, cover, currentCoverPath }
     .from("folders")
     .update({
       name: name.trim(),
+      // Moving (Milestone 12f); the database refuses a folder inside itself.
+      parent_id: parentId ?? null,
       cover_item_id: cover.kind === "piece" ? cover.itemId : null,
       cover_path: coverPath,
     })

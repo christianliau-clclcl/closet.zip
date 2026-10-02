@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import CoverChooser from "@/components/CoverChooser";
 import FolderDeleteConfirm from "@/components/FolderDeleteConfirm";
 import FormField from "@/components/FormField";
-import { MAX_FOLDER_NAME, countFoldersInside, folderAndInside } from "@/lib/folder-tree";
+import { MAX_FOLDER_NAME, countFoldersInside, folderAndInside, moveTargets } from "@/lib/folder-tree";
 import { deleteFolder, saveFolder, type CoverChoice } from "@/lib/folders-client";
 import { UnreadableImage } from "@/lib/photos";
 import type { Folder, Item } from "@/lib/types";
 
 type FolderModalProps = {
   folder?: Folder; // editing this one; none for + NEW FOLDER
-  parentId?: string; // where a new folder goes
+  parentId?: string; // where a new folder starts out (the open folder)
   pieces: Item[]; // the folder's own pieces, for a piece cover
   folders: Folder[]; // all of them, for what a delete takes with it
   onClose: () => void;
@@ -26,7 +26,10 @@ type FolderModalProps = {
 // Mounted only while open, so it always starts from the saved folder.
 export default function FolderModal({ folder, parentId, pieces, folders, onClose, onSaved, onDeleted }: FolderModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const insideId = useId();
   const [name, setName] = useState(folder?.name ?? "");
+  // INSIDE: the folder this one sits in ("" = the top level).
+  const [inside, setInside] = useState(folder ? (folder.parentId ?? "") : (parentId ?? ""));
   const [cover, setCover] = useState<CoverChoice>(() =>
     folder?.coverPath
       ? { kind: "current-image" }
@@ -54,7 +57,7 @@ export default function FolderModal({ folder, parentId, pieces, folders, onClose
     setBusy(true);
     setError(null);
     try {
-      await saveFolder({ id: folder?.id, name, parentId, cover, currentCoverPath: folder?.coverPath });
+      await saveFolder({ id: folder?.id, name, parentId: inside || undefined, cover, currentCoverPath: folder?.coverPath });
       onSaved();
     } catch (cause) {
       setError(
@@ -91,6 +94,31 @@ export default function FolderModal({ folder, parentId, pieces, folders, onClose
             maxLength={MAX_FOLDER_NAME}
             onChange={(event) => setName(event.target.value)}
           />
+          <div>
+            <label htmlFor={insideId} className="text-label uppercase">
+              Inside
+            </label>
+            <div className="relative mt-2">
+              {/* The phone's own picker; folders inside folders are indented. */}
+              <select
+                id={insideId}
+                value={inside}
+                onChange={(event) => setInside(event.target.value)}
+                className="w-full appearance-none border border-rule bg-cell px-3 py-3 pr-8 outline-none focus:border-ink"
+              >
+                <option value="">Folders (top level)</option>
+                {moveTargets(folders, folder?.id).map(({ folder: target, depth }) => (
+                  <option key={target.id} value={target.id}>
+                    {"\u00a0\u00a0\u00a0".repeat(depth + 1)}
+                    {target.name}
+                  </option>
+                ))}
+              </select>
+              <span aria-hidden className="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-stone">
+                ▾
+              </span>
+            </div>
+          </div>
           <CoverChooser value={cover} onChange={setCover} pieces={pieces} currentImageSrc={folder?.coverSrc} />
 
           {folder &&

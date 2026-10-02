@@ -189,7 +189,8 @@ clicking the scrim or the space around the garment.
 "FOLDERS / SEASONS / SUMMER", earlier parts `stone` (click to go up), the
 current one `ink`; + NEW FOLDER and (inside a folder) EDIT on the right as
 text actions. Both open the **folder modal**: a header bar ("NEW FOLDER" /
-"EDIT FOLDER", ✕), NAME, COVER (BOX · IMAGE · PIECE as text options, a
+"EDIT FOLDER", ✕), NAME, INSIDE (a dropdown styled like the month field:
+"Folders (top level)" then the folders, indented), COVER (BOX · IMAGE · PIECE as text options, a
 128px preview square underneath, "Choose image" or a 4-column grid of the
 folder's pieces), DELETE FOLDER (`stone`, with the usual confirm) when
 editing, and a full-width primary button. Phones: a full-screen `cell` page

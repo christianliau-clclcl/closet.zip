@@ -65,6 +65,14 @@ export function foldersContaining(folders: Folder[], itemId: string): Folder[] {
     .filter((folder) => folder.itemIds.includes(itemId));
 }
 
+// Where a folder could move to (Milestone 12f): every folder except itself
+// and the folders inside it, with how deep each sits. For a new folder (no
+// id), every folder.
+export function moveTargets(folders: Folder[], id: string | undefined): { folder: Folder; depth: number }[] {
+  const blocked = new Set(id ? folderAndInside(folders, id).map((f) => f.id) : []);
+  return folderTree(folders).filter(({ folder }) => !blocked.has(folder.id));
+}
+
 // "07": counts in labels are two digits, like the category rows.
 export function twoDigits(count: number): string {
   return String(count).padStart(2, "0");
