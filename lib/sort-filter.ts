@@ -9,7 +9,8 @@ import type { Item } from "@/lib/types";
 // reloading and links keep them. Items arrive from the database newest
 // first, so "newest" keeps that order.
 
-export const sorts = ["mine", "newest", "time", "type", "gradient", "brand", "price"] as const;
+// "family" is the Colour shelves (?sort=colour meant the gradient before).
+export const sorts = ["mine", "newest", "time", "type", "family", "gradient", "brand", "price"] as const;
 export type Sort = (typeof sorts)[number];
 
 export const sortLabels: Record<Sort, string> = {
@@ -17,8 +18,9 @@ export const sortLabels: Record<Sort, string> = {
   newest: "Newest added",
   time: "Timeline",
   type: "Type",
+  family: "Colour",
   gradient: "Colour gradient",
-  brand: "Brand A–Z",
+  brand: "Brand",
   price: "Price",
 };
 
@@ -28,6 +30,7 @@ export const sortShortLabels: Record<Sort, string> = {
   newest: "Newest",
   time: "Timeline",
   type: "Type",
+  family: "Colour",
   gradient: "Gradient",
   brand: "Brand",
   price: "Price",
@@ -36,7 +39,7 @@ export const sortShortLabels: Record<Sort, string> = {
 // How each sort lays pieces out.
 export type Layout = "grid" | "timeline" | "shelves";
 export function layoutOf(sort: Sort): Layout {
-  return sort === "time" ? "timeline" : sort === "type" ? "shelves" : "grid";
+  return sort === "time" ? "timeline" : sort === "type" || sort === "family" || sort === "brand" ? "shelves" : "grid";
 }
 
 // Old links (before SORT BY, 2026-10-02) in today's terms: ?view=rows is

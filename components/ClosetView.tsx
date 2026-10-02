@@ -5,7 +5,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import ArrangeGrid from "@/components/ArrangeGrid";
 import BottomBar from "@/components/BottomBar";
-import CategoryRows from "@/components/CategoryRows";
 import ClosetTopBar from "@/components/ClosetTopBar";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
@@ -16,6 +15,7 @@ import ItemOverlay from "@/components/ItemOverlay";
 import SearchField from "@/components/SearchField";
 import SelectActions from "@/components/SelectActions";
 import TimeView from "@/components/TimeView";
+import Shelves from "@/components/Shelves";
 import SortByMenu from "@/components/SortByMenu";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
@@ -31,6 +31,7 @@ import {
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import { searchItems } from "@/lib/search";
+import { shelvesByBrand, shelvesByColour, shelvesByType } from "@/lib/shelves";
 import { SelectionContext } from "@/lib/selection";
 import type { Folder, Item } from "@/lib/types";
 import {
@@ -415,7 +416,14 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     layout === "timeline" ? (
       <TimeView items={shown} newestFirst={newestFirst} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
     ) : (
-      <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+      <Shelves
+        shelves={
+          sort === "family" ? shelvesByColour(shown) : sort === "brand" ? shelvesByBrand(shown) : shelvesByType(shown)
+        }
+        zoom={zoom}
+        onOpen={openItem}
+        onPreview={showPreview}
+      />
     );
 
   if (items.length === 0) {

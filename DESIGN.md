@@ -119,9 +119,11 @@ line underneath. An empty view shows one `stone` line, centred.
 
 **SORT BY** (friend feedback, 2026-10-02). One panel for how you look at the
 closet: the arrangements, each also choosing a layout: My order, Newest
-added, Brand A–Z, Price and Colour gradient are a grid; Timeline is the
-timeline (with ORDER · NEWEST / OLDEST); Type is shelves per category (was
-ROWS). Then FILTER → (the drawer), ARCHIVED · OFF / ON (archived pieces are
+added, Price and Colour gradient are a grid; Timeline is the timeline (with
+ORDER · NEWEST / OLDEST); Type (was ROWS), Colour and Brand are shelves:
+per category, per colour family (gradient order, each heading led by the
+family's swatch averaged from your pieces: "■ BLACK — 04") and per brand
+(A–Z, "levi's" and "Levi's" as one); pieces without one come last. Then FILTER → (the drawer), ARCHIVED · OFF / ON (archived pieces are
 hidden everywhere unless on, folders included), and on phones ZOOM. The
 button names a non-default choice ("SORT BY · BRAND" on desktop, just
 "BRAND" on phones) plus "· N" for filters and archived pieces shown.
