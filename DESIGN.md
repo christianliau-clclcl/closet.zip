@@ -265,8 +265,7 @@ has an optional CLOSET NAME field first ("e.g. Sam’s Closet"; "Optional.
 You can name it later from the menu.").
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
-centred on the page, one `stone` line ("A private archive of the clothes
-you own, and have owned.") 48px above the log in / sign up form below. No
+centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.
 
 **Log in / sign up.** One page, a single centred column (full width on phones,

@@ -20,7 +20,9 @@ export default async function Home() {
         <TopBar />
         <main className="flex flex-1 flex-col items-center justify-center px-4 py-12">
           <div className="w-full max-w-sm">
-            <p className="mb-12 text-center text-stone">A private archive of the clothes you own, and have owned.</p>
+            <p className="mb-12 text-center text-stone">
+              Keep track of what you own: your grails, where you found them, and how your closet changes over time.
+            </p>
             <AuthForm />
           </div>
         </main>

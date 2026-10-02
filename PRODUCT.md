@@ -42,7 +42,7 @@ build them before friend testing (see Roadmap 15–17).
 ## Core user flows
 
 1. **Sign up / log in** with email. The logged-out home page is one line
-   ("A private archive of the clothes you own, and have owned.") above the
+   ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") above the
    log in / sign up form; there's no demo closet (decided 2026-10-02)
 2. **Add an item:** choose a hero photo → optionally fill in details → save
 3. **Browse:** scroll the grid; zoom between small and large views
