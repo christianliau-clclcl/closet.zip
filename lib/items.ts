@@ -40,19 +40,47 @@ export async function getMyItem(id: string): Promise<Item | null> {
   return item ?? null;
 }
 
-// Brands already used in this closet, for suggestions while typing.
+// What the Add and Edit forms suggest, from your own closet (faster logging,
+// 2026-10-03): brands (A–Z, for typing) and your usual size per category
+// (the one you've used most).
 // "Levi's" and "levi's" count as one; the first spelling seen is kept.
-export async function getMyBrands(): Promise<string[]> {
+export type ClosetHistory = {
+  brands: string[];
+  usualSizes: Partial<Record<Category, string>>;
+};
+
+export async function getMyHistory(): Promise<ClosetHistory> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("items").select("brand").not("brand", "is", null);
+  const { data, error } = await supabase.from("items").select("brand, category, size_label");
   if (error) throw error;
 
-  const byKey = new Map<string, string>();
-  for (const { brand } of data) {
-    const trimmed = brand?.trim();
-    if (trimmed && !byKey.has(trimmed.toLowerCase())) byKey.set(trimmed.toLowerCase(), trimmed);
+  // Counts each spelling-insensitive value, keeping its first spelling.
+  const tally = (values: (string | null)[]) => {
+    const counts = new Map<string, { name: string; count: number }>();
+    for (const value of values) {
+      const name = value?.trim();
+      if (!name) continue;
+      const entry = counts.get(name.toLowerCase()) ?? { name, count: 0 };
+      entry.count++;
+      counts.set(name.toLowerCase(), entry);
+    }
+    return [...counts.values()];
+  };
+  const byUse = (list: { name: string; count: number }[]) =>
+    list.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).map((entry) => entry.name);
+
+  const usualSizes: Partial<Record<Category, string>> = {};
+  for (const category of ["tops", "bottoms", "outerwear", "shoes", "accessories"] as Category[]) {
+    const [usual] = byUse(tally(data.filter((row) => row.category === category).map((row) => row.size_label)));
+    if (usual) usualSizes[category] = usual;
   }
-  return [...byKey.values()].sort((a, b) => a.localeCompare(b));
+
+  return {
+    brands: tally(data.map((row) => row.brand))
+      .map((entry) => entry.name)
+      .sort((a, b) => a.localeCompare(b)),
+    usualSizes,
+  };
 }
 
 // Adds signed links (full size and thumbnail) for every photo of each item.

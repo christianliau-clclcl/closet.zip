@@ -11,6 +11,7 @@ import {
   type DetailsRow,
   type ItemDraft,
 } from "@/lib/item-draft";
+import type { ClosetHistory } from "@/lib/items";
 import type { Unit } from "@/lib/measurements";
 import { detectColour, loadImageFromUrl } from "@/lib/colour";
 import { UnreadableImage, addPhoto, preparePhoto } from "@/lib/photos";
@@ -22,16 +23,20 @@ import { createClient } from "@/lib/supabase/client";
 // and record the photo (lib/photos.ts). If any step fails, whatever was
 // already created is removed again, so there's never a half-saved item.
 type AddItemFormProps = {
-  brandSuggestions: string[];
+  history: ClosetHistory; // your brands, materials and usual sizes
   initialUnit: Unit;
 };
 
-export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFormProps) {
+export default function AddItemForm({ history, initialUnit }: AddItemFormProps) {
   const router = useRouter();
   const [file, setFile] = useState<File | null>(null);
   const [photoUrl, setPhotoUrl] = useState<string>(); // the chosen photo, for colour
   const photoUrlRef = useRef<string | null>(null);
-  const [draft, setDraft] = useState<ItemDraft>(emptyDraft);
+  // A new piece starts as acquired this month (faster logging, 2026-10-03).
+  const [draft, setDraft] = useState<ItemDraft>(() => {
+    const now = new Date();
+    return { ...emptyDraft, acquiredMonth: String(now.getMonth() + 1), acquiredYear: String(now.getFullYear()) };
+  });
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -100,7 +105,7 @@ export default function AddItemForm({ brandSuggestions, initialUnit }: AddItemFo
         draft={draft}
         onChange={setDraft}
         photoSrc={photoUrl}
-        brandSuggestions={brandSuggestions}
+        history={history}
         unit={unit}
         onUnitChange={changeUnit}
       />

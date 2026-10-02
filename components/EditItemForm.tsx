@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import ItemDetailsFields from "@/components/ItemDetailsFields";
 import { detectColour, loadImageFromUrl } from "@/lib/colour";
 import { convertDraftMeasurements, draftToRow, itemToDraft, type ItemDraft } from "@/lib/item-draft";
+import type { ClosetHistory } from "@/lib/items";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import { createClient } from "@/lib/supabase/client";
@@ -12,13 +13,13 @@ import type { Item } from "@/lib/types";
 
 type EditItemFormProps = {
   item: Item;
-  brandSuggestions: string[];
+  history: ClosetHistory; // your brands, materials and usual sizes
   initialUnit: Unit;
 };
 
 // Edit an item's details (the same fields as Add, already filled in).
 // Saving returns to the closet with this item's overlay open.
-export default function EditItemForm({ item, brandSuggestions, initialUnit }: EditItemFormProps) {
+export default function EditItemForm({ item, history, initialUnit }: EditItemFormProps) {
   const router = useRouter();
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const [draft, setDraft] = useState<ItemDraft>(() => itemToDraft(item, initialUnit));
@@ -74,7 +75,7 @@ export default function EditItemForm({ item, brandSuggestions, initialUnit }: Ed
         draft={draft}
         onChange={setDraft}
         photoSrc={item.hero.src}
-        brandSuggestions={brandSuggestions}
+        history={history}
         unit={unit}
         onUnitChange={changeUnit}
       />

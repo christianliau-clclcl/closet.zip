@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import AddItemForm from "@/components/AddItemForm";
 import TopBar from "@/components/TopBar";
 import { closetNameFrom } from "@/lib/closet-name";
-import { getMyBrands } from "@/lib/items";
+import { getMyHistory } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 
@@ -16,7 +16,7 @@ export default async function AddPage() {
   const { data } = await supabase.auth.getClaims();
   if (!data?.claims) redirect("/login");
 
-  const [brands, unit] = await Promise.all([getMyBrands(), getMyUnit()]);
+  const [history, unit] = await Promise.all([getMyHistory(), getMyUnit()]);
 
   return (
     <>
@@ -28,7 +28,7 @@ export default async function AddPage() {
       <main className="mx-auto w-full max-w-sm px-4 py-12 md:py-20">
         <h1 className="font-serif text-title">Add a piece</h1>
         <div className="mt-8">
-          <AddItemForm brandSuggestions={brands} initialUnit={unit} />
+          <AddItemForm history={history} initialUnit={unit} />
         </div>
       </main>
     </>

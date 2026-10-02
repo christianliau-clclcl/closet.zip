@@ -291,6 +291,22 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **14c (built 2026-10-02):** Brands: most-owned brands first ("levi's"
       and "Levi's" as one), each a heading and a wrapping grid; no brand
       last
+14½. **Second feedback round** (decided 2026-10-03, from a handful of
+    friends: they liked the details, but couldn't tell what it was for, and
+    filling in details was the biggest pain point):
+    - **Say what it is:** a few lines on the logged-out home page (pulled
+      forward from Milestone 18), in friends' own words: keeping track of
+      what you own and where it came from, grails, a personal record that
+      changes over the years
+    - **Faster logging** (explored on a design canvas, built 2026-10-03):
+      compact boxed chips for Category, Material and Acquired; the rest
+      typed. Acquired starts on This month (THIS MONTH · LAST MONTH ·
+      EARLIER… · DON'T KNOW). Material: several allowed from Cotton ·
+      Leather · Twill · Nylon · Polyester · Wool · Linen, plus OTHER… to
+      type; saved as one line ("Cotton, Wool, Cashmere"). Size fills in with
+      your usual size for the category (the one you've used most), silently,
+      never over a size you typed
+    - Not doing: return reminders (too few people would use them)
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
     link to your closet or a folder, which you can switch off. The first
     deliberate exception to "every closet is private"; nothing is ever
@@ -322,6 +338,14 @@ archive on their own phones and computers. The app is deployed on a public URL.
   only via the link), spam protection, and a policy for buyers' contact data.
 
 ## Later (v2+)
+
+- **Discovery** (friends' feedback, 2026-10-03): a feed of what people you
+  follow acquire; matching "I have this too" across closets; autofill from a
+  shared database of other people's entries. Later, if ever: each breaks
+  "every closet is private" in a bigger way than sharing a link.
+- **Connecting people** (friends' feedback, 2026-10-03; wanted): e.g. people
+  who like the same brands. Needs sharing (15) and usernames first; design it
+  then.
 
 - Automatic background removal
 - Custom fields, and custom replacements for the fixed category list

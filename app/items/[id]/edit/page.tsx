@@ -5,7 +5,7 @@ import EditItemForm from "@/components/EditItemForm";
 import PhotoManager from "@/components/PhotoManager";
 import TopBar from "@/components/TopBar";
 import { closetNameFrom } from "@/lib/closet-name";
-import { getMyBrands, getMyItem } from "@/lib/items";
+import { getMyHistory, getMyItem } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 
@@ -20,7 +20,7 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
   if (!data?.claims) redirect("/login");
 
   const { id } = await props.params;
-  const [item, brands, unit] = await Promise.all([getMyItem(id), getMyBrands(), getMyUnit()]);
+  const [item, history, unit] = await Promise.all([getMyItem(id), getMyHistory(), getMyUnit()]);
   if (!item) notFound();
 
   return (
@@ -42,7 +42,7 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
           />
         </div>
         <div className="mt-12">
-          <EditItemForm item={item} brandSuggestions={brands} initialUnit={unit} />
+          <EditItemForm item={item} history={history} initialUnit={unit} />
         </div>
       </main>
     </>

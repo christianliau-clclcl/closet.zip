@@ -237,6 +237,14 @@ piece with a colour but no name shows its family's name.
 padding, square. Secondary: transparent with a 1px `ink` border. Tertiary:
 text only with an underline on hover.
 
+**Chips** (faster logging, 2026-10-03; "D · Compact" from the canvas
+explorations). Compact square boxes for short lists of choices: 32px tall,
+10px side padding, a 1px `rule` border on `cell`, label type; the chosen
+one filled `ink` with `cell` text; 8px apart, wrapping. Tap the chosen chip
+again to clear it. Used for Category, Material (several allowed) and
+Acquired on Add and Edit. (Below the 44px touch target by choice; the 8px
+gaps keep taps apart.)
+
 **Inputs.** `cell` fill, 1px `rule` border, square, mono 13px. The label
 sits above in mono 11px uppercase. Focus: border becomes `ink`.
 

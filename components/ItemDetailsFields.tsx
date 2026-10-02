@@ -2,9 +2,12 @@ import { useId } from "react";
 import ColourField from "@/components/ColourField";
 import FormField from "@/components/FormField";
 import MeasurementFields from "@/components/MeasurementFields";
-import MonthYearField from "@/components/MonthYearField";
-import OptionPicker from "@/components/OptionPicker";
+import AcquiredField from "@/components/AcquiredField";
+import ChipPicker from "@/components/ChipPicker";
+import MaterialField from "@/components/MaterialField";
+import { formatCategory } from "@/lib/format";
 import type { ItemDraft } from "@/lib/item-draft";
+import type { ClosetHistory } from "@/lib/items";
 import type { Unit } from "@/lib/measurements";
 import type { Category } from "@/lib/types";
 
@@ -16,7 +19,7 @@ type ItemDetailsFieldsProps = {
   // in the background never undoes what was typed in the meantime.
   onChange: React.Dispatch<React.SetStateAction<ItemDraft>>;
   photoSrc?: string; // the cover photo, for the colour eyedropper
-  brandSuggestions: string[]; // brands already used in this closet
+  history: ClosetHistory; // your brands, materials and usual sizes, for suggestions
   unit: Unit; // for measurements
   onUnitChange: (unit: Unit) => void;
 };
@@ -27,7 +30,7 @@ export default function ItemDetailsFields({
   draft,
   onChange,
   photoSrc,
-  brandSuggestions,
+  history,
   unit,
   onUnitChange,
 }: ItemDetailsFieldsProps) {
@@ -47,11 +50,21 @@ export default function ItemDetailsFields({
 
       <FormField label="Name" value={draft.name} onChange={(e) => set("name", e.target.value)} />
 
-      <OptionPicker
+      <ChipPicker
         legend="Category"
         options={categories}
+        labelFor={formatCategory}
         value={draft.category}
-        onChange={(category) => set("category", category)}
+        onChange={(category) =>
+          onChange((current) => {
+            // Size follows the category with your usual size for it, unless
+            // you've typed one yourself (an earlier usual size counts as not).
+            const before = current.category ? history.usualSizes[current.category] : undefined;
+            const untouched = !current.size || current.size === before;
+            const usual = category ? history.usualSizes[category] : undefined;
+            return { ...current, category, size: untouched ? (usual ?? "") : current.size };
+          })
+        }
       />
 
       <div>
@@ -64,7 +77,7 @@ export default function ItemDetailsFields({
         />
         {/* The browser's own suggestion list: brands you've used before. */}
         <datalist id={brandListId}>
-          {brandSuggestions.map((brand) => (
+          {history.brands.map((brand) => (
             <option key={brand} value={brand} />
           ))}
         </datalist>
@@ -78,14 +91,12 @@ export default function ItemDetailsFields({
         photoSrc={photoSrc}
       />
 
-      <FormField label="Material" value={draft.material} onChange={(e) => set("material", e.target.value)} />
+      <MaterialField value={draft.material} onChange={(material) => set("material", material)} />
 
-      <MonthYearField
-        legend="Acquired"
+      <AcquiredField
         month={draft.acquiredMonth}
         year={draft.acquiredYear}
-        onMonthChange={(month) => set("acquiredMonth", month)}
-        onYearChange={(year) => set("acquiredYear", year)}
+        onChange={(acquiredMonth, acquiredYear) => onChange((current) => ({ ...current, acquiredMonth, acquiredYear }))}
       />
 
       <FormField
