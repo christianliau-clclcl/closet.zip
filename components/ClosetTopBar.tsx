@@ -1,32 +1,47 @@
+"use client";
+
 import Link from "next/link";
+import { useState } from "react";
+import ClosetNameModal from "@/components/ClosetNameModal";
 import LogOutButton from "@/components/LogOutButton";
-import PhoneMenu from "@/components/PhoneMenu";
 import TopBar from "@/components/TopBar";
+import TopMenu from "@/components/TopMenu";
 import ZoomSlider from "@/components/ZoomSlider";
 import type { Zoom } from "@/lib/zoom";
 
 type ClosetTopBarProps = {
+  closetName?: string; // shown instead of CLOSET.ZIP
   zoom?: { value: Zoom; onChange: (zoom: Zoom) => void }; // none for an empty closet
 };
 
-// The closet's top bar. Desktop: zoom, ADD and LOG OUT in a row. Phones: MENU
-// (log out, with room for more later); zoom and ADD live in the bottom bar
-// there (DESIGN.md "Phones").
-export default function ClosetTopBar({ zoom }: ClosetTopBarProps) {
+// The closet's top bar: the closet's name on the left. Desktop: zoom, ADD and
+// MENU. Phones: MENU only; zoom and ADD live in the bottom bar there
+// (DESIGN.md "Phones"). MENU holds naming the closet and LOG OUT.
+export default function ClosetTopBar({ closetName, zoom }: ClosetTopBarProps) {
+  const [naming, setNaming] = useState(false);
+
+  const menu = (
+    <TopMenu>
+      <button type="button" onClick={() => setNaming(true)} className="cursor-pointer text-label uppercase">
+        {closetName ? "Rename closet" : "Name your closet"}
+      </button>
+      <LogOutButton />
+    </TopMenu>
+  );
+
   return (
-    <TopBar>
-      <div className="hidden items-center gap-6 md:flex">
-        {zoom && <ZoomSlider value={zoom.value} onChange={zoom.onChange} />}
-        <Link href="/add" className="text-label uppercase">
-          Add
-        </Link>
-        <LogOutButton />
-      </div>
-      <div className="flex items-center gap-6 md:hidden">
-        <PhoneMenu>
-          <LogOutButton />
-        </PhoneMenu>
-      </div>
-    </TopBar>
+    <>
+      <TopBar title={closetName}>
+        <div className="hidden items-center gap-6 md:flex">
+          {zoom && <ZoomSlider value={zoom.value} onChange={zoom.onChange} />}
+          <Link href="/add" className="text-label uppercase">
+            Add
+          </Link>
+          {menu}
+        </div>
+        <div className="flex items-center gap-6 md:hidden">{menu}</div>
+      </TopBar>
+      {naming && <ClosetNameModal current={closetName} onClose={() => setNaming(false)} />}
+    </>
   );
 }

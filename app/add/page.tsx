@@ -3,6 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import AddItemForm from "@/components/AddItemForm";
 import TopBar from "@/components/TopBar";
+import { closetNameFrom } from "@/lib/closet-name";
 import { getMyBrands } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -19,7 +20,7 @@ export default async function AddPage() {
 
   return (
     <>
-      <TopBar>
+      <TopBar title={closetNameFrom(data.claims)}>
         <Link href="/" className="text-label uppercase">
           Cancel
         </Link>

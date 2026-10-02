@@ -240,6 +240,14 @@ iPhone the system asks first). Pairs well with iPhone's Copy Subject, which
 copies a background-removed PNG. Desktop shows a quiet `stone` hint: "or
 drop it here, or paste (⌘V)".
 
+**Closet name** (2026-10-02). Logged in, the top bar's left shows the
+closet's name instead of `CLOSET.ZIP` (same label style, cut with … if
+long), on the closet, Add and Edit. MENU (now on desktop too: zoom · ADD ·
+MENU) holds "Name your closet" / "Rename closet" and LOG OUT; naming opens a
+small modal like the folder one, with "12 of 30" under the field. Sign-up
+has an optional CLOSET NAME field first ("e.g. Sam’s Closet"; "Optional.
+You can name it later from the menu.").
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("A private archive of the clothes
 you own, and have owned.") 48px above the log in / sign up form below. No

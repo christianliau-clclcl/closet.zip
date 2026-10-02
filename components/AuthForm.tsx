@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FormField from "@/components/FormField";
 import { authErrorMessage, loginNotices, type LoginNotice } from "@/lib/auth-messages";
+import { MAX_CLOSET_NAME, checkClosetName } from "@/lib/closet-name";
 import { createClient } from "@/lib/supabase/client";
 
 type Mode = "login" | "signup";
@@ -18,6 +19,7 @@ const copy = {
 export default function AuthForm({ notice }: { notice?: LoginNotice }) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>("login");
+  const [closetName, setClosetName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -45,10 +47,22 @@ export default function AuthForm({ notice }: { notice?: LoginNotice }) {
       return;
     }
 
+    // The closet's name is optional; it's kept with the account's details.
+    let name: string | null;
+    try {
+      name = checkClosetName(closetName);
+    } catch (problem) {
+      setError((problem as Error).message);
+      setBusy(false);
+      return;
+    }
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: `${window.location.origin}/auth/confirm` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/confirm`,
+        data: name ? { closet_name: name } : undefined,
+      },
     });
     setBusy(false);
     if (error) {
@@ -105,6 +119,16 @@ export default function AuthForm({ notice }: { notice?: LoginNotice }) {
       <h1 className="mt-8 font-serif text-title">{text.title}</h1>
 
       <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-6">
+        {mode === "signup" && (
+          <FormField
+            label="Closet name"
+            placeholder="e.g. Sam’s Closet"
+            maxLength={MAX_CLOSET_NAME * 2}
+            hint="Optional. You can name it later from the menu."
+            value={closetName}
+            onChange={(event) => setClosetName(event.target.value)}
+          />
+        )}
         <FormField
           label="Email"
           type="email"

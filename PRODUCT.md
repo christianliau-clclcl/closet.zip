@@ -265,7 +265,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       in the bottom bar opens a field) filtering live across name, brand,
       colour, material, size, where from, category, notes; in the address
       as ?q=
-    - **Closet name:** an optional "Closet name" field at the top of the
+    - **Closet name (built 2026-10-02):** an optional "Closet name" field at the top of the
       sign-up form (any characters, 1–30; "you can name it later from the
       menu"); stored in the account's user metadata; replaces CLOSET.ZIP in
       the top left when logged in; set or renamed later from MENU

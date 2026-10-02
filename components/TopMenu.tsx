@@ -2,10 +2,10 @@
 
 import { usePopover } from "@/lib/use-popover";
 
-// MENU in the top bar on phones: a small panel under it, like the SORT list,
-// for things used now and then (log out for now). Closes on Esc or a tap
-// anywhere else. Desktop shows these in the top bar directly.
-export default function PhoneMenu({ children }: { children: React.ReactNode }) {
+// MENU in the top bar: a small panel under it, like the SORT list, for
+// things used now and then (naming the closet, log out). Closes on Esc or a
+// tap anywhere else.
+export default function TopMenu({ children }: { children: React.ReactNode }) {
   const { open, setOpen, wrapper } = usePopover();
 
   return (

@@ -1,6 +1,7 @@
 import AuthForm from "@/components/AuthForm";
 import ClosetView from "@/components/ClosetView";
 import TopBar from "@/components/TopBar";
+import { closetNameFrom } from "@/lib/closet-name";
 import { getMyFolders } from "@/lib/folders";
 import { getMyItems } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
@@ -28,5 +29,7 @@ export default async function Home() {
   }
 
   const [items, folders, unit] = await Promise.all([getMyItems(), getMyFolders(), getMyUnit()]);
-  return <ClosetView items={items} folders={folders} initialUnit={unit} />;
+  return (
+    <ClosetView items={items} folders={folders} initialUnit={unit} closetName={closetNameFrom(data.claims)} />
+  );
 }

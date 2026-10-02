@@ -4,6 +4,7 @@ import { notFound, redirect } from "next/navigation";
 import EditItemForm from "@/components/EditItemForm";
 import PhotoManager from "@/components/PhotoManager";
 import TopBar from "@/components/TopBar";
+import { closetNameFrom } from "@/lib/closet-name";
 import { getMyBrands, getMyItem } from "@/lib/items";
 import { getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -24,7 +25,7 @@ export default async function EditItemPage(props: PageProps<"/items/[id]/edit">)
 
   return (
     <>
-      <TopBar>
+      <TopBar title={closetNameFrom(data.claims)}>
         <Link href={`/?item=${item.id}`} className="text-label uppercase">
           Cancel
         </Link>

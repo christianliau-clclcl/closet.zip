@@ -54,10 +54,11 @@ import type { Zoom } from "@/lib/zoom";
 type ClosetViewProps = {
   items: Item[];
   folders: Folder[];
+  closetName?: string; // shown in the top bar instead of CLOSET.ZIP
   initialUnit: Unit; // for measurements in the overlay
 };
 
-export default function ClosetView({ items, folders, initialUnit }: ClosetViewProps) {
+export default function ClosetView({ items, folders, initialUnit, closetName }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   // Your own pieces saved before colours existed get one in the background.
   useColourBackfill(items);
@@ -430,7 +431,7 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
   if (items.length === 0) {
     return (
       <>
-        <ClosetTopBar />
+        <ClosetTopBar closetName={closetName} />
         <main className="flex flex-1 flex-col">
           <EmptyState />
         </main>
@@ -440,7 +441,7 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
 
   return (
     <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
-      <ClosetTopBar zoom={{ value: zoom, onChange: setZoom }} />
+      <ClosetTopBar closetName={closetName} zoom={{ value: zoom, onChange: setZoom }} />
 
       {/* Desktop: SORT and FILTER on the right of the view bar. Phones: in the
           bottom bar instead (below), so the bars up top stay uncrowded. */}
