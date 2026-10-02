@@ -118,6 +118,16 @@ FOLDERS as they're built), active in `ink` with an underline, others in
 narrow phones the views scroll sideways. An empty view shows one `stone`
 line, centred.
 
+**Phones: top bar, menu and bottom bar** (first version 2026-10-02; desktop
+is unchanged). Below 768px the top bar holds only `CLOSET.ZIP` and **MENU**
+(plus LOG IN for visitors). MENU opens a small panel like the SORT list with
+the zoom slider and LOG OUT. The view bar holds only the views. A **bottom
+bar** is fixed to the bottom of the screen: `canvas`, a `rule` line on top,
+the same 11px labels; SORT · FILTER on the left (SORT's list opens upwards),
++ ADD on the right. SELECT and ARRANGE join it in Milestone 12, and in
+SELECT mode it becomes the action bar. Pages leave 80px at the bottom so the
+bar never covers the last row, plus the iPhone home-indicator area.
+
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and
 the name under the image at Large zoom only. Hover or keyboard focus shows the

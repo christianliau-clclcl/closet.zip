@@ -6,12 +6,13 @@ import { sortLabels, sortShortLabels, sorts, type Sort } from "@/lib/sort-filter
 type SortMenuProps = {
   sort: Sort;
   onChange: (sort: Sort) => void;
+  opensUp?: boolean; // in the phone's bottom bar, the list opens above it
 };
 
 // SORT in the view bar: a small list under the button. Reads "SORT · BRAND"
 // while a sort other than the default is chosen. Closes on choosing, Esc, or
 // a click anywhere else.
-export default function SortMenu({ sort, onChange }: SortMenuProps) {
+export default function SortMenu({ sort, onChange, opensUp = false }: SortMenuProps) {
   const [open, setOpen] = useState(false);
   const wrapper = useRef<HTMLDivElement>(null);
 
@@ -43,7 +44,11 @@ export default function SortMenu({ sort, onChange }: SortMenuProps) {
         {sort === "newest" ? "Sort" : `Sort · ${sortShortLabels[sort]}`}
       </button>
       {open && (
-        <div className="absolute top-full right-0 z-20 mt-3 w-48 border border-rule bg-cell py-2">
+        <div
+          className={`absolute z-20 w-48 border border-rule bg-cell py-2 ${
+            opensUp ? "bottom-full left-0 mb-3" : "top-full right-0 mt-3"
+          }`}
+        >
           {sorts.map((option) => (
             <button
               key={option}

@@ -3,19 +3,18 @@
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense, useRef, useState } from "react";
+import BottomBar from "@/components/BottomBar";
 import CategoryRows from "@/components/CategoryRows";
+import ClosetTopBar from "@/components/ClosetTopBar";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
 import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
-import LogOutButton from "@/components/LogOutButton";
 import SortMenu from "@/components/SortMenu";
-import TopBar from "@/components/TopBar";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
-import ZoomSlider from "@/components/ZoomSlider";
 import { useColourBackfill } from "@/lib/colour-backfill";
 import { folderPath, itemsInFolder } from "@/lib/folder-tree";
 import type { Unit } from "@/lib/measurements";
@@ -142,19 +141,26 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     }
   }
 
+  // The top of FOLDERS is just folders: nothing to sort or filter.
+  const sortable = view !== "folders" || Boolean(folder);
+  // SORT and FILTER, shown in the view bar (desktop) or bottom bar (phones).
+  const tools = (inBottomBar: boolean) => (
+    <>
+      <SortMenu sort={sort} onChange={changeSort} opensUp={inBottomBar} />
+      <button
+        type="button"
+        onClick={() => setFilterOpen(true)}
+        className="cursor-pointer text-label whitespace-nowrap uppercase"
+      >
+        {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
+      </button>
+    </>
+  );
+
   if (items.length === 0) {
     return (
       <>
-        <TopBar>
-          {loggedIn && (
-            <>
-              <Link href="/add" className="text-label uppercase">
-                Add
-              </Link>
-              <LogOutButton />
-            </>
-          )}
-        </TopBar>
+        <ClosetTopBar loggedIn={loggedIn} />
         <main className="flex flex-1 flex-col">
           <EmptyState />
         </main>
@@ -164,37 +170,24 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
 
   return (
     <>
-      <TopBar>
-        <ZoomSlider value={zoom} onChange={setZoom} />
-        {loggedIn ? (
-          <>
-            <Link href="/add" className="text-label uppercase">
-              Add
-            </Link>
-            <LogOutButton />
-          </>
-        ) : (
-          <Link href="/login" className="text-label uppercase">
-            Log in
-          </Link>
-        )}
-      </TopBar>
+      <ClosetTopBar loggedIn={loggedIn} zoom={{ value: zoom, onChange: setZoom }} />
 
+      {/* Desktop: SORT and FILTER on the right of the view bar. Phones: in the
+          bottom bar instead (below), so the bars up top stay uncrowded. */}
       <ViewBar view={view} options={viewOptions} onChange={changeView}>
-        {/* The top of FOLDERS is just folders: nothing to sort or filter. */}
-        {(view !== "folders" || folder) && (
-          <>
-            <SortMenu sort={sort} onChange={changeSort} />
-            <button
-              type="button"
-              onClick={() => setFilterOpen(true)}
-              className="cursor-pointer text-label whitespace-nowrap uppercase"
-            >
-              {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
-            </button>
-          </>
-        )}
+        {sortable && <div className="hidden items-center gap-6 md:flex">{tools(false)}</div>}
       </ViewBar>
+
+      <BottomBar
+        tools={sortable && tools(true)}
+        action={
+          loggedIn && (
+            <Link href="/add" className="text-label uppercase">
+              + Add
+            </Link>
+          )
+        }
+      />
 
       {filterOpen && (
         <FilterDrawer
@@ -206,7 +199,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       )}
 
       {view === "folders" ? (
-        <main className="flex flex-1 flex-col p-4 md:p-8">
+        <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
           <FolderView
             folders={folders}
             items={items}
@@ -221,7 +214,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           />
         </main>
       ) : shown.length > 0 ? (
-        <main className="p-4 md:p-8">
+        <main className="p-4 pb-20 md:p-8">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
           {view === "rows" ? (
             <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
@@ -230,7 +223,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           )}
         </main>
       ) : (
-        <main className="flex flex-1 flex-col">
+        <main className="flex flex-1 flex-col pb-20 md:pb-0">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
           {inView.length > 0 ? (
             <ViewEmpty
