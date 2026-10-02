@@ -1,20 +1,22 @@
 import { motion } from "motion/react";
+import BoxIcon from "@/components/BoxIcon";
 import FadeImage from "@/components/FadeImage";
-import { twoDigits } from "@/lib/folder-tree";
-import type { Folder, Item } from "@/lib/types";
+import { twoDigits, type FolderCover } from "@/lib/folder-tree";
+import type { Folder } from "@/lib/types";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
 
 type FolderCellProps = {
   folder: Folder;
-  cover: Item | undefined; // the piece shown on it; none for an empty folder
+  cover: FolderCover; // an uploaded image, a chosen piece, or the box
   count: number; // pieces directly in it
   zoom: Zoom;
   onOpen: (id: string) => void;
 };
 
 // A folder in the grid (PRODUCT.md Milestone 12): the same square cell as a
-// piece, with its cover garment floating on the canvas and, always, its name
-// and count underneath in label style: "GRAILS — 07".
+// piece, with its cover (the box icon by default, or a chosen garment or
+// uploaded image, floating on the canvas) and, always, its name and count
+// underneath in label style: "GRAILS — 07".
 export default function FolderCell({ folder, cover, count, zoom, onOpen }: FolderCellProps) {
   const style = zoomStyles[zoom];
 
@@ -31,13 +33,15 @@ export default function FolderCell({ folder, cover, count, zoom, onOpen }: Folde
             below can use the cell's full width (phone cells are narrow). */}
         <span className={`block flex-1 pb-0 ${style.padding}`}>
           <span className="relative block h-full">
-            {cover && (
+            {cover.kind === "box" ? (
+              <BoxIcon className="absolute inset-0 h-full w-full" />
+            ) : (
               <FadeImage
-                src={cover.hero.thumbSrc ?? cover.hero.src}
+                src={cover.kind === "image" ? cover.src : (cover.item.hero.thumbSrc ?? cover.item.hero.src)}
                 alt=""
                 fill
                 sizes={style.sizes}
-                unoptimized={cover.hero.unoptimized}
+                unoptimized={cover.kind === "image" || cover.item.hero.unoptimized}
                 className="object-contain"
               />
             )}

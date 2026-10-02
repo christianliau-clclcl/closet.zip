@@ -55,6 +55,8 @@ export type Folder = {
   id: string;
   name: string;
   parentId?: string; // the folder it sits in; none for top-level folders
-  coverItemId?: string; // a chosen cover piece (12e); else the first piece
+  coverItemId?: string; // a piece chosen as the cover
+  coverPath?: string; // an uploaded cover image, in storage
+  coverSrc?: string; // its signed link, to show it
   itemIds: string[]; // the pieces directly in it, in the folder's order
 };

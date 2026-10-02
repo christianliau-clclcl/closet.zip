@@ -215,7 +215,13 @@ archive on their own phones and computers. The app is deployed on a public URL.
       a top-level folder with the piece in it
     - **12d:** SELECT mode in the grid (add to folder, remove from folder);
       built 2026-10-02, see DESIGN.md "SELECT mode"
-    - **12e:** covers: pick a garment or upload an image
+    - **12e (built 2026-10-02):** covers. Default is a box icon (decided
+      2026-10-02, replacing "first piece"); or an uploaded image (resized in
+      the browser, stored at <user id>/folders/<folder id>.<ext>; replaced
+      or removed images are deleted, also when a folder is deleted); or one
+      of the folder's pieces. + NEW FOLDER and EDIT open a folder modal
+      (name, cover BOX · IMAGE · PIECE, DELETE when editing); the quick
+      inline + NEW FOLDER stays in the piece checklist and SELECT list
     - **12f:** folders inside folders: create inside, move a folder
     - **12g:** ARRANGE and My order, for ALL and each folder
 13. **Style over time:** first visualization

@@ -9,14 +9,26 @@ export async function getMyFolders(): Promise<Folder[]> {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("folders")
-    .select("id, name, parent_id, cover_item_id, position, created_at, folder_items(item_id, position, created_at)");
+    .select(
+      "id, name, parent_id, cover_item_id, cover_path, position, created_at, folder_items(item_id, position, created_at)",
+    );
   if (error) throw error;
+
+  // Uploaded cover images are private: one request for all their signed links.
+  const coverPaths = data.flatMap((row) => (row.cover_path ? [row.cover_path] : []));
+  const coverSrc = new Map<string, string>();
+  if (coverPaths.length > 0) {
+    const { data: signed } = await supabase.storage.from("item-photos").createSignedUrls(coverPaths, 60 * 60);
+    for (const s of signed ?? []) if (s.path && s.signedUrl) coverSrc.set(s.path, s.signedUrl);
+  }
 
   return [...data].sort(byMyOrder).map((row) => ({
     id: row.id,
     name: row.name,
     parentId: row.parent_id ?? undefined,
     coverItemId: row.cover_item_id ?? undefined,
+    coverPath: row.cover_path ?? undefined,
+    coverSrc: row.cover_path ? coverSrc.get(row.cover_path) : undefined,
     itemIds: [...row.folder_items].sort(byMyOrder).map((link) => link.item_id),
   }));
 }

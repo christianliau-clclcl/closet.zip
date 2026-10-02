@@ -32,10 +32,21 @@ export function itemsInFolder(items: Item[], folder: Folder): Item[] {
   return folder.itemIds.flatMap((id) => byId.get(id) ?? []);
 }
 
-// The piece shown as the folder's cover: the chosen one, else the first.
-export function folderCover(items: Item[], folder: Folder): Item | undefined {
-  const inFolder = itemsInFolder(items, folder);
-  return inFolder.find((item) => item.id === folder.coverItemId) ?? inFolder[0];
+// What a folder shows (PRODUCT.md Milestone 12e): an uploaded image, or a
+// chosen piece, or by default the box icon. A chosen piece that's no longer
+// in the folder falls back to the box.
+export type FolderCover = { kind: "image"; src: string } | { kind: "piece"; item: Item } | { kind: "box" };
+
+export function folderCover(items: Item[], folder: Folder): FolderCover {
+  if (folder.coverSrc) return { kind: "image", src: folder.coverSrc };
+  const piece = itemsInFolder(items, folder).find((item) => item.id === folder.coverItemId);
+  return piece ? { kind: "piece", item: piece } : { kind: "box" };
+}
+
+// A folder and every folder inside it, at any depth (deleting it deletes them).
+export function folderAndInside(folders: Folder[], id: string): Folder[] {
+  const self = folders.filter((folder) => folder.id === id);
+  return [...self, ...childFolders(folders, id).flatMap((child) => folderAndInside(folders, child.id))];
 }
 
 // Every folder, top-level first, each followed by the folders inside it,

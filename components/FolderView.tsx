@@ -4,12 +4,10 @@ import { MotionConfig } from "motion/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import FolderCell from "@/components/FolderCell";
-import FolderDeleteConfirm from "@/components/FolderDeleteConfirm";
-import FolderNameForm from "@/components/FolderNameForm";
+import FolderModal from "@/components/FolderModal";
 import ItemCell from "@/components/ItemCell";
 import ViewEmpty from "@/components/ViewEmpty";
-import { childFolders, countFoldersInside, folderCover, folderPath, itemsInFolder } from "@/lib/folder-tree";
-import { createFolder, deleteFolder, renameFolder } from "@/lib/folders-client";
+import { childFolders, folderCover, folderPath, itemsInFolder } from "@/lib/folder-tree";
 import { layoutTransition } from "@/lib/motion";
 import type { Folder, Item } from "@/lib/types";
 import { zoomStyles, type Zoom } from "@/lib/zoom";
@@ -27,12 +25,13 @@ type FolderViewProps = {
   onClearFilters: () => void;
 };
 
-type Mode = "new" | "rename" | "delete" | null;
+type Mode = "new" | "edit" | null; // which folder modal is open
 
 // The FOLDERS view (PRODUCT.md Milestone 12). A path row on top
 // ("FOLDERS / SEASONS / SUMMER": earlier parts go back up), with + NEW FOLDER
-// and, inside a folder, RENAME · DELETE. Then one grid: the folders inside
-// first, then the pieces added to this folder directly.
+// and, inside a folder, EDIT; both open the folder modal (name, cover,
+// delete). Then one grid: the folders inside first, then the pieces added to
+// this folder directly.
 export default function FolderView({
   folders,
   items,
@@ -80,50 +79,27 @@ export default function FolderView({
             + New folder
           </button>
           {current && (
-            <>
-              <button type="button" onClick={() => setMode("rename")} className={action}>
-                Rename
-              </button>
-              <button type="button" onClick={() => setMode("delete")} className={action}>
-                Delete
-              </button>
-            </>
+            <button type="button" onClick={() => setMode("edit")} className={action}>
+              Edit
+            </button>
           )}
         </div>
       </div>
 
-      {mode === "new" && (
-        <FolderNameForm
-          submitLabel="Create"
-          onCancel={() => setMode(null)}
-          onSubmit={async (name) => {
-            await createFolder(name, current?.id);
+      {mode && (
+        <FolderModal
+          folder={mode === "edit" ? current : undefined}
+          parentId={current?.id}
+          pieces={mode === "edit" && current ? itemsInFolder(items, current) : []}
+          folders={folders}
+          onClose={() => setMode(null)}
+          onSaved={() => {
             setMode(null);
             router.refresh();
           }}
-        />
-      )}
-      {mode === "rename" && current && (
-        <FolderNameForm
-          initialName={current.name}
-          submitLabel="Rename"
-          onCancel={() => setMode(null)}
-          onSubmit={async (name) => {
-            await renameFolder(current.id, name);
+          onDeleted={() => {
             setMode(null);
-            router.refresh();
-          }}
-        />
-      )}
-      {mode === "delete" && current && (
-        <FolderDeleteConfirm
-          name={current.name}
-          foldersInside={countFoldersInside(folders, current.id)}
-          onKeep={() => setMode(null)}
-          onDelete={async () => {
-            await deleteFolder(current.id);
-            setMode(null);
-            onOpenFolder(current.parentId); // back up to where it was
+            onOpenFolder(current?.parentId); // back up to where it was
             router.refresh();
           }}
         />
@@ -152,12 +128,10 @@ export default function FolderView({
       ) : current ? (
         <ViewEmpty message="This folder is empty. Add pieces to it from their details." />
       ) : (
-        mode !== "new" && (
-          <ViewEmpty
-            message="No folders yet. Make one for a collection: grails, a season, pieces to sell."
-            action={{ label: "+ New folder", onClick: () => setMode("new") }}
-          />
-        )
+        <ViewEmpty
+          message="No folders yet. Make one for a collection: grails, a season, pieces to sell."
+          action={{ label: "+ New folder", onClick: () => setMode("new") }}
+        />
       )}
     </>
   );

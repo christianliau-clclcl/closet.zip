@@ -187,13 +187,18 @@ clicking the scrim or the space around the garment.
 
 **Folders view.** A path row above the grid in label style:
 "FOLDERS / SEASONS / SUMMER", earlier parts `stone` (click to go up), the
-current one `ink`; + NEW FOLDER, RENAME and DELETE on the right as text
-actions. New folder, rename and the delete confirm open inline under the
-path row (384px wide at most, `rule` lines above and below). **Folder cell:**
-the same square as an item cell, the cover garment inside the zoom
+current one `ink`; + NEW FOLDER and (inside a folder) EDIT on the right as
+text actions. Both open the **folder modal**: a header bar ("NEW FOLDER" /
+"EDIT FOLDER", ✕), NAME, COVER (BOX · IMAGE · PIECE as text options, a
+128px preview square underneath, "Choose image" or a 4-column grid of the
+folder's pieces), DELETE FOLDER (`stone`, with the usual confirm) when
+editing, and a full-width primary button. Phones: a full-screen `cell` page
+like the filter drawer; desktop: a 384px panel centred over the scrim.
+**Folder cell:** the same square as an item cell, the cover inside the zoom
 level's padding, and the label "GRAILS — 07" always underneath across the
 cell's full width; a long name is cut with … but the count always shows.
-An empty folder is just the grid dot and its label.
+**Box icon:** the default cover, a lidded storage box in 1px `ink` lines
+(`BoxIcon`, a placeholder for the designer's own drawing).
 
 **Colour swatch.** A small flat square of a garment's own colour (decided
 2026-10-01: square, not a dot), always next to the colour's name: 12px
