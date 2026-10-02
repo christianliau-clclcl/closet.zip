@@ -307,12 +307,37 @@ archive on their own phones and computers. The app is deployed on a public URL.
       your usual size for the category (the one you've used most), silently,
       never over a size you typed
     - Not doing: return reminders (too few people would use them)
-15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
-    link to your closet or a folder, which you can switch off. The first
-    deliberate exception to "every closet is private"; nothing is ever
-    listed or searchable.
-16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below;
-    listing links reuse the sharing from 15.
+15. **Public profiles** (planned 2026-10-03; replaces the earlier
+    "private share links" plan). A closet is private by default; its owner
+    can make it public at **/@username**. The first deliberate exception to
+    "every closet is private". Decisions:
+    - Public profile only: no secret links. Going public shows every piece
+      by default; any piece, and any folder, can be hidden from the public.
+    - Visitors see photos and catalogue details: name, brand, category,
+      colour, material, size, measurements, date acquired. Never: price,
+      where from, notes. Archived pieces too, behind the ARCHIVED switch.
+    - Visitors browse read-only: ALL · FOLDERS (hidden folders and pieces
+      left out), SORT BY, search, filter, piece details.
+    - Controls: MENU → Public profile (username, PUBLIC · ON/OFF); "Hide
+      from public" in a piece's details and in the folder modal; HIDE /
+      SHOW in SELECT mode for many pieces.
+    - Usernames: 3–20 characters (letters, numbers, . and _), not
+      case-sensitive, unique, changeable (the old /@name then stops
+      working), a few reserved (admin, login…).
+    - Not listed or searchable: no directory, and pages ask search engines
+      not to index them; people find a profile only from its link.
+    Steps:
+    - **15a:** usernames and PUBLIC · ON/OFF in MENU
+    - **15b:** hiding pieces and folders (details, folder modal, SELECT)
+    - **15c:** the public door: database functions that return only a
+      public profile's visible pieces and catalogue fields, and a storage
+      rule for their photos; tested as owner, visitor and another user
+      before applying
+    - **15d:** the visitor's page at /@username (read-only, noindex)
+16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below.
+    To revisit with public profiles (2026-10-03): instead of private
+    listing links, pieces could be marked "for sale" on a public profile
+    (the FOR SALE tab).
 17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
     outfits or a styling project. Details to design.
 18. **Final polish:** accessibility pass, mobile refinements, README and
