@@ -269,7 +269,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
       sign-up form (any characters, 1–30; "you can name it later from the
       menu"); stored in the account's user metadata; replaces CLOSET.ZIP in
       the top left when logged in; set or renamed later from MENU
-    - **Navigation restructure:** top tabs ALL · FOLDERS (FOR SALE joins
+    - **Navigation restructure (part 1 built 2026-10-02: tabs, SORT BY,
+      ARCHIVED everywhere, old links upgraded; part 2: Colour and Brand
+      shelves):** top tabs ALL · FOLDERS (FOR SALE joins
       with Milestone 16). SORT BY (replacing VIEW / SORT; reads "SORT BY ·
       TIMELINE") lists My order · Newest added · Timeline · Type (shelves per
       category, was ROWS) · Colour (shelves per colour family) · Colour

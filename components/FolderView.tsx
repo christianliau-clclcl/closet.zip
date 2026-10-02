@@ -23,6 +23,7 @@ type FolderViewProps = {
   onOpenFolder: (id: string | undefined) => void;
   onOpenItem: (id: string) => void;
   onPreview: (id: string | null, anchor?: HTMLElement) => void;
+  children?: React.ReactNode; // the pieces in another layout (timeline, shelves)
 };
 
 type Mode = "new" | "edit" | null; // which folder modal is open
@@ -42,6 +43,7 @@ export default function FolderView({
   onOpenFolder,
   onOpenItem,
   onPreview,
+  children,
 }: FolderViewProps) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(null);
@@ -104,9 +106,9 @@ export default function FolderView({
         />
       )}
 
-      {inside.length + pieces.length > 0 ? (
+      {inside.length + pieces.length > 0 || children ? (
         <MotionConfig transition={layoutTransition} reducedMotion="user">
-          <ul className={`grid gap-2 ${zoomStyles[zoom].columns}`}>
+          <ul className={`grid gap-2 ${zoomStyles[zoom].columns} ${children && inside.length > 0 ? "mb-12" : ""}`}>
             {inside.map((folder) => (
               <FolderCell
                 key={folder.id}
@@ -121,6 +123,7 @@ export default function FolderView({
               <ItemCell key={item.id} item={item} zoom={zoom} onOpen={onOpenItem} onPreview={onPreview} />
             ))}
           </ul>
+          {children}
         </MotionConfig>
       ) : noMatch ? (
         <ViewEmpty message={noMatch.message} action={noMatch.action} />

@@ -112,23 +112,29 @@ toggle, filter and add on the right. Text only, no pill, no background. A
 `rule` line underneath.
 
 **View bar.** A second thin row under the top bar, same type as the top bar
-(mono 11px uppercase): the views on the left (ALL · ARCHIVE, then ROWS and
-FOLDERS as they're built), active in `ink` with an underline, others in
-`stone`; SORT · FILTER · ARRANGE on the right. A `rule` line underneath. On
-narrow phones the views scroll sideways. An empty view shows one `stone`
-line, centred.
+(mono 11px uppercase): the tabs **ALL · FOLDERS** on the left (FOR SALE joins
+with Milestone 16), active in `ink` with an underline, others in `stone`.
+Desktop, on the right: search · **SORT BY** · SELECT · ARRANGE. A `rule`
+line underneath. An empty view shows one `stone` line, centred.
 
-**Phones: top bar, menu and bottom bar** (2026-10-02; desktop is
-unchanged). Below 768px the top bar holds only `CLOSET.ZIP` and **MENU**
-(LOG OUT for now, room for more later), or LOG IN for visitors. The view
-bar holds only the views. A **bottom bar** is fixed to the bottom of the
-screen: `canvas`, a `rule` line on top, the same 11px labels: **VIEW ·
-SELECT** on the left, **+ ADD** on the right. VIEW opens a panel upwards
-(256px wide) with the SORT options, FILTER → (opens the drawer) and the ZOOM
-slider; it reads "VIEW · 2" while filters or a sort are on (filters count
-one each, a non-default sort one). In SELECT mode the bar becomes the action
-bar. Pages leave 80px at the bottom so the bar never covers the last row,
-plus the iPhone home-indicator area.
+**SORT BY** (friend feedback, 2026-10-02). One panel for how you look at the
+closet: the arrangements, each also choosing a layout: My order, Newest
+added, Brand A–Z, Price and Colour gradient are a grid; Timeline is the
+timeline (with ORDER · NEWEST / OLDEST); Type is shelves per category (was
+ROWS). Then FILTER → (the drawer), ARCHIVED · OFF / ON (archived pieces are
+hidden everywhere unless on, folders included), and on phones ZOOM. The
+button names a non-default choice ("SORT BY · BRAND" on desktop, just
+"BRAND" on phones) plus "· N" for filters and archived pieces shown.
+Desktop: a 256px dropdown under the button; phones: opens upwards.
+Timeline hides SELECT and ARRANGE.
+
+**Phones: top bar, menu and bottom bar** (2026-10-02). Below 768px the top
+bar holds the closet's name and **MENU**. The view bar holds only the tabs.
+A **bottom bar** is fixed to the bottom of the screen: `canvas`, a `rule`
+line on top, the same 11px labels, 16px apart: **SORT BY · SEARCH · SELECT
+· ARRANGE** on the left, **+ ADD** on the right. In SELECT mode the bar
+becomes the action bar. Pages leave 80px at the bottom so the bar never
+covers the last row, plus the iPhone home-indicator area.
 
 **SELECT mode** (Milestone 12d, 2026-10-02; your own closet only). SELECT
 sits after SORT · FILTER (after VIEW on phones). While on, tapping a piece selects it instead of
@@ -270,14 +276,14 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
 - **Style over time** (first visualization): a horizontal timeline by
   month and year acquired. Items stack as small cells above their month,
   so the chart is made of the clothes themselves. Built (13a, 2026-10-02):
-  the TIME view; one slot per month in real time (empty months too), each
+  SORT BY · Timeline (was the TIME view); one slot per month in real time (empty months too), each
   as wide as a piece (32/48/192px by zoom; Large is big on purpose so the
   timeline clearly runs off the edge, 2026-10-02), pieces stacked upwards with 4px
   between and 4px above the axis (24px at Large); a continuous 1px `ink` axis, a 4px `rule` tick per month and an
   8px `ink` tick plus the year (label style) where each year starts, both
   at the slot's left edge; a year-only slot before January when needed;
   "N.D." after a 48px gap at the end. Scrolls sideways, opening at the most
-  recent end. No SORT in TIME; FILTER works.
+  recent end. FILTER and search work; SELECT and ARRANGE are hidden.
   Phones (13b): the axis is a vertical 1px `ink` line down the left side,
   newest at the top. Each month is a row: a 8px `rule` tick (12px `ink`
   where a year starts, with the year in a 48px column left of the line),
@@ -293,12 +299,11 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   and the length beside it. The month after a break always shows its year.
   Order: newest first by default on both (most recent at the left on
   desktop, at the top on phones); the year is labelled on the first month
-  of each year in reading order. ORDER · NEWEST / OLDEST reverses it (view
-  bar on desktop, VIEW panel on phones; oldest counts in "VIEW · N"). The
+  of each year in reading order. ORDER · NEWEST / OLDEST reverses it
+  (in the SORT BY panel when Timeline is chosen). The
   timeline always opens at the most recent end.
-  ARCHIVED · ON / OFF (13c): in TIME only, after FILTER on desktop and as a
-  row in the VIEW panel on phones; hiding archived pieces counts as one in
-  "VIEW · N".
+  ARCHIVED · ON / OFF (13c) is now part of SORT BY and works everywhere
+  (off by default).
 
 ## Do's and don'ts
 

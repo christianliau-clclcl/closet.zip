@@ -16,8 +16,7 @@ import ItemOverlay from "@/components/ItemOverlay";
 import SearchField from "@/components/SearchField";
 import SelectActions from "@/components/SelectActions";
 import TimeView from "@/components/TimeView";
-import ViewMenu from "@/components/ViewMenu";
-import SortMenu from "@/components/SortMenu";
+import SortByMenu from "@/components/SortByMenu";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
 import { useColourBackfill } from "@/lib/colour-backfill";
@@ -38,19 +37,22 @@ import {
   countFilters,
   filterFields,
   filterItems,
+  layoutOf,
   noFilters,
   readFilters,
   readSort,
   sortItems,
+  upgradeOldAddress,
   type Filters,
   type Sort,
 } from "@/lib/sort-filter";
-import { itemsInView, readView, views, withParam, withParams, type View } from "@/lib/views";
+import { readView, views, withParam, withParams, withoutArchived, type View } from "@/lib/views";
 import type { Zoom } from "@/lib/zoom";
 
 // Runs in the browser so it can remember the zoom level as the slider moves,
-// switch views and open or close the detail overlay. The view and the open
-// piece live in the address (?view=…&item=…), so Back and links work.
+// switch tabs and arrangements, and open or close the detail overlay. The
+// tab, SORT BY and the open piece live in the address (?view=…&sort=…&item=…),
+// so Back and links work.
 type ClosetViewProps = {
   items: Item[];
   folders: Folder[];
@@ -75,6 +77,12 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
   const arranged = view === "folders" ? Boolean(folder?.arranged) : items.some((i) => i.sortPosition !== undefined);
   const defaultSort: Sort = arranged ? "mine" : "newest";
   const sort = readSort(params, defaultSort);
+  const layout = layoutOf(sort);
+  // Links from before SORT BY (?view=rows, ?view=time…) become today's.
+  useEffect(() => {
+    const upgraded = upgradeOldAddress(window.location.search);
+    if (upgraded) window.history.replaceState(null, "", upgraded);
+  }, []);
   const filters = readFilters(params);
   const filterCount = countFilters(filters);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -120,29 +128,23 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     }
   }
   const pieces = (n: number) => `${n} ${n === 1 ? "piece" : "pieces"}`;
-  // TIME shows archived pieces too, unless switched off (?archived=hide).
-  const hideArchived = view === "time" && params.get("archived") === "hide";
+  // ARCHIVED · ON shows pieces that have left the closet too (?archived=show).
+  const showArchived = params.get("archived") === "show";
   function toggleArchived() {
-    window.history.pushState(null, "", withParam("archived", hideArchived ? null : "hide"));
+    window.history.pushState(null, "", withParam("archived", showArchived ? null : "show"));
   }
-  // TIME reads newest first, unless reversed (?order=oldest).
-  const newestFirst = !(view === "time" && params.get("order") === "oldest");
+  // The timeline reads newest first, unless reversed (?order=oldest).
+  const newestFirst = !(layout === "timeline" && params.get("order") === "oldest");
   function toggleTimeOrder() {
     window.history.pushState(null, "", withParam("order", newestFirst ? "oldest" : null));
   }
 
-  // A folder's pieces in the closet's newest-first order; its own My order
-  // is folder.itemIds.
-  const inView =
-    view === "folders"
-      ? folder
-        ? items.filter((item) => folder.itemIds.includes(item.id))
-        : []
-      : view === "time"
-        ? hideArchived
-          ? items.filter((item) => item.status !== "archived")
-          : items // every piece, including those that left the closet
-        : itemsInView(items, view);
+  // The tab's pieces (a folder's in the closet's newest-first order; its own
+  // My order is folder.itemIds), without archived ones unless switched on.
+  const inView = withoutArchived(
+    view === "folders" ? (folder ? items.filter((item) => folder.itemIds.includes(item.id)) : []) : items,
+    showArchived,
+  );
 
   // ARRANGE (Milestone 12g): drag pieces into My order; DONE saves it in one go.
   const [arranging, setArranging] = useState(false);
@@ -151,11 +153,11 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
   // list then), so the grid doesn't flash the old order meanwhile.
   const [justSaved, setJustSaved] = useState<{ ids: string[]; items: Item[] } | null>(null);
   const myOrder = justSaved?.items === items ? justSaved.ids : folder?.itemIds;
-  // TIME has no sort: time is the order.
-  // Search (?q=), then filters, then the sort (TIME has none: time is the order).
+  // Search (?q=), then filters, then the sort (the timeline has none: time is
+  // the order).
   const query = params.get("q") ?? "";
   const matching = filterItems(searchItems(inView, query), filters);
-  const shown = view === "time" ? matching : sortItems(matching, sort, myOrder);
+  const shown = layout === "timeline" ? matching : sortItems(matching, sort, myOrder);
   // When a search or filters hide every piece: what to say, and how to undo it.
   const noMatch =
     inView.length > 0 && shown.length === 0
@@ -163,7 +165,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
         ? { message: `Nothing matches “${query.trim()}”.`, action: { label: "Clear search", onClick: () => setQuery("") } }
         : { message: "No pieces match these filters.", action: { label: "Clear filters", onClick: () => applyFilters(noFilters) } }
       : undefined;
-  const canArrange = (view === "all" || Boolean(folder)) && inView.length > 1;
+  const canArrange = (view === "all" || Boolean(folder)) && layout !== "timeline" && inView.length > 1;
 
   function startArranging() {
     setSelecting(false);
@@ -221,8 +223,6 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
       "",
       withParams((p) => {
         p.delete("folder");
-        p.delete("archived"); // TIME's switches
-        p.delete("order");
         if (next === "all") p.delete("view");
         else p.set("view", next);
       }),
@@ -272,13 +272,12 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     }
   }
 
-  // The top of FOLDERS is just folders: nothing to sort or filter. TIME
-  // filters but doesn't sort (time is the order).
-  const filterable = view !== "folders" || Boolean(folder);
-  const sortable = filterable && view !== "time";
+  // The top of FOLDERS is just folders: nothing to sort, filter or search.
+  const sortable = view !== "folders" || Boolean(folder);
 
-  // SELECT, for your own pieces wherever there are some to choose.
-  const selectButton = sortable && (
+  // SELECT, for your own pieces wherever there are some to choose (not on
+  // the timeline, whose pieces aren't grid cells).
+  const selectButton = sortable && layout !== "timeline" && (
     <button
       type="button"
       onClick={() => setSelecting(true)}
@@ -295,25 +294,30 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     </button>
   );
 
-  // The usual tools. Desktop (view bar): SORT · FILTER · SELECT. Phones
-  // (bottom bar): VIEW (sort, filter and zoom in one panel) · SELECT.
+  // SORT BY: the arrangements, ORDER (timeline), FILTER, ARCHIVED, and on
+  // phones ZOOM, in one panel.
+  const sortBy = (inBottomBar: boolean) => (
+    <SortByMenu
+      inBottomBar={inBottomBar}
+      sortable={sortable}
+      sort={sort}
+      defaultSort={defaultSort}
+      onSortChange={changeSort}
+      filterCount={filterCount}
+      onFilter={() => setFilterOpen(true)}
+      archived={{ shown: showArchived, onToggle: toggleArchived }}
+      timeOrder={layout === "timeline" ? { newestFirst, onToggle: toggleTimeOrder } : undefined}
+      zoom={inBottomBar ? { value: zoom, onChange: setZoom } : undefined}
+    />
+  );
+
+  // The usual tools. Desktop (view bar): search · SORT BY · SELECT · ARRANGE.
+  // Phones (bottom bar): SORT BY · SEARCH · SELECT · ARRANGE.
   const tools = (inBottomBar: boolean) =>
     inBottomBar ? (
       <>
-        <ViewMenu
-          sortable={sortable}
-          filterable={filterable}
-          sort={sort}
-          defaultSort={defaultSort}
-          onSortChange={changeSort}
-          filterCount={filterCount}
-          onFilter={() => setFilterOpen(true)}
-          zoom={zoom}
-          onZoomChange={setZoom}
-          archived={view === "time" ? { shown: !hideArchived, onToggle: toggleArchived } : undefined}
-          timeOrder={view === "time" ? { newestFirst, onToggle: toggleTimeOrder } : undefined}
-        />
-        {filterable && (
+        {sortBy(true)}
+        {sortable && (
           <button
             type="button"
             onClick={() => setSearchOpen(true)}
@@ -329,32 +333,10 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
         {arrangeButton}
       </>
     ) : (
-      filterable && (
+      sortable && (
         <>
           <SearchField value={query} onChange={setQuery} className="w-48" />
-          {sortable && <SortMenu sort={sort} onChange={changeSort} defaultSort={defaultSort} />}
-          <button
-            type="button"
-            onClick={() => setFilterOpen(true)}
-            className="cursor-pointer text-label whitespace-nowrap uppercase"
-          >
-            {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
-          </button>
-          {view === "time" && (
-            <button type="button" onClick={toggleTimeOrder} className="cursor-pointer text-label whitespace-nowrap uppercase">
-              Order · {newestFirst ? "Newest" : "Oldest"}
-            </button>
-          )}
-          {view === "time" && (
-            <button
-              type="button"
-              aria-pressed={!hideArchived}
-              onClick={toggleArchived}
-              className="cursor-pointer text-label whitespace-nowrap uppercase"
-            >
-              Archived · {hideArchived ? "Off" : "On"}
-            </button>
-          )}
+          {sortBy(false)}
           {selectButton}
           {arrangeButton}
         </>
@@ -428,6 +410,14 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
       tools(inBottomBar)
     );
 
+  // The timeline or the shelves (grids are drawn by ItemGrid / FolderView).
+  const piecesLayout =
+    layout === "timeline" ? (
+      <TimeView items={shown} newestFirst={newestFirst} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+    ) : (
+      <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+    );
+
   if (items.length === 0) {
     return (
       <>
@@ -443,8 +433,8 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
       <ClosetTopBar closetName={closetName} zoom={{ value: zoom, onChange: setZoom }} />
 
-      {/* Desktop: SORT and FILTER on the right of the view bar. Phones: in the
-          bottom bar instead (below), so the bars up top stay uncrowded. */}
+      {/* Desktop: search, SORT BY and the rest on the right of the view bar.
+          Phones: in the bottom bar instead (below), so the top stays uncrowded. */}
       <ViewBar view={view} options={views} onChange={changeView}>
         <div className="hidden items-center gap-6 md:flex">{barContents(false)}</div>
       </ViewBar>
@@ -479,45 +469,42 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
           </p>
           <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
         </main>
-      ) : view === "time" && shown.length > 0 ? (
-        <main className="p-4 pb-20 md:p-8">
-          <h1 className="sr-only">Style over time</h1>
-          <TimeView items={shown} newestFirst={newestFirst} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
-        </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
           <FolderView
             folders={folders}
             items={items}
             folderId={folder?.id}
-            pieces={shown}
+            pieces={layout === "grid" ? shown : []}
             noMatch={noMatch}
             zoom={zoom}
             onOpenFolder={openFolder}
             onOpenItem={openItem}
             onPreview={showPreview}
-          />
+          >
+            {/* Timeline and Type show the folder's pieces in their own layout,
+                under the folders inside it. */}
+            {layout !== "grid" && shown.length > 0 && piecesLayout}
+          </FolderView>
         </main>
       ) : shown.length > 0 ? (
         <main className="p-4 pb-20 md:p-8">
-          <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
-          {view === "rows" ? (
-            <CategoryRows items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
-          ) : (
+          <h1 className="sr-only">Closet</h1>
+          {layout === "grid" ? (
             <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+          ) : (
+            piecesLayout
           )}
         </main>
       ) : (
         <main className="flex flex-1 flex-col pb-20 md:pb-0">
-          <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
+          <h1 className="sr-only">Closet</h1>
           {noMatch ? (
             <ViewEmpty message={noMatch.message} action={noMatch.action} />
           ) : (
             <ViewEmpty
               message={
-                view === "archive"
-                  ? "Nothing archived. Pieces you no longer own will appear here."
-                  : "Nothing in your closet right now."
+                showArchived ? "Nothing in your closet right now." : "Nothing in your closet right now. Archived pieces are hidden."
               }
             />
           )}

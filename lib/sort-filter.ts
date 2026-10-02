@@ -2,32 +2,68 @@ import { averageColour, colourFamily, familyLabels, families, toHsv, type Family
 import { formatCategory } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
-// Sorting and filtering the closet (PRODUCT.md "Views"). Both live in the
-// address (?sort=brand&brand=Levi's&size=M…) so Back, reloading and links keep
-// them. Items arrive from the database newest first, so "newest" keeps that
-// order.
+// Sorting and filtering the closet (PRODUCT.md "Views", "13½ Friend
+// feedback round"). SORT BY picks both the order and the layout: most sorts
+// are a grid, Timeline is the timeline and Type is shelves per category.
+// Both live in the address (?sort=brand&brand=Levi's&size=M…) so Back,
+// reloading and links keep them. Items arrive from the database newest
+// first, so "newest" keeps that order.
 
-export const sorts = ["mine", "newest", "acquired", "brand", "price", "colour"] as const;
+export const sorts = ["mine", "newest", "time", "type", "gradient", "brand", "price"] as const;
 export type Sort = (typeof sorts)[number];
 
 export const sortLabels: Record<Sort, string> = {
   mine: "My order",
   newest: "Newest added",
-  acquired: "Date acquired",
+  time: "Timeline",
+  type: "Type",
+  gradient: "Colour gradient",
   brand: "Brand A–Z",
   price: "Price",
-  colour: "Colour",
 };
 
-// Short names for the view bar, e.g. "SORT · BRAND".
+// Short names for the bar, e.g. "SORT BY · BRAND".
 export const sortShortLabels: Record<Sort, string> = {
   mine: "My order",
   newest: "Newest",
-  acquired: "Acquired",
+  time: "Timeline",
+  type: "Type",
+  gradient: "Gradient",
   brand: "Brand",
   price: "Price",
-  colour: "Colour",
 };
+
+// How each sort lays pieces out.
+export type Layout = "grid" | "timeline" | "shelves";
+export function layoutOf(sort: Sort): Layout {
+  return sort === "time" ? "timeline" : sort === "type" ? "shelves" : "grid";
+}
+
+// Old links (before SORT BY, 2026-10-02) in today's terms: ?view=rows is
+// Type, ?view=time is Timeline (which showed archived pieces), ?view=archive
+// shows archived pieces, ?sort=acquired is Timeline, ?sort=colour is the
+// gradient. Returns the updated address, or null when nothing is old.
+export function upgradeOldAddress(search: string): string | null {
+  const params = new URLSearchParams(search);
+  const before = params.toString();
+  const view = params.get("view");
+  if (view === "rows") {
+    params.delete("view");
+    params.set("sort", "type");
+  } else if (view === "time") {
+    params.delete("view");
+    params.set("sort", "time");
+    if (params.get("archived") !== "hide") params.set("archived", "show");
+  } else if (view === "archive") {
+    params.delete("view");
+    params.set("archived", "show");
+  }
+  if (params.get("archived") === "hide") params.delete("archived");
+  if (params.get("sort") === "acquired") params.set("sort", "time");
+  if (params.get("sort") === "colour") params.set("sort", "gradient");
+  const after = params.toString();
+  return after === before ? null : after ? `?${after}` : window.location.pathname;
+}
 
 // The sort in the address, or the default: My order once the closet (or the
 // open folder) has been arranged, else Newest added (PRODUCT.md Milestone 12).
@@ -43,13 +79,6 @@ export function sortItems(items: Item[], sort: Sort, myOrder?: string[]): Item[]
   const last = (a: unknown, b: unknown) => Number(a === undefined) - Number(b === undefined);
   const sorted = [...items];
   switch (sort) {
-    case "acquired":
-      return sorted.sort((a, b) => {
-        const missing = last(a.acquired, b.acquired);
-        if (missing || !a.acquired || !b.acquired) return missing;
-        // Most recent first; a year without a month counts as early that year.
-        return b.acquired.year - a.acquired.year || (b.acquired.month ?? 0) - (a.acquired.month ?? 0);
-      });
     case "brand":
       return sorted.sort(
         (a, b) => last(a.brand, b.brand) || (a.brand ?? "").localeCompare(b.brand ?? "", "en", { sensitivity: "base" }),
@@ -62,7 +91,7 @@ export function sortItems(items: Item[], sort: Sort, myOrder?: string[]): Item[]
         return sorted.sort((a, b) => (place.get(a.id) ?? -1) - (place.get(b.id) ?? -1));
       }
       return sorted.sort((a, b) => (a.sortPosition ?? -1) - (b.sortPosition ?? -1));
-    case "colour":
+    case "gradient":
       return sorted.sort((a, b) => {
         const missing = last(a.colourHex, b.colourHex);
         if (missing || !a.colourHex || !b.colourHex) return missing;
