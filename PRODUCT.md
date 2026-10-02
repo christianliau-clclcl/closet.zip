@@ -260,6 +260,22 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **13c (built 2026-10-02):** ARCHIVED · ON / OFF (on by default; in the
       address as ?archived=hide; desktop: after FILTER; phones: in VIEW,
       counted in "VIEW · N"). FILTER works in TIME
+13½. **Friend feedback round** (decided 2026-10-02, before 14):
+    - **Search (built 2026-10-02):** a search field (desktop: in the view bar; phones: SEARCH
+      in the bottom bar opens a field) filtering live across name, brand,
+      colour, material, size, where from, category, notes; in the address
+      as ?q=
+    - **Closet name:** an optional "Closet name" field at the top of the
+      sign-up form (any characters, 1–30; "you can name it later from the
+      menu"); stored in the account's user metadata; replaces CLOSET.ZIP in
+      the top left when logged in; set or renamed later from MENU
+    - **Navigation restructure:** top tabs ALL · FOLDERS (FOR SALE joins
+      with Milestone 16). SORT BY (replacing VIEW / SORT; reads "SORT BY ·
+      TIMELINE") lists My order · Newest added · Timeline · Type (shelves per
+      category, was ROWS) · Colour (shelves per colour family) · Colour
+      gradient (one grid) · Brand (shelves per brand) · Price (high to low);
+      then FILTER, ARCHIVED · ON/OFF (off by default everywhere, replacing
+      the ARCHIVE tab), ZOOM. Old ?view= links redirect
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
     expensive pieces, and others
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only

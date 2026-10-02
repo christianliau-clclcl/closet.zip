@@ -13,6 +13,7 @@ import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
+import SearchField from "@/components/SearchField";
 import SelectActions from "@/components/SelectActions";
 import TimeView from "@/components/TimeView";
 import ViewMenu from "@/components/ViewMenu";
@@ -30,6 +31,7 @@ import {
 } from "@/lib/folders-client";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
+import { searchItems } from "@/lib/search";
 import { SelectionContext } from "@/lib/selection";
 import type { Folder, Item } from "@/lib/types";
 import {
@@ -149,8 +151,17 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
   const [justSaved, setJustSaved] = useState<{ ids: string[]; items: Item[] } | null>(null);
   const myOrder = justSaved?.items === items ? justSaved.ids : folder?.itemIds;
   // TIME has no sort: time is the order.
-  const shown =
-    view === "time" ? filterItems(inView, filters) : sortItems(filterItems(inView, filters), sort, myOrder);
+  // Search (?q=), then filters, then the sort (TIME has none: time is the order).
+  const query = params.get("q") ?? "";
+  const matching = filterItems(searchItems(inView, query), filters);
+  const shown = view === "time" ? matching : sortItems(matching, sort, myOrder);
+  // When a search or filters hide every piece: what to say, and how to undo it.
+  const noMatch =
+    inView.length > 0 && shown.length === 0
+      ? query.trim()
+        ? { message: `Nothing matches “${query.trim()}”.`, action: { label: "Clear search", onClick: () => setQuery("") } }
+        : { message: "No pieces match these filters.", action: { label: "Clear filters", onClick: () => applyFilters(noFilters) } }
+      : undefined;
   const canArrange = (view === "all" || Boolean(folder)) && inView.length > 1;
 
   function startArranging() {
@@ -174,6 +185,13 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
       setStatus("Couldn't save. Check your connection and try again.");
     }
   }
+
+  // Typing updates the address without adding a Back step per letter.
+  function setQuery(next: string) {
+    window.history.replaceState(null, "", withParam("q", next ? next : null));
+  }
+  // Phones: SEARCH opens a field across the bottom bar.
+  const [searchOpen, setSearchOpen] = useState(false);
 
   function changeSort(next: Sort) {
     window.history.pushState(null, "", withParam("sort", next === defaultSort ? null : next));
@@ -294,12 +312,25 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
           archived={view === "time" ? { shown: !hideArchived, onToggle: toggleArchived } : undefined}
           timeOrder={view === "time" ? { newestFirst, onToggle: toggleTimeOrder } : undefined}
         />
+        {filterable && (
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label={query.trim() ? `Search: ${query.trim()}` : undefined}
+            className="flex max-w-20 cursor-pointer text-label whitespace-nowrap uppercase"
+          >
+            {/* While a search is on, the button shows it ("DENIM", cut with …
+                if long): the bar has no room for SEARCH as well. */}
+            {query.trim() ? <span className="truncate">“{query.trim()}”</span> : "Search"}
+          </button>
+        )}
         {selectButton}
         {arrangeButton}
       </>
     ) : (
       filterable && (
         <>
+          <SearchField value={query} onChange={setQuery} className="w-48" />
           {sortable && <SortMenu sort={sort} onChange={changeSort} defaultSort={defaultSort} />}
           <button
             type="button"
@@ -369,7 +400,14 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
   // What the bar shows: the selection's actions, a short status line after an
   // action, or the usual tools.
   const barContents = (inBottomBar: boolean) =>
-    arranging ? (
+    inBottomBar && searchOpen && !arranging && !selecting ? (
+      <>
+        <SearchField value={query} onChange={setQuery} autoFocus className="min-w-0 flex-1" />
+        <button type="button" onClick={() => setSearchOpen(false)} className="cursor-pointer text-label uppercase">
+          Done
+        </button>
+      </>
+    ) : arranging ? (
       <>
         <span className="text-label text-stone uppercase">Arrange</span>
         <button type="button" onClick={() => setArranging(false)} className="cursor-pointer text-label uppercase">
@@ -414,7 +452,8 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
         tools={barContents(true)}
         action={
           !selecting &&
-          !arranging && (
+          !arranging &&
+          !searchOpen && (
             <Link href="/add" className="text-label uppercase">
               + Add
             </Link>
@@ -451,12 +490,11 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
             items={items}
             folderId={folder?.id}
             pieces={shown}
-            filtered={inView.length > shown.length}
+            noMatch={noMatch}
             zoom={zoom}
             onOpenFolder={openFolder}
             onOpenItem={openItem}
             onPreview={showPreview}
-            onClearFilters={() => applyFilters(noFilters)}
           />
         </main>
       ) : shown.length > 0 ? (
@@ -471,11 +509,8 @@ export default function ClosetView({ items, folders, initialUnit }: ClosetViewPr
       ) : (
         <main className="flex flex-1 flex-col pb-20 md:pb-0">
           <h1 className="sr-only">{view === "archive" ? "Archive" : "Closet"}</h1>
-          {inView.length > 0 ? (
-            <ViewEmpty
-              message="No pieces match these filters."
-              action={{ label: "Clear filters", onClick: () => applyFilters(noFilters) }}
-            />
+          {noMatch ? (
+            <ViewEmpty message={noMatch.message} action={noMatch.action} />
           ) : (
             <ViewEmpty
               message={

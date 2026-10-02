@@ -147,6 +147,14 @@ and ← → under each piece; the bar reads "ARRANGE · CANCEL · DONE". Pieces
 glide into place with the app's motion style (instant with Reduce motion).
 After DONE the bar says "ORDER SAVED".
 
+**Search** (2026-10-02). A quiet field with no box: a `rule` line under it
+that turns `ink` while typing, placeholder "Search" in `stone`. Desktop: in
+the view bar before SORT, 192px wide. Phones: SEARCH in the bottom bar opens
+the field across the bar with DONE; while a search is on, the button shows
+the query in quotes ("DENIM", cut with … past 80px). Filters live as you
+type; Esc clears. No matches: "Nothing matches "denim"." with CLEAR SEARCH.
+The phone bottom bar's items are 16px apart (was 24px) to fit.
+
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and
 the name under the image at Large zoom only. Hover or keyboard focus shows the

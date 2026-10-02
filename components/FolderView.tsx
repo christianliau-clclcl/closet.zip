@@ -16,13 +16,13 @@ type FolderViewProps = {
   folders: Folder[];
   items: Item[]; // every piece, to find covers and counts
   folderId: string | undefined; // the open folder; none for the top level
-  pieces: Item[]; // the open folder's pieces, already sorted and filtered
-  filtered: boolean; // filters are hiding some of its pieces
+  pieces: Item[]; // the open folder's pieces, already searched, sorted and filtered
+  // When a search or filters hide every piece: what to say, and how to undo it.
+  noMatch?: { message: string; action: { label: string; onClick: () => void } };
   zoom: Zoom;
   onOpenFolder: (id: string | undefined) => void;
   onOpenItem: (id: string) => void;
   onPreview: (id: string | null, anchor?: HTMLElement) => void;
-  onClearFilters: () => void;
 };
 
 type Mode = "new" | "edit" | null; // which folder modal is open
@@ -37,12 +37,11 @@ export default function FolderView({
   items,
   folderId,
   pieces,
-  filtered,
+  noMatch,
   zoom,
   onOpenFolder,
   onOpenItem,
   onPreview,
-  onClearFilters,
 }: FolderViewProps) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(null);
@@ -123,8 +122,8 @@ export default function FolderView({
             ))}
           </ul>
         </MotionConfig>
-      ) : filtered ? (
-        <ViewEmpty message="No pieces match these filters." action={{ label: "Clear filters", onClick: onClearFilters }} />
+      ) : noMatch ? (
+        <ViewEmpty message={noMatch.message} action={noMatch.action} />
       ) : current ? (
         <ViewEmpty message="This folder is empty. Add pieces to it from their details." />
       ) : (
