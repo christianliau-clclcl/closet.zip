@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
 import ArrangeGrid from "@/components/ArrangeGrid";
 import BottomBar from "@/components/BottomBar";
+import { chipClass } from "@/components/Chip";
 import ClosetTopBar from "@/components/ClosetTopBar";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
@@ -459,7 +460,8 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           !selecting &&
           !arranging &&
           !searchOpen && (
-            <Link href="/add" className="text-label uppercase">
+            // A filled chip, so the main action stands out.
+            <Link href="/add" className={`shrink-0 ${chipClass(true)}`}>
               + Add
             </Link>
           )

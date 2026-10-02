@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { chipClass } from "@/components/Chip";
 import ClosetNameModal from "@/components/ClosetNameModal";
 import LogOutButton from "@/components/LogOutButton";
 import PublicProfileModal from "@/components/PublicProfileModal";
@@ -42,8 +43,9 @@ export default function ClosetTopBar({ closetName, publicProfile, zoom }: Closet
       <TopBar title={closetName}>
         <div className="hidden items-center gap-6 md:flex">
           {zoom && <ZoomSlider value={zoom.value} onChange={zoom.onChange} />}
-          <Link href="/add" className="text-label uppercase">
-            Add
+          {/* A filled chip, so the main action stands out. */}
+          <Link href="/add" className={chipClass(true)}>
+            + Add
           </Link>
           {menu}
         </div>
