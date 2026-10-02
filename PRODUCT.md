@@ -336,6 +336,16 @@ archive on their own phones and computers. The app is deployed on a public URL.
       rule for their photos; tested as owner, visitor and another user
       before applying
     - **15d:** the visitor's page at /@username (read-only, noindex)
+15½. **Onboarding** (planned 2026-10-03): an optional first-run flow that
+    makes logging faster. Shown once at first login, SKIP on every step,
+    everything editable later from MENU. Steps: (1) closet name (if skipped
+    at sign-up) and units (IN · CM); (2) your sizes, one row of chips per
+    category; (3) what's in your closet: a fixed list of types under each of
+    the five categories (e.g. Tops → T-shirts, Shirts, Knitwear…), tick all
+    that apply. Types are a fixed list only (decided: the "no custom
+    categories" non-goal stays). On Add, choosing a category then offers
+    your ticked types as chips; your sizes become the starting size.
+    Mockups on a design canvas first.
 16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below.
     To revisit with public profiles (2026-10-03): instead of private
     listing links, pieces could be marked "for sale" on a public profile
