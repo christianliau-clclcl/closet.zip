@@ -247,6 +247,14 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **13b (built 2026-10-02):** phone layout: the axis runs down the left
       side, newest at the top; a row per month (empty months 12px, so gaps
       show), years beside the line, month names for months with pieces
+    - **13d (built 2026-10-02):** long gaps shortened: a run of more than 6
+      empty months becomes one break, drawn as // and labelled with its
+      length ("4 YRS 11 MOS"); the first month after a break shows its year.
+      Shorter gaps stay as real empty months. (From the user's density-based
+      scaling idea, simplified: no density mode, no setting for now.)
+    - **Order (2026-10-02):** newest first by default on desktop too (most
+      recent on the left), with ORDER · NEWEST / OLDEST to reverse it on
+      both (?order=oldest; desktop: in the view bar; phones: in VIEW)
     - **13c (built 2026-10-02):** ARCHIVED · ON / OFF (on by default; in the
       address as ?archived=hide; desktop: after FILTER; phones: in VIEW,
       counted in "VIEW · N"). FILTER works in TIME

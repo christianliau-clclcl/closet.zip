@@ -242,8 +242,9 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   month and year acquired. Items stack as small cells above their month,
   so the chart is made of the clothes themselves. Built (13a, 2026-10-02):
   the TIME view; one slot per month in real time (empty months too), each
-  as wide as a piece (32/48/80px by zoom), pieces stacked upwards with 4px
-  between; a continuous 1px `ink` axis, a 4px `rule` tick per month and an
+  as wide as a piece (32/48/192px by zoom; Large is big on purpose so the
+  timeline clearly runs off the edge, 2026-10-02), pieces stacked upwards with 4px
+  between and 4px above the axis (24px at Large); a continuous 1px `ink` axis, a 4px `rule` tick per month and an
   8px `ink` tick plus the year (label style) where each year starts, both
   at the slot's left edge; a year-only slot before January when needed;
   "N.D." after a 48px gap at the end. Scrolls sideways, opening at the most
@@ -252,8 +253,20 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   newest at the top. Each month is a row: a 8px `rule` tick (12px `ink`
   where a year starts, with the year in a 48px column left of the line),
   then for months with pieces the short month name in `stone` ("JUN") and
-  the pieces in a row that wraps. Empty months are 12px rows. "N.D." at
+  the pieces in a row that wraps, evenly stepped by zoom (2026-10-02):
+  Small 48px, Medium half the width beside the line (two per row), Large
+  the full width (one per row). Empty months are 12px rows. "N.D." at
   the bottom after a 48px gap.
+  Long gaps (13d): more than 6 empty months become one break: on desktop
+  the axis pauses at `//` (`ink`, label size) with the length underneath
+  in `stone` ("4 YRS 11 MOS"), just as wide as that label plus 8px each
+  side; on phones a 24px row where the line pauses, with `//` on the line
+  and the length beside it. The month after a break always shows its year.
+  Order: newest first by default on both (most recent at the left on
+  desktop, at the top on phones); the year is labelled on the first month
+  of each year in reading order. ORDER · NEWEST / OLDEST reverses it (view
+  bar on desktop, VIEW panel on phones; oldest counts in "VIEW · N"). The
+  timeline always opens at the most recent end.
   ARCHIVED · ON / OFF (13c): in TIME only, after FILTER on desktop and as a
   row in the VIEW panel on phones; hiding archived pieces counts as one in
   "VIEW · N".

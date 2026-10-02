@@ -126,6 +126,11 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   function toggleArchived() {
     window.history.pushState(null, "", withParam("archived", hideArchived ? null : "hide"));
   }
+  // TIME reads newest first, unless reversed (?order=oldest).
+  const newestFirst = !(view === "time" && params.get("order") === "oldest");
+  function toggleTimeOrder() {
+    window.history.pushState(null, "", withParam("order", newestFirst ? "oldest" : null));
+  }
 
   // A folder's pieces in the closet's newest-first order; its own My order
   // is folder.itemIds.
@@ -201,7 +206,8 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       "",
       withParams((p) => {
         p.delete("folder");
-        p.delete("archived"); // TIME's switch
+        p.delete("archived"); // TIME's switches
+        p.delete("order");
         if (next === "all") p.delete("view");
         else p.set("view", next);
       }),
@@ -290,6 +296,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           zoom={zoom}
           onZoomChange={setZoom}
           archived={view === "time" ? { shown: !hideArchived, onToggle: toggleArchived } : undefined}
+          timeOrder={view === "time" ? { newestFirst, onToggle: toggleTimeOrder } : undefined}
         />
         {selectButton}
         {arrangeButton}
@@ -305,6 +312,11 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           >
             {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
           </button>
+          {view === "time" && (
+            <button type="button" onClick={toggleTimeOrder} className="cursor-pointer text-label whitespace-nowrap uppercase">
+              Order · {newestFirst ? "Newest" : "Oldest"}
+            </button>
+          )}
           {view === "time" && (
             <button
               type="button"
@@ -435,7 +447,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       ) : view === "time" && shown.length > 0 ? (
         <main className="p-4 pb-20 md:p-8">
           <h1 className="sr-only">Style over time</h1>
-          <TimeView items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+          <TimeView items={shown} newestFirst={newestFirst} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">

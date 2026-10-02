@@ -16,6 +16,7 @@ type ViewMenuProps = {
   zoom: Zoom;
   onZoomChange: (zoom: Zoom) => void;
   archived?: { shown: boolean; onToggle: () => void }; // TIME only (Milestone 13c)
+  timeOrder?: { newestFirst: boolean; onToggle: () => void }; // TIME only
 };
 
 // VIEW in the phone's bottom bar (DESIGN.md "Phones"): how you're looking at
@@ -33,10 +34,14 @@ export default function ViewMenu({
   zoom,
   onZoomChange,
   archived,
+  timeOrder,
 }: ViewMenuProps) {
   const { open, setOpen, wrapper } = usePopover();
   const active =
-    (filterable ? filterCount : 0) + (sortable && sort !== defaultSort ? 1 : 0) + (archived && !archived.shown ? 1 : 0);
+    (filterable ? filterCount : 0) +
+    (sortable && sort !== defaultSort ? 1 : 0) +
+    (archived && !archived.shown ? 1 : 0) +
+    (timeOrder && !timeOrder.newestFirst ? 1 : 0);
 
   return (
     <div ref={wrapper} className="relative">
@@ -84,6 +89,15 @@ export default function ViewMenu({
               className={`cursor-pointer text-left text-label uppercase ${sortable ? "border-t border-rule pt-4" : ""}`}
             >
               {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"} →
+            </button>
+          )}
+          {timeOrder && (
+            <button
+              type="button"
+              onClick={timeOrder.onToggle}
+              className="cursor-pointer border-t border-rule pt-4 text-left text-label uppercase"
+            >
+              Order · {timeOrder.newestFirst ? "Newest" : "Oldest"}
             </button>
           )}
           {archived && (
