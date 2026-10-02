@@ -8,6 +8,7 @@ import type { Zoom } from "@/lib/zoom";
 type ViewMenuProps = {
   sortable: boolean; // false at the top of FOLDERS (only zoom applies there)
   sort: Sort;
+  defaultSort: Sort; // My order once arranged, else Newest added
   onSortChange: (sort: Sort) => void;
   filterCount: number;
   onFilter: () => void; // opens the filter drawer
@@ -22,6 +23,7 @@ type ViewMenuProps = {
 export default function ViewMenu({
   sortable,
   sort,
+  defaultSort,
   onSortChange,
   filterCount,
   onFilter,
@@ -29,7 +31,7 @@ export default function ViewMenu({
   onZoomChange,
 }: ViewMenuProps) {
   const { open, setOpen, wrapper } = usePopover();
-  const active = sortable ? filterCount + (sort === "newest" ? 0 : 1) : 0;
+  const active = sortable ? filterCount + (sort === defaultSort ? 0 : 1) : 0;
 
   return (
     <div ref={wrapper} className="relative">

@@ -30,6 +30,7 @@ export async function getMyFolders(): Promise<Folder[]> {
     coverPath: row.cover_path ?? undefined,
     coverSrc: row.cover_path ? coverSrc.get(row.cover_path) : undefined,
     itemIds: [...row.folder_items].sort(byMyOrder).map((link) => link.item_id),
+    arranged: row.folder_items.some((link) => link.position !== null),
   }));
 }
 

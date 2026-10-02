@@ -6,12 +6,13 @@ import { sortLabels, sortShortLabels, sorts, type Sort } from "@/lib/sort-filter
 type SortMenuProps = {
   sort: Sort;
   onChange: (sort: Sort) => void;
+  defaultSort: Sort; // My order once arranged, else Newest added
 };
 
 // SORT in the view bar: a small list under the button. Reads "SORT · BRAND"
 // while a sort other than the default is chosen. Closes on choosing, Esc, or
 // a click anywhere else.
-export default function SortMenu({ sort, onChange }: SortMenuProps) {
+export default function SortMenu({ sort, onChange, defaultSort }: SortMenuProps) {
   const { open, setOpen, wrapper } = usePopover();
 
   return (
@@ -23,7 +24,7 @@ export default function SortMenu({ sort, onChange }: SortMenuProps) {
         onClick={() => setOpen(!open)}
         className="cursor-pointer text-label whitespace-nowrap uppercase"
       >
-        {sort === "newest" ? "Sort" : `Sort · ${sortShortLabels[sort]}`}
+        {sort === defaultSort ? "Sort" : `Sort · ${sortShortLabels[sort]}`}
       </button>
       {open && (
         <div className="absolute top-full right-0 z-20 mt-3 w-48 border border-rule bg-cell py-2">

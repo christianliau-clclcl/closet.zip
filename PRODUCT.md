@@ -226,8 +226,25 @@ archive on their own phones and computers. The app is deployed on a public URL.
       "Folders (top level)" and every folder (indented), leaving out the
       folder itself and the folders inside it; saving moves the folder with
       everything in it. Also sets where a new folder goes
-    - **12g:** ARRANGE and My order, for ALL and each folder
-13. **Style over time:** first visualization
+    - **12g (built 2026-10-02):** ARRANGE (beside SELECT; in ALL and inside
+      folders): every piece of the view in My order, filters and sort set
+      aside meanwhile; drag (mouse: straight away; touch: press and hold
+      300ms so swipes still scroll) or ← → under each piece; CANCEL · DONE,
+      saved in one go by `arrange_items` / `arrange_folder`. "My order" is
+      in the SORT list and becomes the default once arranged. Folders'
+      own order isn't arrangeable yet
+13. **Style over time:** first visualization (planned 2026-10-02). A TIME
+    view (ALL · FOLDERS · ROWS · TIME · ARCHIVE). Desktop: a horizontal
+    timeline in real time (every month has a slot, so gaps show), pieces
+    stacked above their month, years labelled under the axis, scrolling
+    sideways. Phones: time runs down the page, a row per month, years as
+    headings. Pieces with a year but no month: a slot labelled with the
+    year, before that January. No date: "N.D." at the end. Archived pieces
+    included, with an ARCHIVED on/off switch. SORT hidden (time is the
+    order); FILTER works. Monochrome axis (ink, stone, rule).
+    - **13a:** desktop timeline
+    - **13b:** phone layout
+    - **13c:** archived switch and filtering
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
     expensive pieces, and others
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
@@ -266,7 +283,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
 
 ## Open questions
 
-- In style over time, where do items without a date acquired go?
+- ~~In style over time, where do items without a date acquired go?~~
+  Decided 2026-10-02: in an "N.D." (no date) group at the end.
 - ~~For archived items, should we record how it left (sold, donated, gifted, lost)?~~
   Decided 2026-10-01: yes, optional: sold, donated, gifted, lost or other.
   Archived pieces live in the ARCHIVE view (Milestone 9a), not in ALL.

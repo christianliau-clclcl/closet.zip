@@ -85,7 +85,8 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 12 — folders & Arrange (Milestone 11 done). Roadmap changed 2026-10-01: sharing,
+- Current milestone: 13 — style over time (Milestone 12 done 2026-10-02;
+  arranging by touch still to try on a real phone). Roadmap changed 2026-10-01: sharing,
   selling, styling/outfits, more visualizations and folders inside folders
   come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar
@@ -175,6 +176,16 @@ Update this section at the end of each working session.
 - Supabase Auth settings (2026-09-30): Confirm email on, minimum password 8,
   Site URL https://closet-zip.vercel.app, redirect URLs
   http://localhost:3000/** and https://closet-zip.vercel.app/**.
+- Milestone 12 done (2026-10-02, folders & Arrange; details in PRODUCT.md
+  roadmap 12a–12g). Folders view (`FolderView`, `FolderCell`, `FolderModal`
+  with name, INSIDE, cover BOX · IMAGE · PIECE, delete), folders from a
+  piece's details (`ItemFolders`, `FolderChecklist`), SELECT mode
+  (`lib/selection.ts`, `SelectActions`, `FolderPicker`), ARRANGE
+  (`ArrangeGrid`, `arrange_items`/`arrange_folder`), My order sort. Phone
+  layout: MENU (log out) on top, bottom bar VIEW (`ViewMenu`: sort, filter,
+  zoom) · SELECT · ARRANGE · + ADD. Shared `usePopover` for small panels.
+  Gotcha: sibling components with the same React `key` (e.g. two using
+  item.id) duplicate on every refresh; give each its own key.
 - Milestone 11 done (2026-10-01, colour; details in PRODUCT.md roadmap):
   `items.colour_hex` ("#rrggbb", checked by the database) beside the typed
   colour name. `lib/colour.ts`: detection (most common colour among

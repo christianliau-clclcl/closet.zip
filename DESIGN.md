@@ -140,6 +140,13 @@ by depth, + NEW FOLDER at the end; 256px wide, scrolls past 320px). After an
 action the mode ends and the bar says what happened for 4 seconds
 ("3 PIECES ADDED TO GRAILS").
 
+**ARRANGE mode** (Milestone 12g, 2026-10-02). ARRANGE sits after SELECT (in
+ALL and inside folders, when there are 2+ pieces). The grid shows every
+piece of the view in My order, with a `stone` line of instructions above
+and ← → under each piece; the bar reads "ARRANGE · CANCEL · DONE". Pieces
+glide into place with the app's motion style (instant with Reduce motion).
+After DONE the bar says "ORDER SAVED".
+
 **Item cell.** Square and transparent (no surface; the garment sits on the
 canvas), a grid dot at the top-left, image centred with contained fit, and
 the name under the image at Large zoom only. Hover or keyboard focus shows the

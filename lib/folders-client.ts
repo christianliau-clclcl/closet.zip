@@ -107,6 +107,18 @@ export async function removeFromFolder(folderId: string, itemId: string): Promis
   if (error) throw error;
 }
 
+// ARRANGE (Milestone 12g): save My order in one go, for the whole closet or
+// one folder (database functions, so it's all or nothing).
+export async function saveClosetOrder(itemIds: string[]): Promise<void> {
+  const { error } = await createClient().rpc("arrange_items", { p_item_ids: itemIds });
+  if (error) throw error;
+}
+
+export async function saveFolderOrder(folderId: string, itemIds: string[]): Promise<void> {
+  const { error } = await createClient().rpc("arrange_folder", { p_folder_id: folderId, p_item_ids: itemIds });
+  if (error) throw error;
+}
+
 // SELECT mode: add several pieces in one request. Pieces already in the
 // folder are skipped (the link exists), and they stay in their other folders.
 export async function addManyToFolder(folderId: string, itemIds: string[]): Promise<void> {

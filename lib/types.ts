@@ -47,6 +47,7 @@ export type Item = {
   status: ItemStatus;
   archived?: MonthYear; // when it left the closet
   leftVia?: LeftVia;
+  sortPosition?: number; // place in My order for the whole closet; none until arranged
 };
 
 // A personal folder (Milestone 12). Pieces are linked, never copied, so a
@@ -58,5 +59,6 @@ export type Folder = {
   coverItemId?: string; // a piece chosen as the cover
   coverPath?: string; // an uploaded cover image, in storage
   coverSrc?: string; // its signed link, to show it
-  itemIds: string[]; // the pieces directly in it, in the folder's order
+  itemIds: string[]; // the pieces directly in it, in the folder's My order
+  arranged: boolean; // its pieces have been arranged at least once
 };

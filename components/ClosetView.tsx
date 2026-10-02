@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef, useState } from "react";
+import ArrangeGrid from "@/components/ArrangeGrid";
 import BottomBar from "@/components/BottomBar";
 import CategoryRows from "@/components/CategoryRows";
 import ClosetTopBar from "@/components/ClosetTopBar";
@@ -18,8 +19,14 @@ import SortMenu from "@/components/SortMenu";
 import ViewBar from "@/components/ViewBar";
 import ViewEmpty from "@/components/ViewEmpty";
 import { useColourBackfill } from "@/lib/colour-backfill";
-import { folderPath, itemsInFolder } from "@/lib/folder-tree";
-import { addManyToFolder, createFolder, removeManyFromFolder } from "@/lib/folders-client";
+import { folderPath } from "@/lib/folder-tree";
+import {
+  addManyToFolder,
+  createFolder,
+  removeManyFromFolder,
+  saveClosetOrder,
+  saveFolderOrder,
+} from "@/lib/folders-client";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
 import { SelectionContext } from "@/lib/selection";
@@ -64,7 +71,10 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   const view = viewOptions.includes(readFromAddress) ? readFromAddress : "all";
   // The open folder (FOLDERS view): none at the top level.
   const folder = view === "folders" ? folderPath(folders, params.get("folder") ?? undefined).at(-1) : undefined;
-  const sort = readSort(params);
+  // Once the closet (or the open folder) has been arranged, it opens in My order.
+  const arranged = view === "folders" ? Boolean(folder?.arranged) : items.some((i) => i.sortPosition !== undefined);
+  const defaultSort: Sort = arranged ? "mine" : "newest";
+  const sort = readSort(params, defaultSort);
   const filters = readFilters(params);
   const filterCount = countFilters(filters);
   const [filterOpen, setFilterOpen] = useState(false);
@@ -110,11 +120,49 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     }
   }
   const pieces = (n: number) => `${n} ${n === 1 ? "piece" : "pieces"}`;
-  const inView = view === "folders" ? (folder ? itemsInFolder(items, folder) : []) : itemsInView(items, view);
-  const shown = sortItems(filterItems(inView, filters), sort);
+  // A folder's pieces in the closet's newest-first order; its own My order
+  // is folder.itemIds.
+  const inView =
+    view === "folders"
+      ? folder
+        ? items.filter((item) => folder.itemIds.includes(item.id))
+        : []
+      : itemsInView(items, view);
+
+  // ARRANGE (Milestone 12g): drag pieces into My order; DONE saves it in one go.
+  const [arranging, setArranging] = useState(false);
+  const [arrangeOrder, setArrangeOrder] = useState<Item[]>([]);
+  // Just-saved order, used until the refreshed pieces arrive (they're a new
+  // list then), so the grid doesn't flash the old order meanwhile.
+  const [justSaved, setJustSaved] = useState<{ ids: string[]; items: Item[] } | null>(null);
+  const myOrder = justSaved?.items === items ? justSaved.ids : folder?.itemIds;
+  const shown = sortItems(filterItems(inView, filters), sort, myOrder);
+  const canArrange = loggedIn && (view === "all" || Boolean(folder)) && inView.length > 1;
+
+  function startArranging() {
+    setSelecting(false);
+    // Every piece of the view in My order, ignoring filters and sort meanwhile.
+    setArrangeOrder(sortItems(inView, "mine", myOrder));
+    setArranging(true);
+  }
+
+  async function finishArranging() {
+    const ids = arrangeOrder.map((item) => item.id);
+    try {
+      await (folder ? saveFolderOrder(folder.id, ids) : saveClosetOrder(ids));
+      setJustSaved({ ids, items });
+      setArranging(false);
+      // Show My order, which is now the default.
+      window.history.pushState(null, "", withParam("sort", null));
+      setStatus("Order saved");
+      router.refresh();
+    } catch {
+      setStatus("Couldn't save. Check your connection and try again.");
+    }
+  }
 
   function changeSort(next: Sort) {
-    window.history.pushState(null, "", withParam("sort", next === "newest" ? null : next));
+    window.history.pushState(null, "", withParam("sort", next === defaultSort ? null : next));
   }
 
   function applyFilters(next: Filters) {
@@ -134,6 +182,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   // Instant: every piece is already loaded, so this only filters them.
   function changeView(next: View) {
     stopSelecting();
+    setArranging(false);
     window.history.pushState(
       null,
       "",
@@ -201,6 +250,13 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     </button>
   );
 
+  // ARRANGE, beside SELECT, where pieces can be put in order.
+  const arrangeButton = canArrange && (
+    <button type="button" onClick={startArranging} className="cursor-pointer text-label whitespace-nowrap uppercase">
+      Arrange
+    </button>
+  );
+
   // The usual tools. Desktop (view bar): SORT · FILTER · SELECT. Phones
   // (bottom bar): VIEW (sort, filter and zoom in one panel) · SELECT.
   const tools = (inBottomBar: boolean) =>
@@ -209,6 +265,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
         <ViewMenu
           sortable={sortable}
           sort={sort}
+          defaultSort={defaultSort}
           onSortChange={changeSort}
           filterCount={filterCount}
           onFilter={() => setFilterOpen(true)}
@@ -216,11 +273,12 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           onZoomChange={setZoom}
         />
         {selectButton}
+        {arrangeButton}
       </>
     ) : (
       sortable && (
         <>
-          <SortMenu sort={sort} onChange={changeSort} />
+          <SortMenu sort={sort} onChange={changeSort} defaultSort={defaultSort} />
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
@@ -229,6 +287,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
             {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
           </button>
           {selectButton}
+        {arrangeButton}
         </>
       )
     );
@@ -273,7 +332,17 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   // What the bar shows: the selection's actions, a short status line after an
   // action, or the usual tools.
   const barContents = (inBottomBar: boolean) =>
-    selecting ? (
+    arranging ? (
+      <>
+        <span className="text-label text-stone uppercase">Arrange</span>
+        <button type="button" onClick={() => setArranging(false)} className="cursor-pointer text-label uppercase">
+          Cancel
+        </button>
+        <button type="button" onClick={finishArranging} className="cursor-pointer text-label uppercase">
+          Done
+        </button>
+      </>
+    ) : selecting ? (
       selectActions(inBottomBar)
     ) : status ? (
       <p role="status" className="text-label uppercase">
@@ -308,7 +377,8 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
         tools={barContents(true)}
         action={
           loggedIn &&
-          !selecting && (
+          !selecting &&
+          !arranging && (
             <Link href="/add" className="text-label uppercase">
               + Add
             </Link>
@@ -325,7 +395,15 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
         />
       )}
 
-      {view === "folders" ? (
+      {arranging ? (
+        <main className="p-4 pb-20 md:p-8">
+          <h1 className="sr-only">Arrange</h1>
+          <p className="mb-6 text-stone">
+            Drag pieces into your order, or use ← →. On a phone, press and hold a piece to lift it.
+          </p>
+          <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
+        </main>
+      ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
           <FolderView
             folders={folders}

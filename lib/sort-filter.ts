@@ -7,10 +7,11 @@ import type { Item } from "@/lib/types";
 // them. Items arrive from the database newest first, so "newest" keeps that
 // order.
 
-export const sorts = ["newest", "acquired", "brand", "price", "colour"] as const;
+export const sorts = ["mine", "newest", "acquired", "brand", "price", "colour"] as const;
 export type Sort = (typeof sorts)[number];
 
 export const sortLabels: Record<Sort, string> = {
+  mine: "My order",
   newest: "Newest added",
   acquired: "Date acquired",
   brand: "Brand A–Z",
@@ -20,6 +21,7 @@ export const sortLabels: Record<Sort, string> = {
 
 // Short names for the view bar, e.g. "SORT · BRAND".
 export const sortShortLabels: Record<Sort, string> = {
+  mine: "My order",
   newest: "Newest",
   acquired: "Acquired",
   brand: "Brand",
@@ -27,13 +29,17 @@ export const sortShortLabels: Record<Sort, string> = {
   colour: "Colour",
 };
 
-export function readSort(params: URLSearchParams): Sort {
+// The sort in the address, or the default: My order once the closet (or the
+// open folder) has been arranged, else Newest added (PRODUCT.md Milestone 12).
+export function readSort(params: URLSearchParams, fallback: Sort): Sort {
   const value = params.get("sort");
-  return sorts.includes(value as Sort) ? (value as Sort) : "newest";
+  return sorts.includes(value as Sort) ? (value as Sort) : fallback;
 }
 
-// Pieces missing the value being sorted by always go last.
-export function sortItems(items: Item[], sort: Sort): Item[] {
+// Pieces missing the value being sorted by always go last. myOrder: a
+// folder's own order (its piece IDs); without it, My order is the closet's,
+// where pieces not arranged yet come first, newest first.
+export function sortItems(items: Item[], sort: Sort, myOrder?: string[]): Item[] {
   const last = (a: unknown, b: unknown) => Number(a === undefined) - Number(b === undefined);
   const sorted = [...items];
   switch (sort) {
@@ -50,6 +56,12 @@ export function sortItems(items: Item[], sort: Sort): Item[] {
       );
     case "price":
       return sorted.sort((a, b) => last(a.price, b.price) || (b.price ?? 0) - (a.price ?? 0));
+    case "mine":
+      if (myOrder) {
+        const place = new Map(myOrder.map((id, index) => [id, index]));
+        return sorted.sort((a, b) => (place.get(a.id) ?? -1) - (place.get(b.id) ?? -1));
+      }
+      return sorted.sort((a, b) => (a.sortPosition ?? -1) - (b.sortPosition ?? -1));
     case "colour":
       return sorted.sort((a, b) => {
         const missing = last(a.colourHex, b.colourHex);

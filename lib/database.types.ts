@@ -246,6 +246,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      arrange_folder: {
+        Args: { p_folder_id: string; p_item_ids: string[] }
+        Returns: undefined
+      }
+      arrange_items: { Args: { p_item_ids: string[] }; Returns: undefined }
       reorder_item_photos: {
         Args: { p_item_id: string; p_photo_ids: string[] }
         Returns: undefined

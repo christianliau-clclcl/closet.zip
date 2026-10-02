@@ -113,6 +113,7 @@ function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
     status: row.status as ItemStatus,
     archived: monthYear(row.archived_month, row.archived_year),
     leftVia: (row.left_via as LeftVia | null) ?? undefined,
+    sortPosition: row.sort_position ?? undefined,
   };
 }
 
