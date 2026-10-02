@@ -51,25 +51,21 @@ import type { Zoom } from "@/lib/zoom";
 // piece live in the address (?view=…&item=…), so Back and links work.
 type ClosetViewProps = {
   items: Item[];
-  folders: Folder[]; // the logged-in person's folders (none in the demo)
-  loggedIn: boolean;
+  folders: Folder[];
   initialUnit: Unit; // for measurements in the overlay
 };
 
-export default function ClosetView({ items, folders, loggedIn, initialUnit }: ClosetViewProps) {
+export default function ClosetView({ items, folders, initialUnit }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   // Your own pieces saved before colours existed get one in the background.
-  useColourBackfill(items, loggedIn);
+  useColourBackfill(items);
   // The hovered or focused piece, and the cell itself when focused by keyboard.
   const [preview, setPreview] = useState<{ id: string; anchor: HTMLElement | null } | null>(null);
   const showPreview = (id: string | null, anchor?: HTMLElement) =>
     setPreview(id ? { id, anchor: anchor ?? null } : null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const params = useSearchParams();
-  // FOLDERS is only for your own closet; the demo has none.
-  const viewOptions: readonly View[] = loggedIn ? views : views.filter((v) => v !== "folders");
-  const readFromAddress = readView(params);
-  const view = viewOptions.includes(readFromAddress) ? readFromAddress : "all";
+  const view = readView(params);
   // The open folder (FOLDERS view): none at the top level.
   const folder = view === "folders" ? folderPath(folders, params.get("folder") ?? undefined).at(-1) : undefined;
   // Once the closet (or the open folder) has been arranged, it opens in My order.
@@ -155,7 +151,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   // TIME has no sort: time is the order.
   const shown =
     view === "time" ? filterItems(inView, filters) : sortItems(filterItems(inView, filters), sort, myOrder);
-  const canArrange = loggedIn && (view === "all" || Boolean(folder)) && inView.length > 1;
+  const canArrange = (view === "all" || Boolean(folder)) && inView.length > 1;
 
   function startArranging() {
     setSelecting(false);
@@ -233,11 +229,11 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     );
   }
 
-  // Kept while browsing, so every piece opens in the same unit; remembered in
-  // the profile for logged-in people (demo visitors can switch, unsaved).
+  // Kept while browsing, so every piece opens in the same unit, and
+  // remembered in your profile.
   function changeUnit(next: Unit) {
     setUnit(next);
-    if (loggedIn) saveMyUnit(next);
+    saveMyUnit(next);
   }
   // True when the overlay was opened from the grid (so closing = going back),
   // false when the page was loaded straight from an item link.
@@ -263,7 +259,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   const sortable = filterable && view !== "time";
 
   // SELECT, for your own pieces wherever there are some to choose.
-  const selectButton = loggedIn && sortable && (
+  const selectButton = sortable && (
     <button
       type="button"
       onClick={() => setSelecting(true)}
@@ -396,7 +392,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   if (items.length === 0) {
     return (
       <>
-        <ClosetTopBar loggedIn={loggedIn} />
+        <ClosetTopBar />
         <main className="flex flex-1 flex-col">
           <EmptyState />
         </main>
@@ -406,18 +402,17 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
 
   return (
     <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
-      <ClosetTopBar loggedIn={loggedIn} zoom={{ value: zoom, onChange: setZoom }} />
+      <ClosetTopBar zoom={{ value: zoom, onChange: setZoom }} />
 
       {/* Desktop: SORT and FILTER on the right of the view bar. Phones: in the
           bottom bar instead (below), so the bars up top stay uncrowded. */}
-      <ViewBar view={view} options={viewOptions} onChange={changeView}>
+      <ViewBar view={view} options={views} onChange={changeView}>
         <div className="hidden items-center gap-6 md:flex">{barContents(false)}</div>
       </ViewBar>
 
       <BottomBar
         tools={barContents(true)}
         action={
-          loggedIn &&
           !selecting &&
           !arranging && (
             <Link href="/add" className="text-label uppercase">
@@ -503,7 +498,6 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
           folders={folders}
           onClose={closeItem}
           onOpenFolder={openFolderFromItem}
-          editable={loggedIn}
           unit={unit}
           onUnitChange={changeUnit}
         />

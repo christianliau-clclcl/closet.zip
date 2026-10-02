@@ -41,7 +41,9 @@ build them before friend testing (see Roadmap 15–17).
 
 ## Core user flows
 
-1. **Sign up / log in** with email
+1. **Sign up / log in** with email. The logged-out home page is one line
+   ("A private archive of the clothes you own, and have owned.") above the
+   log in / sign up form; there's no demo closet (decided 2026-10-02)
 2. **Add an item:** choose a hero photo → optionally fill in details → save
 3. **Browse:** scroll the grid; zoom between small and large views
 4. **Open an item:** tap (mobile) or click (desktop) → overlay with enlarged
@@ -269,8 +271,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
 17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
     outfits or a styling project. Details to design.
 18. **Final polish:** accessibility pass, mobile refinements, README and
-    screenshots for the portfolio, and a short intro above the demo closet
-    for logged-out visitors (what you can do, in the archive's own voice)
+    screenshots for the portfolio, and a few lines around the log in form on
+    the logged-out home page (what you can do, in the archive's own voice;
+    decided 2026-10-02, replacing an intro above the demo closet)
 19. **Friend testing:** invite a few friends at a time, with a feedback
     link (Google Form). Consider a custom domain and email service first:
     Supabase's built-in sender allows only a few emails per hour.

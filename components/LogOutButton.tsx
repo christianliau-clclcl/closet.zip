@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-// Ends the session, then re-renders the page as logged out (the demo closet).
+// Ends the session, then re-renders the page as logged out (the log in form).
 export default function LogOutButton() {
   const router = useRouter();
   const [busy, setBusy] = useState(false);

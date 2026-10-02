@@ -125,13 +125,14 @@ Update this section at the end of each working session.
   reusable for editing; validation in `lib/item-draft.ts`; brand
   suggestions). Grid reads real items for logged-in users (`lib/items.ts`,
   signed photo links, thumbnails in the grid), empty state when there are
-  none; demo closet for logged-out visitors. Item labels: no index codes;
+  none. Item labels: no index codes;
   hover caption "name · brand · year" (DESIGN.md "Item labels").
 - Milestone 4 done (2026-09-30, live): email + password auth with
   `@supabase/ssr`. One `/login` page (log in / sign up switch), email
   confirmation via `/auth/confirm`, log out in the top bar, password reset
   (`/forgot-password` → email → `/reset-password`). `proxy.ts` refreshes the
-  session. Logged-out visitors see the sample closet as a demo.
+  session. Logged out, the home page shows one line and the log in / sign
+  up form (2026-10-02; the demo closet was removed).
 - Milestone 3 done (2026-09-27): detail overlay (view only). Opens via
   `?item=<id>` so Back closes it and links work. Desktop: grid behind with
   scrim (ink 50% + 12px blur), garment floating left, canvas panel right with
@@ -146,8 +147,7 @@ Update this section at the end of each working session.
   https://closet-zip.vercel.app
 - Known issues: `README.md` is still the create-next-app boilerplate; favicon
   is a placeholder (`app/icon.svg`, no `apple-icon` yet); ESLint 9
-  deprecation warning comes from the Next.js template. Demo closet details
-  in `lib/sample-items.ts` are fictional (photos in `public/sample/`).
+  deprecation warning comes from the Next.js template.
   Input borders (`rule`, 1.3:1) are below WCAG's 3:1 for field boundaries;
   kept for the quiet look (labels above + white fill mark each field),
   revisit in final polish (Milestone 18). Auth emails use Supabase's default templates
@@ -222,9 +222,8 @@ Update this section at the end of each working session.
   only); photo reordering now respects Reduce motion. Testing tip: the
   browser pane's clicks land wrong when an emulated size is scaled to fit;
   use a size that fits the pane, or check with `elementFromPoint`.
-  Moved to Milestone 18: intro above the demo closet for logged-out
-  visitors (a band above the grid: Fraunces title, a few mono lines,
-  "Start your archive" + Log in, then "SAMPLE CLOSET"). The user's points:
+  Moved to Milestone 18: a few lines around the log in form on the
+  logged-out home page (was an intro above the demo closet). The user's points:
   everything at a glance (capsule wardrobe, styling project), sort your way
   (brand, colour, year, category, folders), private (share only if you
   want), sell from your closet (e-transfer + contact, no money through the

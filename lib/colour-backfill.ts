@@ -11,13 +11,13 @@ import type { Item } from "@/lib/types";
 // thumbnail (the same detection as on Add) and saved, one at a time; then
 // the closet refreshes so the colours show in filters and sorting.
 // Only fills empty colours, so a colour picked meanwhile is never replaced.
-export function useColourBackfill(items: Item[], enabled: boolean) {
+export function useColourBackfill(items: Item[]) {
   const router = useRouter();
   const started = useRef(false);
 
   useEffect(() => {
     const missing = items.filter((item) => !item.colourHex);
-    if (!enabled || started.current || missing.length === 0) return;
+    if (started.current || missing.length === 0) return;
     started.current = true; // once per visit, even if the items list changes
 
     (async () => {
@@ -39,5 +39,5 @@ export function useColourBackfill(items: Item[], enabled: boolean) {
       }
       if (saved > 0) router.refresh();
     })();
-  }, [items, enabled, router]);
+  }, [items, router]);
 }

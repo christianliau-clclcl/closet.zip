@@ -232,6 +232,11 @@ iPhone the system asks first). Pairs well with iPhone's Copy Subject, which
 copies a background-removed PNG. Desktop shows a quiet `stone` hint: "or
 drop it here, or paste (⌘V)".
 
+**Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
+centred on the page, one `stone` line ("A private archive of the clothes
+you own, and have owned.") 48px above the log in / sign up form below. No
+demo closet.
+
 **Log in / sign up.** One page, a single centred column (full width on phones,
 384px on desktop). A "LOG IN · SIGN UP" text switch (active `ink` with an
 underline, inactive `stone`), a Fraunces title ("Welcome back" / "Start your
