@@ -6,26 +6,36 @@ import type { Item } from "@/lib/types";
 
 export type Group = { key: string; label: string; items: Item[]; swatch?: string };
 
-// Pieces grouped by the colour name typed for them ("Black", "Charcoal"…;
-// "black" and "Black" are one), most pieces first, then A–Z. Each group's
-// swatch is the average of its pieces' detected colours. Pieces without a
-// colour name come last.
-export function byColourName(items: Item[]): Group[] {
+// Pieces grouped by a word typed for them ("levi's" and "Levi's" are one,
+// named as first seen), most pieces first, then A–Z. Pieces without one come
+// last, under `noneLabel`.
+function groupByName(items: Item[], nameOf: (item: Item) => string | undefined, noneLabel: string): Group[] {
   const groups = new Map<string, Group>();
   for (const item of items) {
-    const name = item.colour?.trim();
+    const name = nameOf(item)?.trim();
     if (!name) continue;
     const key = name.toLowerCase();
     const group = groups.get(key) ?? { key, label: name, items: [] };
     group.items.push(item);
     groups.set(key, group);
   }
-  const named = [...groups.values()]
-    .sort((a, b) => b.items.length - a.items.length || a.label.localeCompare(b.label, "en", { sensitivity: "base" }))
-    .map((group) => {
-      const hexes = group.items.flatMap((item) => (item.colourHex ? [item.colourHex] : []));
-      return hexes.length > 0 ? { ...group, swatch: averageColour(hexes) } : group;
-    });
-  const unnamed = items.filter((item) => !item.colour?.trim());
-  return unnamed.length > 0 ? [...named, { key: "none", label: "No colour name", items: unnamed }] : named;
+  const named = [...groups.values()].sort(
+    (a, b) => b.items.length - a.items.length || a.label.localeCompare(b.label, "en", { sensitivity: "base" }),
+  );
+  const unnamed = items.filter((item) => !nameOf(item)?.trim());
+  return unnamed.length > 0 ? [...named, { key: "none", label: noneLabel, items: unnamed }] : named;
+}
+
+// By colour (14a): grouped by the colour name typed ("Black", "Charcoal"…),
+// each with a swatch averaged from its pieces' detected colours.
+export function byColourName(items: Item[]): Group[] {
+  return groupByName(items, (item) => item.colour, "No colour name").map((group) => {
+    const hexes = group.items.flatMap((item) => (item.colourHex ? [item.colourHex] : []));
+    return hexes.length > 0 ? { ...group, swatch: averageColour(hexes) } : group;
+  });
+}
+
+// Brands (14c): your most-owned brands first.
+export function byBrand(items: Item[]): Group[] {
+  return groupByName(items, (item) => item.brand, "No brand");
 }

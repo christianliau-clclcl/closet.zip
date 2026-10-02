@@ -85,8 +85,25 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 14 — more visualizations (Milestone 13 done
-  2026-10-02). Still to try on a real phone: arranging by touch (12g). Roadmap changed 2026-10-01: sharing,
+- Current milestone: 15 — sharing (Milestone 14 done 2026-10-02, with
+  Spending shelved). Still to try on a real phone: arranging by touch
+  (12g), PASTE with Copy Subject, the sign-up closet name field. The user
+  also has feedback from a handful of friends to go through next.
+- Milestone 14 done (2026-10-02): OVERVIEW tab (ALL · FOLDERS · OVERVIEW;
+  `Overview`, `lib/overview.ts`): By colour (grouped by the colour names
+  typed, wrapping grids) and Brands (most-owned first). A colour-strip
+  palette was tried and dropped. Spending (14b) is parked, unmerged, on the
+  local branch `shelved/spending` until the user asks for it; price stays
+  everywhere else.
+- Friend feedback round done (2026-10-02, PRODUCT.md "13½"): logged-out
+  home is one line + the log in form (demo closet removed); search
+  (`lib/search.ts`, `SearchField`, ?q=); closet name (user metadata
+  `closet_name`, `lib/closet-name.ts`, `ClosetNameModal`, shown by `TopBar`,
+  MENU on desktop too via `TopMenu`); SORT BY (`SortByMenu`) replacing the
+  view tabs ROWS/TIME/ARCHIVE: sorts pick layouts (`layoutOf`: grid,
+  timeline, shelves via `Shelves` + `lib/shelves.ts`), ARCHIVED · ON/OFF
+  everywhere (?archived=show), old links upgraded (`upgradeOldAddress`).
+  Also: drag/drop + paste photos (`lib/clipboard.ts`, `PasteButton`). Roadmap changed 2026-10-01: sharing,
   selling, styling/outfits, more visualizations and folders inside folders
   come before friend testing (now 19). See PRODUCT.md roadmap.
 - Milestone 9a done (2026-10-01, live, tested on phone): view bar

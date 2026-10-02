@@ -313,6 +313,8 @@ the bar. **By colour** (14a): one group per colour name typed for the
 pieces, most pieces first: a heading like a shelf ("■ BLACK — 02", the
 swatch averaged from the group's detected colours), then the pieces in the
 usual grid (same cells and zoom). Pieces without a colour name last.
+**Brands** (14c), after By colour: the same shape, one group per brand,
+most pieces first then A–Z, "No brand" last, no swatch.
 
 ## Do's and don'ts
 

@@ -285,9 +285,12 @@ archive on their own phones and computers. The app is deployed on a public URL.
       name typed for them ("Black", "Charcoal"…; case doesn't matter), most
       pieces first, each group a heading ("BLACK — 02") and a wrapping grid;
       no colour name last. (A colour-strip palette was tried and dropped.)
-    - **14b:** Spending: total, per year and per category; most expensive
-      pieces as garments with their prices
-    - **14c:** Brands: most-owned brands first, each with its garments
+    - **14b (shelved 2026-10-02, until the user says so):** Spending, built
+      and parked on the local branch `shelved/spending` (archived pieces
+      included; total, by year, by category, most expensive with prices)
+    - **14c (built 2026-10-02):** Brands: most-owned brands first ("levi's"
+      and "Levi's" as one), each a heading and a wrapping grid; no brand
+      last
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
     link to your closet or a folder, which you can switch off. The first
     deliberate exception to "every closet is private"; nothing is ever
