@@ -12,6 +12,7 @@ import FolderView from "@/components/FolderView";
 import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
+import Overview from "@/components/Overview";
 import SearchField from "@/components/SearchField";
 import SelectActions from "@/components/SelectActions";
 import TimeView from "@/components/TimeView";
@@ -273,8 +274,9 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
     }
   }
 
-  // The top of FOLDERS is just folders: nothing to sort, filter or search.
-  const sortable = view !== "folders" || Boolean(folder);
+  // The top of FOLDERS is just folders, and OVERVIEW is summaries: nothing to
+  // sort, filter or search there.
+  const sortable = view === "all" || Boolean(folder);
 
   // SELECT, for your own pieces wherever there are some to choose (not on
   // the timeline, whose pieces aren't grid cells).
@@ -316,6 +318,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
   // Phones (bottom bar): SORT BY · SEARCH · SELECT · ARRANGE.
   const tools = (inBottomBar: boolean) =>
     inBottomBar ? (
+      view !== "overview" && (
       <>
         {sortBy(true)}
         {sortable && (
@@ -333,6 +336,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
         {selectButton}
         {arrangeButton}
       </>
+      )
     ) : (
       sortable && (
         <>
@@ -476,6 +480,16 @@ export default function ClosetView({ items, folders, initialUnit, closetName }: 
             Drag pieces into your order, or use ← →. On a phone, press and hold a piece to lift it.
           </p>
           <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
+        </main>
+      ) : view === "overview" ? (
+        <main className="p-4 pb-20 md:p-8">
+          {/* What you own now: archived pieces aren't counted. */}
+          <Overview
+            items={items.filter((item) => item.status !== "archived")}
+            zoom={zoom}
+            onOpen={openItem}
+            onPreview={showPreview}
+          />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">

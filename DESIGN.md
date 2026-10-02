@@ -307,6 +307,13 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   ARCHIVED · ON / OFF (13c) is now part of SORT BY and works everywhere
   (off by default).
 
+**OVERVIEW** (Milestone 14, 2026-10-02): a tab of summaries for what you
+own now, one section each, made of the garments in plain grids. No tools in
+the bar. **By colour** (14a): one group per colour name typed for the
+pieces, most pieces first: a heading like a shelf ("■ BLACK — 02", the
+swatch averaged from the group's detected colours), then the pieces in the
+usual grid (same cells and zoom). Pieces without a colour name last.
+
 ## Do's and don'ts
 
 **Do**

@@ -277,8 +277,17 @@ archive on their own phones and computers. The app is deployed on a public URL.
       gradient (one grid) · Brand (shelves per brand) · Price (high to low);
       then FILTER, ARCHIVED · ON/OFF (off by default everywhere, replacing
       the ARCHIVE tab), ZOOM. Old ?view= links redirect
-14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
-    expensive pieces, and others
+14. **More visualizations** (planned 2026-10-02): an OVERVIEW tab (ALL ·
+    FOLDERS · OVERVIEW), one scrolling page of simple sections in rows and
+    grids, for what you own now (archived pieces left out; search and
+    filters don't apply).
+    - **14a (built 2026-10-02):** By colour: pieces grouped by the colour
+      name typed for them ("Black", "Charcoal"…; case doesn't matter), most
+      pieces first, each group a heading ("BLACK — 02") and a wrapping grid;
+      no colour name last. (A colour-strip palette was tried and dropped.)
+    - **14b:** Spending: total, per year and per category; most expensive
+      pieces as garments with their prices
+    - **14c:** Brands: most-owned brands first, each with its garments
 15. **Sharing** (from v2, 2026-10-01): a private, unguessable, view-only
     link to your closet or a folder, which you can switch off. The first
     deliberate exception to "every closet is private"; nothing is ever
