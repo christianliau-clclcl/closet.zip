@@ -3,13 +3,14 @@ import type { Item } from "@/lib/types";
 // The closet's views (PRODUCT.md "Views"), kept in the address as ?view=…
 // so Back, reloading and links all keep them. "all" is the default and
 // isn't written into the address. More views join as they're built.
-export const views = ["all", "folders", "rows", "archive"] as const;
+export const views = ["all", "folders", "rows", "time", "archive"] as const;
 export type View = (typeof views)[number];
 
 export const viewLabels: Record<View, string> = {
   all: "All",
   folders: "Folders",
   rows: "Rows",
+  time: "Time",
   archive: "Archive",
 };
 

@@ -14,6 +14,7 @@ import HoverLabel from "@/components/HoverLabel";
 import ItemGrid from "@/components/ItemGrid";
 import ItemOverlay from "@/components/ItemOverlay";
 import SelectActions from "@/components/SelectActions";
+import TimeView from "@/components/TimeView";
 import ViewMenu from "@/components/ViewMenu";
 import SortMenu from "@/components/SortMenu";
 import ViewBar from "@/components/ViewBar";
@@ -127,7 +128,9 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       ? folder
         ? items.filter((item) => folder.itemIds.includes(item.id))
         : []
-      : itemsInView(items, view);
+      : view === "time"
+        ? items // every piece, archived ones too (a switch comes in 13c)
+        : itemsInView(items, view);
 
   // ARRANGE (Milestone 12g): drag pieces into My order; DONE saves it in one go.
   const [arranging, setArranging] = useState(false);
@@ -136,7 +139,9 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
   // list then), so the grid doesn't flash the old order meanwhile.
   const [justSaved, setJustSaved] = useState<{ ids: string[]; items: Item[] } | null>(null);
   const myOrder = justSaved?.items === items ? justSaved.ids : folder?.itemIds;
-  const shown = sortItems(filterItems(inView, filters), sort, myOrder);
+  // TIME has no sort: time is the order.
+  const shown =
+    view === "time" ? filterItems(inView, filters) : sortItems(filterItems(inView, filters), sort, myOrder);
   const canArrange = loggedIn && (view === "all" || Boolean(folder)) && inView.length > 1;
 
   function startArranging() {
@@ -237,8 +242,11 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
     }
   }
 
-  // The top of FOLDERS is just folders: nothing to sort or filter.
-  const sortable = view !== "folders" || Boolean(folder);
+  // The top of FOLDERS is just folders: nothing to sort or filter. TIME
+  // filters but doesn't sort (time is the order).
+  const filterable = view !== "folders" || Boolean(folder);
+  const sortable = filterable && view !== "time";
+
   // SELECT, for your own pieces wherever there are some to choose.
   const selectButton = loggedIn && sortable && (
     <button
@@ -264,6 +272,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
       <>
         <ViewMenu
           sortable={sortable}
+          filterable={filterable}
           sort={sort}
           defaultSort={defaultSort}
           onSortChange={changeSort}
@@ -276,9 +285,9 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
         {arrangeButton}
       </>
     ) : (
-      sortable && (
+      filterable && (
         <>
-          <SortMenu sort={sort} onChange={changeSort} defaultSort={defaultSort} />
+          {sortable && <SortMenu sort={sort} onChange={changeSort} defaultSort={defaultSort} />}
           <button
             type="button"
             onClick={() => setFilterOpen(true)}
@@ -287,7 +296,7 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
             {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"}
           </button>
           {selectButton}
-        {arrangeButton}
+          {arrangeButton}
         </>
       )
     );
@@ -402,6 +411,11 @@ export default function ClosetView({ items, folders, loggedIn, initialUnit }: Cl
             Drag pieces into your order, or use ← →. On a phone, press and hold a piece to lift it.
           </p>
           <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
+        </main>
+      ) : view === "time" && shown.length > 0 ? (
+        <main className="p-4 pb-20 md:p-8">
+          <h1 className="sr-only">Style over time</h1>
+          <TimeView items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">

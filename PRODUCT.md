@@ -242,7 +242,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
     year, before that January. No date: "N.D." at the end. Archived pieces
     included, with an ARCHIVED on/off switch. SORT hidden (time is the
     order); FILTER works. Monochrome axis (ink, stone, rule).
-    - **13a:** desktop timeline
+    - **13a (built 2026-10-02):** TIME view and the horizontal timeline
+      (`lib/timeline.ts` slots, `TimeView`); also on phones until 13b
     - **13b:** phone layout
     - **13c:** archived switch and filtering
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most

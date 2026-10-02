@@ -240,7 +240,14 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
 - Data marks use each item's own colour, or its image.
 - **Style over time** (first visualization): a horizontal timeline by
   month and year acquired. Items stack as small cells above their month,
-  so the chart is made of the clothes themselves.
+  so the chart is made of the clothes themselves. Built (13a, 2026-10-02):
+  the TIME view; one slot per month in real time (empty months too), each
+  as wide as a piece (32/48/80px by zoom), pieces stacked upwards with 4px
+  between; a continuous 1px `ink` axis, a 4px `rule` tick per month and an
+  8px `ink` tick plus the year (label style) where each year starts, both
+  at the slot's left edge; a year-only slot before January when needed;
+  "N.D." after a 48px gap at the end. Scrolls sideways, opening at the most
+  recent end. No SORT in TIME; FILTER works.
 
 ## Do's and don'ts
 

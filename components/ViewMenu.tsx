@@ -6,7 +6,8 @@ import { usePopover } from "@/lib/use-popover";
 import type { Zoom } from "@/lib/zoom";
 
 type ViewMenuProps = {
-  sortable: boolean; // false at the top of FOLDERS (only zoom applies there)
+  sortable: boolean; // false at the top of FOLDERS and in TIME (time is the order)
+  filterable: boolean; // false at the top of FOLDERS
   sort: Sort;
   defaultSort: Sort; // My order once arranged, else Newest added
   onSortChange: (sort: Sort) => void;
@@ -22,6 +23,7 @@ type ViewMenuProps = {
 // Desktop keeps these spread out in the bars.
 export default function ViewMenu({
   sortable,
+  filterable,
   sort,
   defaultSort,
   onSortChange,
@@ -31,7 +33,7 @@ export default function ViewMenu({
   onZoomChange,
 }: ViewMenuProps) {
   const { open, setOpen, wrapper } = usePopover();
-  const active = sortable ? filterCount + (sort === defaultSort ? 0 : 1) : 0;
+  const active = (filterable ? filterCount : 0) + (sortable && sort !== defaultSort ? 1 : 0);
 
   return (
     <div ref={wrapper} className="relative">
@@ -47,8 +49,7 @@ export default function ViewMenu({
       {open && (
         <div className="absolute bottom-full left-0 z-20 mb-3 flex w-64 flex-col gap-4 border border-rule bg-cell p-4">
           {sortable && (
-            <>
-              <div>
+            <div>
                 <p className="text-label text-stone uppercase">Sort</p>
                 <div className="mt-1">
                   {sorts.map((option) => (
@@ -68,20 +69,21 @@ export default function ViewMenu({
                     </button>
                   ))}
                 </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  onFilter();
-                }}
-                className="cursor-pointer border-t border-rule pt-4 text-left text-label uppercase"
-              >
-                {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"} →
-              </button>
-            </>
+            </div>
           )}
-          <div className={sortable ? "border-t border-rule pt-4" : ""}>
+          {filterable && (
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                onFilter();
+              }}
+              className={`cursor-pointer text-left text-label uppercase ${sortable ? "border-t border-rule pt-4" : ""}`}
+            >
+              {filterCount > 0 ? `Filter · ${filterCount}` : "Filter"} →
+            </button>
+          )}
+          <div className={sortable || filterable ? "border-t border-rule pt-4" : ""}>
             <ZoomSlider value={zoom} onChange={onZoomChange} />
           </div>
         </div>
