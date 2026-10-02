@@ -248,6 +248,12 @@ empty"), one line of mono text, and a primary "Add your first piece" button.
   at the slot's left edge; a year-only slot before January when needed;
   "N.D." after a 48px gap at the end. Scrolls sideways, opening at the most
   recent end. No SORT in TIME; FILTER works.
+  Phones (13b): the axis is a vertical 1px `ink` line down the left side,
+  newest at the top. Each month is a row: a 8px `rule` tick (12px `ink`
+  where a year starts, with the year in a 48px column left of the line),
+  then for months with pieces the short month name in `stone` ("JUN") and
+  the pieces in a row that wraps. Empty months are 12px rows. "N.D." at
+  the bottom after a 48px gap.
 
 ## Do's and don'ts
 

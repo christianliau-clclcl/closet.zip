@@ -244,7 +244,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
     order); FILTER works. Monochrome axis (ink, stone, rule).
     - **13a (built 2026-10-02):** TIME view and the horizontal timeline
       (`lib/timeline.ts` slots, `TimeView`); also on phones until 13b
-    - **13b:** phone layout
+    - **13b (built 2026-10-02):** phone layout: the axis runs down the left
+      side, newest at the top; a row per month (empty months 12px, so gaps
+      show), years beside the line, month names for months with pieces
     - **13c:** archived switch and filtering
 14. **More visualizations** (from v2, 2026-10-01): colour palettes, most
     expensive pieces, and others
