@@ -3,6 +3,8 @@
 import { useEffect, useId, useRef, useState } from "react";
 import BoxIcon from "@/components/BoxIcon";
 import OptionPicker from "@/components/OptionPicker";
+import PasteButton from "@/components/PasteButton";
+import { usePasteImage } from "@/lib/clipboard";
 import type { CoverChoice } from "@/lib/folders-client";
 import type { Item } from "@/lib/types";
 
@@ -45,6 +47,18 @@ export default function CoverChooser({ value, onChange, pieces, currentImageSrc 
           ? pieces.find((p) => p.id === value.itemId)?.hero.thumbSrc
           : undefined;
 
+  // A newly chosen, dropped or pasted image becomes the cover.
+  function takeImage(chosen: File) {
+    if (!chosen.type.startsWith("image/")) return;
+    if (fileUrlRef.current) URL.revokeObjectURL(fileUrlRef.current);
+    fileUrlRef.current = URL.createObjectURL(chosen);
+    setFileUrl(fileUrlRef.current);
+    setKind("image");
+    onChange({ kind: "image", file: chosen });
+  }
+  // ⌘V while the folder modal is open pastes a copied image as the cover.
+  usePasteImage(takeImage);
+
   function choose(next: Kind | "") {
     // Tapping the chosen option again clears it, which means the box.
     setKind(next || "box");
@@ -61,7 +75,16 @@ export default function CoverChooser({ value, onChange, pieces, currentImageSrc 
 
       <div className="mt-4 flex items-end gap-4">
         {/* The preview: the same contained look as a folder in the grid. */}
-        <div className="relative size-32 shrink-0 border border-rule">
+        {/* Desktop: an image can also be dropped on the preview. */}
+        <div
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => {
+            event.preventDefault();
+            const dropped = event.dataTransfer.files[0];
+            if (dropped) takeImage(dropped);
+          }}
+          className="relative size-32 shrink-0 border border-rule"
+        >
           {previewSrc ? (
             // A plain <img>: a local file or an already-resized photo.
             // eslint-disable-next-line @next/next/no-img-element
@@ -79,11 +102,7 @@ export default function CoverChooser({ value, onChange, pieces, currentImageSrc 
               className="peer sr-only"
               onChange={(event) => {
                 const chosen = event.target.files?.[0];
-                if (!chosen) return;
-                if (fileUrlRef.current) URL.revokeObjectURL(fileUrlRef.current);
-                fileUrlRef.current = URL.createObjectURL(chosen);
-                setFileUrl(fileUrlRef.current);
-                onChange({ kind: "image", file: chosen });
+                if (chosen) takeImage(chosen);
               }}
             />
             <label
@@ -92,6 +111,9 @@ export default function CoverChooser({ value, onChange, pieces, currentImageSrc 
             >
               {previewSrc ? "Change image" : "Choose image"}
             </label>
+            <span className="ml-4">
+              <PasteButton onImage={takeImage} />
+            </span>
             <p className="mt-2 text-stone">A PNG with the background removed works best.</p>
           </div>
         )}

@@ -224,6 +224,14 @@ text only with an underline on hover.
 **Inputs.** `cell` fill, 1px `rule` border, square, mono 13px. The label
 sits above in mono 11px uppercase. Focus: border becomes `ink`.
 
+**Getting photos in** (2026-10-02). Wherever a photo is chosen (the Add
+page square, the Edit page's Add photo tile, a folder's IMAGE cover): tap to
+choose, drop a file on it (desktop), paste with ⌘V, or tap **PASTE** (a
+text action, shown only where the browser can read clipboard images; on
+iPhone the system asks first). Pairs well with iPhone's Copy Subject, which
+copies a background-removed PNG. Desktop shows a quiet `stone` hint: "or
+drop it here, or paste (⌘V)".
+
 **Log in / sign up.** One page, a single centred column (full width on phones,
 384px on desktop). A "LOG IN · SIGN UP" text switch (active `ink` with an
 underline, inactive `stone`), a Fraunces title ("Welcome back" / "Start your

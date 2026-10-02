@@ -4,6 +4,8 @@ import { MotionConfig, Reorder } from "motion/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
+import PasteButton from "@/components/PasteButton";
+import { usePasteImage } from "@/lib/clipboard";
 import { MAX_PHOTOS, UnreadableImage, addPhoto, preparePhoto, removePhoto } from "@/lib/photos";
 import { createClient } from "@/lib/supabase/client";
 import type { Photo } from "@/lib/types";
@@ -58,8 +60,8 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
     saveOrder(ids);
   }
 
-  async function add(files: FileList | null) {
-    const chosen = [...(files ?? [])].slice(0, roomLeft);
+  async function add(files: FileList | File[] | null) {
+    const chosen = [...(files ?? [])].filter((f) => f.type.startsWith("image/")).slice(0, roomLeft);
     if (chosen.length === 0) return;
     setError(null);
     setBusy(chosen.length > 1 ? `Adding ${chosen.length} photos…` : "Adding…");
@@ -89,6 +91,9 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
     setBusy(null);
     router.refresh();
   }
+
+  // ⌘V anywhere on the Edit page pastes a copied image as a new photo.
+  usePasteImage((file) => add([file]), roomLeft > 0 && !busy);
 
   async function remove(photoId: string) {
     setError(null);
@@ -225,10 +230,22 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
           />
           <label
             htmlFor={inputId}
+            // Desktop: photos can also be dropped on the tile.
+            onDragOver={(event) => event.preventDefault()}
+            onDrop={(event) => {
+              event.preventDefault();
+              add(event.dataTransfer.files);
+            }}
             className="flex aspect-square cursor-pointer items-center justify-center border border-rule p-2 text-center text-label uppercase peer-focus-visible:outline-1 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink peer-disabled:cursor-wait"
           >
             {busy ?? "Add photo"}
           </label>
+          <div className="col-span-2 flex flex-col justify-end gap-2">
+            <p className="hidden text-stone md:block">Or drop photos on the tile, or paste (⌘V).</p>
+            <div>
+              <PasteButton onImage={(file) => add([file])} disabled={Boolean(busy)} />
+            </div>
+          </div>
         </div>
       )}
 
