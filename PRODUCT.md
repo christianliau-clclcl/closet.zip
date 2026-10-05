@@ -12,9 +12,15 @@ calm, gallery-like grid, with views that show your style over time.
 
 ## Who it's for
 
-People who care about their clothes as more than utility: who remember where
-they found a grail piece, what time of life a jacket reminds them of, and want
-a record of it. First testers: the designer's friends.
+Collectors: people who are into fashion more than most and treat their
+clothes as a collection to keep track of, not just a wardrobe to get dressed
+from. They remember where they found a grail piece, what time of life a jacket
+reminds them of, and want a record of it. Closer to Grailed users than to the
+women's-wear, outfit-planning crowd of apps like Whering, Indyx and Stylebook,
+and less focused on cost (cost per wear is not a lead feature). The quiet,
+gallery-like look is for this audience. First testers: the designer's
+friends, who are already into fashion (decided 2026-10-05; see
+`research/competitors.md` in the project files).
 
 ## Goals (v1)
 
@@ -365,7 +371,9 @@ archive on their own phones and computers. The app is deployed on a public URL.
     listing links, pieces could be marked "for sale" on a public profile
     (the FOR SALE tab).
 17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
-    outfits or a styling project. Details to design.
+    outfits or a styling project, possibly with an outfit randomizer.
+    A secondary feature, never the headline: the app leads with tracking
+    the collection (decided 2026-10-05). Details to design.
 18. **Final polish:** accessibility pass, mobile refinements, README and
     screenshots for the portfolio, and a few lines around the log in form on
     the logged-out home page (what you can do, in the archive's own voice;
