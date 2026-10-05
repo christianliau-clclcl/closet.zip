@@ -353,13 +353,32 @@ archive on their own phones and computers. The app is deployed on a public URL.
       rule for their photos; tested as owner, visitor and another user
       before applying
     - **15d:** the visitor's page at /@username (read-only, noindex)
-15¼. **New category list** (decided 2026-10-03, to plan): the five
-    categories are replaced by one flat list of 13: Bags, Dresses, Jackets,
-    Knitwear, Shirts, Shoes, Skirts, Sneakers, Sunglasses, Sweatshirts,
-    T-Shirts, Tops, Trousers. To work out: where existing pieces move
-    (Bottoms → Trousers? Outerwear → Jackets? Accessories?), measurement rows
-    and usual sizes per new category, Type shelves and filters, and what
-    onboarding step 3 becomes.
+15¼. **New category list** (planned 2026-10-05). The five categories become
+    14, still a fixed list, in head-to-toe order: Tops, T-Shirts, Shirts,
+    Knitwear, Sweatshirts, Jackets, Dresses, Trousers, Skirts, Shoes,
+    Sneakers, Bags, Sunglasses, Accessories (caps, belts, jewellery,
+    watches…). Decisions:
+    - Existing pieces move to the closest match: Tops → Tops, Bottoms →
+      Trousers, Outerwear → Jackets, Shoes → Shoes, Accessories →
+      Accessories. Owners can re-pick. (12 pieces in all, 2026-10-05.)
+    - Measurement rows: top rows (chest, length, shoulder, sleeve) for
+      Tops, T-Shirts, Shirts, Knitwear, Sweatshirts, Jackets and Dresses;
+      bottom rows (waist, rise, inseam, leg opening, length) for Trousers
+      and Skirts; none for Shoes and Sneakers (the size label covers them);
+      width, height, depth for Bags, Sunglasses and Accessories.
+    - One category list in the code (label, measurement rows, kind of size)
+      replaces the four copies of the old five.
+    - Old links keep working: ?category=bottoms → trousers, outerwear →
+      jackets.
+    Steps:
+    - **15¼a:** the list in code and the database together (a migration
+      that moves pieces and swaps the allowed values, tested rolled back
+      first); Add/Edit chips, measurements, usual size, Type shelves,
+      filter, labels, old links. Applied right before pushing, since the
+      live app and the database must agree on the values.
+    - **15¼b:** onboarding steps 2–3 on the new list (sizes by kind of
+      size: letter, waist, shoe; then tick which categories you own, and
+      Add shows those first), with updated mockups on the canvas first.
 15½. **Onboarding** (planned 2026-10-03): an optional first-run flow that
     makes logging faster. Shown once at first login, SKIP on every step,
     everything editable later from MENU. Steps: (1) closet name (if skipped
