@@ -69,7 +69,7 @@ build them before friend testing (see Roadmap 15–17).
 | Hero photo       | Yes      | Shown on grid cards                                    |
 | Detail photos    | No       | Additional photos shown in the overlay (Milestone 6)   |
 | Name             | No       |                                                        |
-| Category         | No       | Fixed list: tops, bottoms, outerwear, shoes, accessories |
+| Category         | No       | Fixed list (15¼, `lib/categories.ts`): Tops, T-Shirts, Shirts, Knitwear, Sweatshirts, Jackets, Dresses, Trousers, Skirts, Shoes, Sneakers, Bags, Sunglasses, Accessories |
 | Brand            | No       | Suggest previously used brands as the user types       |
 | Colour           | No       | Auto-detected from hero photo; user can adjust         |
 | Material         | No       |                                                        |
@@ -77,7 +77,7 @@ build them before friend testing (see Roadmap 15–17).
 | Acquired from    | No       | Store, person, website, thrift, etc.                   |
 | Price            | No       |                                                        |
 | Size             | No       | The label size as written: "M", "32 × 30", "EU 42"     |
-| Measurements     | No       | The garment's own measurements, rows by category (tops: chest, length, shoulder, sleeve; bottoms: waist, rise, inseam, leg opening, length; accessories: width, height, depth). Stored in cm; shown and entered in each person's chosen unit (cm or in), switchable in the overlay |
+| Measurements     | No       | The garment's own measurements, rows by category (top rows: chest, length, shoulder, sleeve, for Tops through Dresses; bottom rows: waist, rise, inseam, leg opening, length, for Trousers and Skirts; width, height, depth for Bags, Sunglasses, Accessories; none for Shoes and Sneakers). Stored in cm; shown and entered in each person's chosen unit (cm or in), switchable in the overlay |
 | Notes            | No       | Long-form: what you love about it, how you found it, what it reminds you of |
 | Status           | —        | "In closet" (default) or "Archived"                    |
 | Date archived    | No       | Month and year the item left the closet                |

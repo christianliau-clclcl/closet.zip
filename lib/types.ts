@@ -1,9 +1,11 @@
+import type { Category } from "@/lib/categories";
 import type { Measurements } from "@/lib/measurements";
 
 // The shape of an item, following the "Item data" table in PRODUCT.md.
 // Only the hero photo is required; every other field is optional.
 
-export type Category = "tops" | "bottoms" | "outerwear" | "shoes" | "accessories";
+// The category list lives in lib/categories.ts (15¼).
+export type { Category } from "@/lib/categories";
 
 export type ItemStatus = "in_closet" | "archived";
 

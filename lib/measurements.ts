@@ -1,3 +1,4 @@
+import { categoryInfo } from "@/lib/categories";
 import type { Category } from "@/lib/types";
 
 // Garment measurements (PRODUCT.md "Item data"). Stored in centimetres;
@@ -25,14 +26,15 @@ export type Measurements = Partial<Record<MeasurementKey, number>>; // in cm
 
 const topRows: MeasurementKey[] = ["chest", "length", "shoulder", "sleeve"];
 
-// Which rows a piece gets, by category. No category yet: the tops list.
+// Which rows a piece gets, by its category's set (lib/categories.ts). No
+// category yet: the top rows.
 export function measurementRows(category: Category | "" | undefined): MeasurementKey[] {
-  switch (category) {
-    case "bottoms":
+  switch (category ? categoryInfo[category]?.measurements : "top") {
+    case "bottom":
       return ["waist", "rise", "inseam", "leg_opening", "length"];
-    case "accessories":
+    case "object":
       return ["width", "height", "depth"];
-    case "shoes":
+    case "none":
       return []; // the size label covers shoes
     default:
       return topRows;

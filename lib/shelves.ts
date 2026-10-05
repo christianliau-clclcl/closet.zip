@@ -1,7 +1,8 @@
 import { averageColour, colourFamily, familyLabels, families } from "@/lib/colour";
+import { categories } from "@/lib/categories";
 import { formatCategory } from "@/lib/format";
 import { sortItems } from "@/lib/sort-filter";
-import type { Category, Item } from "@/lib/types";
+import type { Item } from "@/lib/types";
 
 // Shelves (DESIGN.md "Category row"): one labelled, sideways-scrolling row
 // per group, like a closet. Used by SORT BY's Type, Colour and Brand.
@@ -13,12 +14,10 @@ export type Shelf = {
   swatch?: string; // Colour shelves: the average of the pieces on it
 };
 
-const categoryOrder: Category[] = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
-
 // One shelf per category in the usual order; pieces without one last.
 export function shelvesByType(items: Item[]): Shelf[] {
   return [
-    ...categoryOrder.map((category) => ({
+    ...categories.map((category) => ({
       key: category,
       label: formatCategory(category),
       items: items.filter((item) => item.category === category),

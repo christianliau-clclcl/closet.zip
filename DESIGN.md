@@ -179,7 +179,7 @@ instead. Only on devices that can hover.
 line with a 12px square `ink` handle.
 
 **Category row.** Section heading in mono 11px uppercase with a count
-(`OUTERWEAR — 07`), a `rule` line, then one horizontal scrolling row of cells.
+(`JACKETS — 07`), a `rule` line, then one horizontal scrolling row of cells.
 Scroll snaps to cells.
 
 **Filter drawer.** Slides in from the right over the grid on `cell`. Sections

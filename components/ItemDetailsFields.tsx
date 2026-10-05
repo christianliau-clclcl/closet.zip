@@ -5,13 +5,12 @@ import MeasurementFields from "@/components/MeasurementFields";
 import AcquiredField from "@/components/AcquiredField";
 import ChipPicker from "@/components/ChipPicker";
 import MaterialField from "@/components/MaterialField";
+import { categories } from "@/lib/categories";
 import { formatCategory } from "@/lib/format";
 import type { ItemDraft } from "@/lib/item-draft";
 import type { ClosetHistory } from "@/lib/items";
 import type { Unit } from "@/lib/measurements";
-import type { Category } from "@/lib/types";
 
-const categories: Category[] = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
 
 type ItemDetailsFieldsProps = {
   draft: ItemDraft;

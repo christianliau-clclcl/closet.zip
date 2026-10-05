@@ -1,4 +1,5 @@
 import type { Tables } from "@/lib/database.types";
+import { categories } from "@/lib/categories";
 import { readMeasurements } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/server";
 import type { Category, Item, ItemStatus, LeftVia, MonthYear, Photo } from "@/lib/types";
@@ -70,7 +71,7 @@ export async function getMyHistory(): Promise<ClosetHistory> {
     list.sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)).map((entry) => entry.name);
 
   const usualSizes: Partial<Record<Category, string>> = {};
-  for (const category of ["tops", "bottoms", "outerwear", "shoes", "accessories"] as Category[]) {
+  for (const category of categories) {
     const [usual] = byUse(tally(data.filter((row) => row.category === category).map((row) => row.size_label)));
     if (usual) usualSizes[category] = usual;
   }

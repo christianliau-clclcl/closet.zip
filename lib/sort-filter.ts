@@ -1,4 +1,5 @@
 import { averageColour, colourFamily, familyLabels, families, toHsv, type Family } from "@/lib/colour";
+import { categories, renamedCategories } from "@/lib/categories";
 import { formatCategory } from "@/lib/format";
 import type { Item } from "@/lib/types";
 
@@ -45,7 +46,8 @@ export function layoutOf(sort: Sort): Layout {
 // Old links (before SORT BY, 2026-10-02) in today's terms: ?view=rows is
 // Type, ?view=time is Timeline (which showed archived pieces), ?view=archive
 // shows archived pieces, ?sort=acquired is Timeline, ?sort=colour is the
-// gradient, ?view=overview (removed 2026-10-03) is the Colour shelves.
+// gradient, ?view=overview (removed 2026-10-03) is the Colour shelves,
+// ?category=bottoms / outerwear are trousers / jackets (15¼).
 // Returns the updated address, or null when nothing is old.
 export function upgradeOldAddress(search: string): string | null {
   const params = new URLSearchParams(search);
@@ -68,6 +70,14 @@ export function upgradeOldAddress(search: string): string | null {
   if (params.get("archived") === "hide") params.delete("archived");
   if (params.get("sort") === "acquired") params.set("sort", "time");
   if (params.get("sort") === "colour") params.set("sort", "gradient");
+  // The old five categories' new names (15¼): ?category=bottoms → trousers.
+  const chosen = params.getAll("category");
+  if (chosen.some((value) => value in renamedCategories)) {
+    params.delete("category");
+    for (const value of new Set(chosen.map((value) => renamedCategories[value] ?? value))) {
+      params.append("category", value);
+    }
+  }
   const after = params.toString();
   return after === before ? null : after ? `?${after}` : window.location.pathname;
 }
@@ -179,7 +189,7 @@ export type FilterOption = {
 // option matches at least one piece. Sorted A–Z (categories in their usual
 // order, colour families in gradient order).
 export function filterOptions(items: Item[]): Record<FilterField, FilterOption[]> {
-  const categoryOrder = ["tops", "bottoms", "outerwear", "shoes", "accessories"];
+  const categoryOrder: readonly string[] = categories;
   return Object.fromEntries(
     filterFields.map((field) => {
       const counts = new Map<string, FilterOption>();

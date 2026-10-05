@@ -1,3 +1,4 @@
+import { categoryInfo } from "@/lib/categories";
 import type { Category, Item, MonthYear } from "@/lib/types";
 
 // What to call an item when a name is needed (alt text, screen readers):
@@ -47,7 +48,7 @@ export function formatPrice(price: number): string {
   });
 }
 
-// "outerwear" → "Outerwear"
+// "t_shirts" → "T-Shirts"
 export function formatCategory(category: Category): string {
-  return category.charAt(0).toUpperCase() + category.slice(1);
+  return categoryInfo[category]?.label ?? category;
 }
