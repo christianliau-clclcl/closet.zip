@@ -18,3 +18,11 @@ export async function getMyPublicProfile(): Promise<PublicProfile> {
   const { data } = await supabase.from("profiles").select("username, is_public").maybeSingle();
   return { username: data?.username ?? undefined, isPublic: data?.is_public ?? false };
 }
+
+// How far through onboarding the logged-in person is (Milestone 15½): 0
+// until they've finished or skipped a step. No profile row yet means 0.
+export async function getMyOnboardingStep(): Promise<number> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("profiles").select("onboarding_step").maybeSingle();
+  return data?.onboarding_step ?? 0;
+}

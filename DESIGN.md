@@ -279,6 +279,14 @@ above Folders. The folder modal has the same chips after the cover, with a
 carry a 12px crossed-out eye in 1px `stone` lines at the cell's top-right
 (left of the select square in SELECT mode).
 
+**Welcome** (onboarding step 1, 2026-10-05; from the "Onboarding
+explorations" canvas). A page of its own, no top bar, a 384px column: SKIP
+top right (label), "Welcome to your closet." (serif title) with a `stone`
+line, CLOSET NAME (form field with hint), MEASUREMENTS IN as IN · CM chips
+with a `stone` note, and a full-width ink DONE button in a bar with a `rule`
+line above. "STEP N OF 3" and the thin progress bars come back once there's
+more than one step.
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.

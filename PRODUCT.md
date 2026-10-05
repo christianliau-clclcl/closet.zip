@@ -16,6 +16,16 @@ People who care about their clothes as more than utility: who remember where
 they found a grail piece, what time of life a jacket reminds them of, and want
 a record of it. First testers: the designer's friends.
 
+Decided 2026-10-05 (after a competitor scan, `research/competitor-scan.md`):
+the audience is **higher-end collectors tracking their collection**, closer
+to Grailed's collectors than to wardrobe apps' outfit planners (Whering,
+Indyx, Stylebook). They care about brands, provenance, measurements and
+what they've owned, and less about cost. So: the look stays quiet and
+collector-like, not bold and bright; an outfit maker or randomizer
+(styling, 17) is a secondary feature, not a headline one. The clearest
+difference from competitors is "a record of what you've owned and its
+story"; the biggest gap is how fast pieces can be added.
+
 ## Goals (v1)
 
 - Sign up and keep a private archive of your own clothing
@@ -360,6 +370,13 @@ archive on their own phones and computers. The app is deployed on a public URL.
     categories" non-goal stays). On Add, choosing a category then offers
     your ticked types as chips; your sizes become the starting size.
     Mockups on a design canvas first.
+    - **Step 1 (built 2026-10-05):** /welcome with CLOSET NAME and
+      MEASUREMENTS IN · CM, SKIP and DONE. `profiles.onboarding_step`
+      records how far you've got; the closet sends you to /welcome while
+      it's below the number of steps (`ONBOARDING_STEPS`), so steps added
+      later show once to everyone. Existing accounts see it once too.
+    - **Steps 2–3:** after the new category list (15¼), since sizes and
+      types depend on it.
 16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below.
     To revisit with public profiles (2026-10-03): instead of private
     listing links, pieces could be marked "for sale" on a public profile

@@ -1,10 +1,12 @@
+import { redirect } from "next/navigation";
 import AuthForm from "@/components/AuthForm";
 import ClosetView from "@/components/ClosetView";
 import TopBar from "@/components/TopBar";
 import { closetNameFrom } from "@/lib/closet-name";
 import { getMyFolders } from "@/lib/folders";
 import { getMyItems } from "@/lib/items";
-import { getMyPublicProfile, getMyUnit } from "@/lib/profile";
+import { ONBOARDING_STEPS } from "@/lib/onboarding";
+import { getMyOnboardingStep, getMyPublicProfile, getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 
 // Homepage. Logged in: your closet. Logged out: one quiet line about what
@@ -29,6 +31,9 @@ export default async function Home() {
       </>
     );
   }
+
+  // First login (or a new onboarding step since): onboarding first (15½).
+  if ((await getMyOnboardingStep()) < ONBOARDING_STEPS) redirect("/welcome");
 
   const [items, folders, unit, publicProfile] = await Promise.all([
     getMyItems(),

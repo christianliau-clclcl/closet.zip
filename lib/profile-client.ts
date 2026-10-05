@@ -29,3 +29,14 @@ export async function saveMyPublicProfile(username: string | null, isPublic: boo
   const { error } = await supabase.from("profiles").upsert({ id, username, is_public: isPublic });
   if (error) throw error;
 }
+
+// Onboarding (Milestone 15½): records that a step is done or skipped, so it
+// isn't shown again (creating the profile row the first time).
+export async function saveOnboardingStep(step: number): Promise<void> {
+  const supabase = createClient();
+  const { data } = await supabase.auth.getClaims();
+  const id = data?.claims?.sub;
+  if (!id) throw new Error("Not logged in");
+  const { error } = await supabase.from("profiles").upsert({ id, onboarding_step: step });
+  if (error) throw error;
+}

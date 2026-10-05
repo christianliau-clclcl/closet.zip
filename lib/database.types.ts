@@ -232,6 +232,7 @@ export type Database = {
           id: string
           is_public: boolean
           measurement_unit: string
+          onboarding_step: number
           updated_at: string
           username: string | null
         }
@@ -240,6 +241,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           measurement_unit?: string
+          onboarding_step?: number
           updated_at?: string
           username?: string | null
         }
@@ -248,6 +250,7 @@ export type Database = {
           id?: string
           is_public?: boolean
           measurement_unit?: string
+          onboarding_step?: number
           updated_at?: string
           username?: string | null
         }
