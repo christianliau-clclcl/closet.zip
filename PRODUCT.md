@@ -431,10 +431,41 @@ archive on their own phones and computers. The app is deployed on a public URL.
       it's below the number of steps (`ONBOARDING_STEPS`), so steps added
       later show once to everyone. Existing accounts see it once too.
     - **Steps 2–3:** built with the new category list (15¼b).
-16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below.
-    To revisit with public profiles (2026-10-03): instead of private
-    listing links, pieces could be marked "for sale" on a public profile
-    (the FOR SALE tab).
+16. **Sell to friends** (from v2, 2026-10-01; planned 2026-10-05 with public
+    profiles, replacing the private listing links in "Sell to friends"
+    below). Your collection is your shop, as on Grailed or Discogs.
+    Decisions (2026-10-05):
+    - Pieces for sale appear in a FOR SALE tab on your public page (ALL ·
+      FOLDERS · FOR SALE), and in your own closet too. PUBLIC gets a third
+      setting: OFF · FOR SALE ONLY · ON; FOR SALE ONLY shows just the FOR
+      SALE tab, none of the rest of your closet.
+    - Buyers get in touch through a contact line you write once (e.g. "DM
+      @christian on Instagram, e-transfer only, pickup downtown"), shown on
+      the FOR SALE tab and each listing. No buyer data stored, no in-app
+      messages or payments.
+    - A listing adds: asking price (separate from what you paid, which
+      stays private), condition (New with tags · Like new · Good · Worn)
+      and an optional sale note.
+    - To list a piece, its measurements are required (the user's call: a
+      deliberate exception to "every field is optional", for listings
+      only): the size label plus every measurement row for its category
+      (shoes and sneakers: the size label only), asking price and
+      condition. The SELL section says what's missing, with a link to EDIT.
+    - A listed piece is always shown publicly: listing a hidden piece shows
+      it; hiding a listed piece takes it off sale.
+    - MARK SOLD takes it off sale and archives it as Sold this month
+      (editable), keeping your record of it.
+    Steps:
+    - **16a:** the database: listing fields on items (for sale, asking
+      price, condition, sale note), PUBLIC's three settings and the
+      contact line on profiles, and the public door updated (listings,
+      FOR SALE ONLY); tested rolled back before applying.
+    - **16b:** your side: SELL in a piece's details (FOR SALE · OFF / ON,
+      price, condition, note, what's missing, MARK SOLD), the FOR SALE tab
+      in your closet, PUBLIC's three settings and the contact line in the
+      Public profile modal.
+    - **16c:** the visitor's side: the FOR SALE tab on /@username with
+      price, condition, note and your contact line; FOR SALE ONLY pages.
 17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
     outfits or a styling project. Details to design.
 18. **Final polish:** accessibility pass, mobile refinements, README and
@@ -447,6 +478,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
 
 ## Sell to friends (Milestone 16)
 
+- Superseded 2026-10-05 by the plan in the roadmap (Milestone 16): listings
+  live on public profiles instead of private links. The original idea:
 - Idea, 2026-10-01: low-key, local, among friends and
   friends of friends. A "For sale" toggle and list price per piece; a private,
   unguessable share link per listing that can be forwarded. The shared page
