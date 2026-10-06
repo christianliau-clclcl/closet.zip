@@ -1,4 +1,5 @@
 import type { Category } from "@/lib/categories";
+import type { Listing } from "@/lib/listing";
 import type { Measurements } from "@/lib/measurements";
 
 // The shape of an item, following the "Item data" table in PRODUCT.md.
@@ -51,6 +52,10 @@ export type Item = {
   leftVia?: LeftVia;
   sortPosition?: number; // place in My order for the whole closet; none until arranged
   hidden?: boolean; // left off your public page (Milestone 15b)
+  listing?: Listing; // for sale (Milestone 16): asking price, condition, note
+  // Your own pieces only: an earlier listing kept after taking it off sale,
+  // so listing again starts from it. Never sent to visitors.
+  lastListing?: Partial<Listing>;
 };
 
 // A personal folder (Milestone 12). Pieces are linked, never copied, so a

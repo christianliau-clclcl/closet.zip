@@ -1,17 +1,18 @@
 import type { Item } from "@/lib/types";
 
 // The closet's tabs (PRODUCT.md "13½ Friend feedback round", Milestone 14):
-// ALL and FOLDERS (FOR SALE joins with Milestone 16; OVERVIEW was removed
-// 2026-10-03, SORT BY's shelves cover it), kept in the address as ?view=…
+// ALL, FOLDERS and FOR SALE (Milestone 16: pieces you've listed; OVERVIEW
+// was removed 2026-10-03, SORT BY's shelves cover it), kept in the address as ?view=…
 // so Back, reloading and links all keep them. "all" is the default and
 // isn't written into the address. How pieces are laid out is SORT BY's job
 // (lib/sort-filter.ts).
-export const views = ["all", "folders"] as const;
+export const views = ["all", "folders", "for_sale"] as const;
 export type View = (typeof views)[number];
 
 export const viewLabels: Record<View, string> = {
   all: "All",
   folders: "Folders",
+  for_sale: "For sale",
 };
 
 export function readView(params: URLSearchParams): View {

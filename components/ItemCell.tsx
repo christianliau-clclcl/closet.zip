@@ -14,6 +14,7 @@ type ItemCellProps = {
   // was focused with the keyboard, so the label sits under it, not the pointer.
   onPreview: (id: string | null, anchor?: HTMLElement) => void;
   className?: string; // e.g. width and scroll snapping in a category row
+  caption?: string; // always shown underneath, in label style (FOR SALE: the asking price)
 };
 
 // One square cell: the garment floats on the canvas, centred and never cropped,
@@ -23,7 +24,7 @@ type ItemCellProps = {
 // tapping it opens the detail overlay. In SELECT mode, tapping selects it
 // instead, shown by a small square at the top-right (filled when chosen).
 // A piece hidden from your public page has a small crossed-out eye there.
-export default function ItemCell({ item, zoom, onOpen, onPreview, className }: ItemCellProps) {
+export default function ItemCell({ item, zoom, onOpen, onPreview, className, caption }: ItemCellProps) {
   const style = zoomStyles[zoom];
   const archived = item.status === "archived";
   const selection = useSelection();
@@ -46,7 +47,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
         }}
         onBlur={() => onPreview(null)}
         // Screen readers hear the full line, since the hover label is visual only.
-        aria-label={[itemSummary(item) || itemTitle(item), archived && "Archived", item.hidden && "Hidden from public"]
+        aria-label={[itemSummary(item) || itemTitle(item), caption, archived && "Archived", item.hidden && "Hidden from public"]
           .filter(Boolean)
           .join(" · ")}
         className={`relative flex aspect-square w-full cursor-pointer flex-col ${style.padding} focus-visible:outline-1 focus-visible:outline-ink`}
@@ -73,6 +74,7 @@ export default function ItemCell({ item, zoom, onOpen, onPreview, className }: I
         {style.showName && item.name && (
           <span className="mt-2 block truncate text-center">{item.name}</span>
         )}
+        {caption && <span className="mt-2 block truncate text-center text-label uppercase">{caption}</span>}
       </button>
     </motion.li>
   );

@@ -10,14 +10,24 @@ export async function getMyUnit(): Promise<Unit> {
   return data?.measurement_unit === "cm" ? "cm" : "in";
 }
 
-export type PublicProfile = { username?: string; isPublic: boolean };
+// forSaleOnly: PUBLIC · FOR SALE ONLY (16), showing only your listings.
+// saleContact: how buyers get in touch, shown with your listings.
+export type PublicProfile = { username?: string; isPublic: boolean; forSaleOnly: boolean; saleContact?: string };
 
 // The logged-in person's public profile settings (Milestone 15a): their
 // username, if any, and whether the closet is public (off by default).
 export async function getMyPublicProfile(): Promise<PublicProfile> {
   const supabase = await createClient();
-  const { data } = await supabase.from("profiles").select("username, is_public").maybeSingle();
-  return { username: data?.username ?? undefined, isPublic: data?.is_public ?? false };
+  const { data } = await supabase
+    .from("profiles")
+    .select("username, is_public, for_sale_only, sale_contact")
+    .maybeSingle();
+  return {
+    username: data?.username ?? undefined,
+    isPublic: data?.is_public ?? false,
+    forSaleOnly: data?.for_sale_only ?? false,
+    saleContact: data?.sale_contact?.trim() || undefined,
+  };
 }
 
 // How far through onboarding the logged-in person is (Milestone 15½): 0

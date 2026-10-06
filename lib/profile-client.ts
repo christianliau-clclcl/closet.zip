@@ -22,12 +22,23 @@ export async function usernameAvailable(username: string): Promise<boolean> {
 // Saves the public profile settings (creating the profile row the first
 // time). The database refuses a taken or invalid name, and PUBLIC without
 // a username; the error says which.
-export async function saveMyPublicProfile(username: string | null, isPublic: boolean): Promise<void> {
+export async function saveMyPublicProfile(
+  username: string | null,
+  isPublic: boolean,
+  forSaleOnly: boolean,
+  saleContact: string,
+): Promise<void> {
   const supabase = createClient();
   const { data } = await supabase.auth.getClaims();
   const id = data?.claims?.sub;
   if (!id) throw new Error("Not logged in");
-  const { error } = await supabase.from("profiles").upsert({ id, username, is_public: isPublic });
+  const { error } = await supabase.from("profiles").upsert({
+    id,
+    username,
+    is_public: isPublic,
+    for_sale_only: isPublic && forSaleOnly,
+    sale_contact: saleContact.trim() || null,
+  });
   if (error) throw error;
 }
 

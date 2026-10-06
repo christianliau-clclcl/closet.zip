@@ -40,6 +40,7 @@ export default function ItemPublic({ item }: { item: Item }) {
           Hidden
         </Chip>
       </div>
+      {item.listing && !hidden && <p className="mt-2 text-stone">Hiding it takes it off sale.</p>}
       {error && (
         <p role="alert" className="mt-2">
           Couldn&rsquo;t save. Check your connection and try again.

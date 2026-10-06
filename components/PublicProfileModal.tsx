@@ -23,6 +23,9 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [typed, setTyped] = useState(current.username ?? "");
   const [isPublic, setIsPublic] = useState(current.isPublic);
+  // PUBLIC · FOR SALE ONLY (16): your page shows only your listings.
+  const [forSaleOnly, setForSaleOnly] = useState(current.isPublic && current.forSaleOnly);
+  const [contact, setContact] = useState(current.saleContact ?? "");
   const [availability, setAvailability] = useState<Availability>("idle");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -74,7 +77,7 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
     setBusy(true);
     setError(null);
     try {
-      await saveMyPublicProfile(username || null, isPublic && Boolean(username));
+      await saveMyPublicProfile(username || null, isPublic && Boolean(username), forSaleOnly, contact);
       onClose();
       router.refresh();
     } catch (cause) {
@@ -120,18 +123,49 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
           <fieldset>
             <legend className="text-label uppercase">Public</legend>
             <div className="mt-2 flex gap-2">
-              <Chip chosen={!isPublic} onClick={() => setIsPublic(false)}>
+              <Chip
+                chosen={!isPublic}
+                onClick={() => {
+                  setIsPublic(false);
+                  setForSaleOnly(false);
+                }}
+              >
                 Off
               </Chip>
-              <Chip chosen={isPublic} onClick={() => setIsPublic(true)}>
+              <Chip
+                chosen={isPublic && forSaleOnly}
+                onClick={() => {
+                  setIsPublic(true);
+                  setForSaleOnly(true);
+                }}
+              >
+                For sale only
+              </Chip>
+              <Chip
+                chosen={isPublic && !forSaleOnly}
+                onClick={() => {
+                  setIsPublic(true);
+                  setForSaleOnly(false);
+                }}
+              >
                 On
               </Chip>
             </div>
             <p className="mt-4 text-stone">
-              When on, anyone with your link can see your closet: photos, name, brand, category, colour, material,
-              size, measurements and date acquired. Never prices, where things came from or your notes. Hide pieces
-              and folders from their details, or many at once with SELECT.
+              {isPublic && forSaleOnly
+                ? "Anyone with your link sees only the pieces you’ve listed for sale, with their price, condition and note. The rest of your closet stays private."
+                : "When on, anyone with your link can see your closet: photos, name, brand, category, colour, material, size, measurements and date acquired, and the asking price of pieces for sale. Never what you paid, where things came from or your notes. Hide pieces and folders from their details, or many at once with SELECT."}
             </p>
+          </fieldset>
+          <div>
+            <FormField
+              label="For sale contact"
+              placeholder="e.g. DM @sam.closet on Instagram, e-transfer only"
+              maxLength={200}
+              hint="Shown with your listings, so buyers know how to reach you. Nothing about buyers is saved."
+              value={contact}
+              onChange={(event) => setContact(event.target.value)}
+            />
             {/* Your saved public page (15d): open it, or copy its address to send. */}
             {current.isPublic && current.username && (
               <div className="mt-4 flex gap-6">
@@ -154,7 +188,7 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
                 </button>
               </div>
             )}
-          </fieldset>
+          </div>
         </div>
         <div className="border-t border-rule px-4 py-4 md:px-8">
           {error && (

@@ -9,17 +9,25 @@ type ItemGridProps = {
   zoom: Zoom;
   onOpen: (id: string) => void;
   onPreview: (id: string | null, anchor?: HTMLElement) => void;
+  captionFor?: (item: Item) => string | undefined; // FOR SALE: the asking price
 };
 
 // The closet grid: 8px between cells, column count set by the zoom level.
-export default function ItemGrid({ items, zoom, onOpen, onPreview }: ItemGridProps) {
+export default function ItemGrid({ items, zoom, onOpen, onPreview, captionFor }: ItemGridProps) {
   return (
     // reducedMotion="user": people who've turned on "Reduce motion" on their
     // device get the instant switch instead of the animation.
     <MotionConfig transition={layoutTransition} reducedMotion="user">
       <ul className={`grid gap-2 ${zoomStyles[zoom].columns}`}>
         {items.map((item) => (
-          <ItemCell key={item.id} item={item} zoom={zoom} onOpen={onOpen} onPreview={onPreview} />
+          <ItemCell
+            key={item.id}
+            item={item}
+            zoom={zoom}
+            onOpen={onOpen}
+            onPreview={onPreview}
+            caption={captionFor?.(item)}
+          />
         ))}
       </ul>
     </MotionConfig>

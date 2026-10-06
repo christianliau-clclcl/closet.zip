@@ -46,6 +46,9 @@ learning project, so understanding matters as much as shipping.
   item can have many photos. Only the hero photo is required.
 - All other item fields are optional. The UI must handle missing values
   gracefully (no "undefined", no broken layouts, empty fields hidden).
+  One exception (decided 2026-10-05): listing a piece for sale requires its
+  size label and every measurement row for its category, plus an asking
+  price and condition (`missingForListing` in `lib/listing.ts`).
 - Dates acquired and archived are stored as month and year, not full dates.
 - Archiving an item changes its status; it never deletes the item.
 

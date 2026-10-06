@@ -460,7 +460,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       price, condition, sale note), PUBLIC's three settings and the
       contact line on profiles, and the public door updated (listings,
       FOR SALE ONLY); tested rolled back before applying.
-    - **16b:** your side: SELL in a piece's details (FOR SALE · OFF / ON,
+    - **16b (built 2026-10-05):** your side: SELL in a piece's details (FOR SALE · OFF / ON,
       price, condition, note, what's missing, MARK SOLD), the FOR SALE tab
       in your closet, PUBLIC's three settings and the contact line in the
       Public profile modal.

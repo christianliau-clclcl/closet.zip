@@ -37,6 +37,7 @@ export default function ArchiveForm({ item, onCancel }: ArchiveFormProps) {
       .from("items")
       .update({
         status: "archived",
+        for_sale: false, // an archived piece is no longer for sale (16)
         archived_month: month ? Number(month) : null,
         archived_year: year ? Number(year) : null,
         left_via: leftVia || null,

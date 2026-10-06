@@ -1,5 +1,6 @@
 import type { Tables } from "@/lib/database.types";
 import { categories, categoryInfo } from "@/lib/categories";
+import type { Condition } from "@/lib/listing";
 import { readMeasurements } from "@/lib/measurements";
 import { getMyClosetSetup } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -155,6 +156,18 @@ function toItem(row: ItemRow, hero: Photo, photos: Photo[]): Item {
     leftVia: (row.left_via as LeftVia | null) ?? undefined,
     sortPosition: row.sort_position ?? undefined,
     hidden: row.is_hidden || undefined,
+    listing:
+      row.for_sale && row.asking_price !== null && row.condition
+        ? { askingPrice: row.asking_price, condition: row.condition as Condition, note: text(row.sale_note) }
+        : undefined,
+    lastListing:
+      !row.for_sale && (row.asking_price !== null || row.condition || text(row.sale_note))
+        ? {
+            askingPrice: row.asking_price ?? undefined,
+            condition: (row.condition as Condition | null) ?? undefined,
+            note: text(row.sale_note),
+          }
+        : undefined,
   };
 }
 

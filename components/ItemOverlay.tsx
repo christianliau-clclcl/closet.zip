@@ -6,6 +6,7 @@ import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import ItemFolders from "@/components/ItemFolders";
 import ItemPublic from "@/components/ItemPublic";
+import ItemSell from "@/components/ItemSell";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
 import { containedBox } from "@/lib/image";
@@ -127,7 +128,9 @@ export default function ItemOverlay({
             {/* Keys start fresh for each piece; siblings need different keys. */}
             {!readOnly && (
               <>
-                <ItemPublic key={`public-${item.id}`} item={item} />
+                {item.status !== "archived" && <ItemSell key={`sell-${item.id}`} item={item} />}
+                {/* Keyed on hidden too: listing a piece shows it, and the chips follow. */}
+                <ItemPublic key={`public-${item.id}-${Boolean(item.hidden)}`} item={item} />
                 <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
               </>
             )}

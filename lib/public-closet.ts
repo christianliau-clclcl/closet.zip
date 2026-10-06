@@ -1,5 +1,6 @@
 import { cache } from "react";
 import type { Category } from "@/lib/categories";
+import type { Condition } from "@/lib/listing";
 import { readMeasurements } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/server";
 import type { Folder, Item, Photo } from "@/lib/types";
@@ -16,6 +17,8 @@ const SIGNED_URL_SECONDS = 60 * 60;
 export type PublicCloset = {
   username: string;
   closetName?: string;
+  forSaleOnly: boolean; // PUBLIC · FOR SALE ONLY: only listings are shown (16)
+  saleContact?: string; // how buyers get in touch, in the owner's words
   items: Item[];
   folders: Folder[];
 };
@@ -81,6 +84,10 @@ export const getPublicCloset = cache(async (username: string): Promise<PublicClo
         measurements: readMeasurements(row.measurements),
         status: row.is_archived ? "archived" : "in_closet",
         sortPosition: row.sort_position ?? undefined,
+        listing:
+          row.for_sale && row.asking_price !== null && row.condition
+            ? { askingPrice: row.asking_price, condition: row.condition as Condition, note: text(row.sale_note) }
+            : undefined,
       },
     ];
   });
@@ -99,7 +106,14 @@ export const getPublicCloset = cache(async (username: string): Promise<PublicClo
     }),
   );
 
-  return { username: profile.username, closetName: text(profile.closet_name), items, folders };
+  return {
+    username: profile.username,
+    closetName: text(profile.closet_name),
+    forSaleOnly: profile.for_sale_only,
+    saleContact: text(profile.sale_contact),
+    items,
+    folders,
+  };
 });
 
 // Blank text counts as empty.

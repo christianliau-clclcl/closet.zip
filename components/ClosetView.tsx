@@ -30,6 +30,7 @@ import {
   saveClosetOrder,
   saveFolderOrder,
 } from "@/lib/folders-client";
+import { formatPrice } from "@/lib/format";
 import { setPiecesHidden } from "@/lib/hiding-client";
 import type { Unit } from "@/lib/measurements";
 import type { PublicProfile } from "@/lib/profile";
@@ -84,7 +85,10 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     setPreview(id ? { id, anchor: anchor ?? null } : null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const params = useSearchParams();
-  const view = readView(params);
+  // Visitors get FOR SALE with Milestone 16c; until then ALL and FOLDERS.
+  const viewOptions: readonly View[] = visitor ? ["all", "folders"] : views;
+  const requestedView = readView(params);
+  const view = viewOptions.includes(requestedView) ? requestedView : "all";
   // The open folder (FOLDERS view): none at the top level.
   const folder = view === "folders" ? folderPath(folders, params.get("folder") ?? undefined).at(-1) : undefined;
   // Once the closet (or the open folder) has been arranged, it opens in My order.
@@ -159,7 +163,13 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   // The tab's pieces (a folder's in the closet's newest-first order; its own
   // My order is folder.itemIds), without archived ones unless switched on.
   const inView = withoutArchived(
-    view === "folders" ? (folder ? items.filter((item) => folder.itemIds.includes(item.id)) : []) : items,
+    view === "folders"
+      ? folder
+        ? items.filter((item) => folder.itemIds.includes(item.id))
+        : []
+      : view === "for_sale"
+        ? items.filter((item) => item.listing)
+        : items,
     showArchived,
   );
 
@@ -291,7 +301,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   }
 
   // The top of FOLDERS is just folders: nothing to sort, filter or search there.
-  const sortable = view === "all" || Boolean(folder);
+  const sortable = view !== "folders" || Boolean(folder);
 
   // SELECT, for your own pieces wherever there are some to choose (not on
   // the timeline, whose pieces aren't grid cells).
@@ -462,7 +472,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     ) : (
       <ClosetTopBar
         closetName={closetName}
-        publicProfile={publicProfile ?? { isPublic: false }}
+        publicProfile={publicProfile ?? { isPublic: false, forSaleOnly: false }}
         zoom={withZoom ? { value: zoom, onChange: setZoom } : undefined}
       />
     );
@@ -493,7 +503,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
 
       {/* Desktop: search, SORT BY and the rest on the right of the view bar.
           Phones: in the bottom bar instead (below), so the top stays uncrowded. */}
-      <ViewBar view={view} options={views} onChange={changeView}>
+      <ViewBar view={view} options={viewOptions} onChange={changeView}>
         <div className="hidden items-center gap-6 md:flex">{barContents(false)}</div>
       </ViewBar>
       {ownPageNote}
@@ -553,7 +563,14 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
         <main className="p-4 pb-20 md:p-8">
           <h1 className="sr-only">Closet</h1>
           {layout === "grid" ? (
-            <ItemGrid items={shown} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
+            <ItemGrid
+              items={shown}
+              zoom={zoom}
+              onOpen={openItem}
+              onPreview={showPreview}
+              // FOR SALE: each piece's asking price underneath.
+              captionFor={view === "for_sale" ? (item) => item.listing && formatPrice(item.listing.askingPrice) : undefined}
+            />
           ) : (
             piecesLayout
           )}
@@ -563,6 +580,10 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           <h1 className="sr-only">Closet</h1>
           {noMatch ? (
             <ViewEmpty message={noMatch.message} action={noMatch.action} />
+          ) : view === "for_sale" ? (
+            <ViewEmpty
+              message={visitor ? "Nothing for sale right now." : "Nothing for sale. List a piece from its details: FOR SALE · ON."}
+            />
           ) : (
             <ViewEmpty
               message={`Nothing in ${visitor ? "this" : "your"} closet right now.${showArchived ? "" : " Archived pieces are hidden."}`}

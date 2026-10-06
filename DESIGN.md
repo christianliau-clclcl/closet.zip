@@ -306,6 +306,17 @@ Back to your closet →" (the link in ink, underlined). Private or unknown:
 the status page, "Nothing here" / "This closet is private or doesn't
 exist." The Public profile modal shows VIEW PAGE and COPY LINK once public.
 
+**Selling** (16b, 2026-10-05). In a piece's details, above PUBLIC PAGE: FOR
+SALE (`stone` label) with OFF · ON chips. ON opens the listing in the panel,
+between `rule` lines: ASKING PRICE (hint: what you paid, "Only you see
+that."), CONDITION chips (New with tags · Like new · Good · Worn), SALE
+NOTE (optional), then an ink LIST IT button and CANCEL. Missing size or
+measurements: one `stone` line listing them and EDIT DETAILS →. Listed:
+"$120 · Good", the note in `stone`, EDIT LISTING · MARK SOLD (underlined
+labels). Views: ALL · FOLDERS · FOR SALE; in FOR SALE's grid each piece's
+asking price sits underneath in label style. Public profile modal: PUBLIC ·
+OFF / FOR SALE ONLY / ON, then FOR SALE CONTACT (form field with hint).
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.
