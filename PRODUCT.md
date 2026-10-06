@@ -466,8 +466,43 @@ archive on their own phones and computers. The app is deployed on a public URL.
       Public profile modal.
     - **16c (built 2026-10-06):** the visitor's side: the FOR SALE tab on /@username with
       price, condition, note and your contact line; FOR SALE ONLY pages.
-17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
-    outfits or a styling project. Details to design.
+17. **Looks** (styling, from v2; planned 2026-10-06, mockups on the "Looks
+    explorations" canvas). A secondary feature (audience decision,
+    2026-10-05): a record of how you put pieces together, not a daily
+    outfit planner. Decisions (2026-10-06):
+    - A look is a name, a note and some of your pieces, composed on a
+      freeform board (option B on the canvas): drag, resize, rotate and
+      layer pieces like a moodboard. A new look starts from an automatic
+      head-to-toe flat-lay (option A), so the board is never empty.
+    - The board is a fixed 3:4; positions are saved relative to it, so a
+      look is the same on a phone, a laptop and a public page.
+    - Editing: phones drag to move and use two fingers to resize and
+      rotate; desktop drags, resizes from corner handles and rotates with
+      ↺ ↻; both have FORWARD · BACK (layering), REMOVE and a strip of
+      your pieces to add; arrow keys move the selected piece. No new
+      library: `motion` (already used) for dragging, the browser's touch
+      events for pinching.
+    - Looks live in a LOOKS tab (ALL · FOLDERS · LOOKS · FOR SALE): your
+      gallery of looks, each a small copy of its board with "NAME — 06".
+      A piece's details list the looks it's in.
+    - SHUFFLE: one random top (tops, t-shirts, shirts, knitwear,
+      sweatshirts), bottom (trousers, skirts) and shoes (shoes, sneakers)
+      from pieces still in your closet, each with KEEP; SHUFFLE AGAIN and
+      SAVE AS LOOK (opens them in the editor).
+    - Deleting a piece removes it from its looks; archiving keeps it there
+      (a look is a record).
+    - Public pages show looks like folders, each hideable (to confirm).
+    Steps:
+    - **17a:** the database: `looks` (name, note, order, hidden) and
+      `look_items` (piece, position, size, rotation, layer), owner-only
+      rules, tested rolled back before applying.
+    - **17b:** the LOOKS tab and gallery, a look's page (board, name,
+      note, pieces), + NEW LOOK (pick pieces, starting flat-lay), name and
+      note, delete; looks in a piece's details.
+    - **17c:** the freeform editor (drag, resize, rotate, layer, remove,
+      add pieces), phones and desktop.
+    - **17d:** SHUFFLE.
+    - **17e:** looks on public pages (through the public door), hideable.
 18. **Final polish:** accessibility pass, mobile refinements, README and
     screenshots for the portfolio, and a few lines around the log in form on
     the logged-out home page (what you can do, in the archive's own voice;
