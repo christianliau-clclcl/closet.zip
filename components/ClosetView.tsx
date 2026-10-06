@@ -71,7 +71,9 @@ type ClosetViewProps = {
   // Someone's public closet at /@username (15d): read-only, so no SELECT,
   // ARRANGE, + ADD, PASTE, owner's sections in the details or folder
   // editing, and no Price in SORT BY. ownPage: you're looking at your own.
-  visitor?: { username: string; ownPage: boolean };
+  // forSaleOnly: PUBLIC · FOR SALE ONLY, only the FOR SALE tab (16c).
+  // saleContact: how to buy, shown with listings.
+  visitor?: { username: string; ownPage: boolean; forSaleOnly: boolean; saleContact?: string };
 };
 
 export default function ClosetView({ items, folders, initialUnit, closetName, publicProfile, visitor }: ClosetViewProps) {
@@ -85,10 +87,18 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     setPreview(id ? { id, anchor: anchor ?? null } : null);
   const [unit, setUnit] = useState<Unit>(initialUnit);
   const params = useSearchParams();
-  // Visitors get FOR SALE with Milestone 16c; until then ALL and FOLDERS.
-  const viewOptions: readonly View[] = visitor ? ["all", "folders"] : views;
+  // Visitors: FOR SALE only when something's listed; a FOR SALE ONLY page
+  // has just that tab (16c). Your own closet always has all three.
+  const anyListed = items.some((item) => item.listing);
+  const viewOptions: readonly View[] = !visitor
+    ? views
+    : visitor.forSaleOnly
+      ? ["for_sale"]
+      : anyListed
+        ? views
+        : ["all", "folders"];
   const requestedView = readView(params);
-  const view = viewOptions.includes(requestedView) ? requestedView : "all";
+  const view = viewOptions.includes(requestedView) ? requestedView : viewOptions[0];
   // The open folder (FOLDERS view): none at the top level.
   const folder = view === "folders" ? folderPath(folders, params.get("folder") ?? undefined).at(-1) : undefined;
   // Once the closet (or the open folder) has been arranged, it opens in My order.
@@ -562,6 +572,12 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
       ) : shown.length > 0 ? (
         <main className="p-4 pb-20 md:p-8">
           <h1 className="sr-only">Closet</h1>
+          {/* A visitor's FOR SALE tab: how to buy, above the listings (16c). */}
+          {visitor && view === "for_sale" && (
+            <p className="mb-6 text-stone">
+              {visitor.saleContact ? `To buy: ${visitor.saleContact}` : `Ask @${visitor.username} how to buy these.`}
+            </p>
+          )}
           {layout === "grid" ? (
             <ItemGrid
               items={shown}
@@ -605,6 +621,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           unit={unit}
           onUnitChange={changeUnit}
           readOnly={Boolean(visitor)}
+          seller={visitor && { username: visitor.username, contact: visitor.saleContact }}
         />
       </Suspense>
     </SelectionContext.Provider>

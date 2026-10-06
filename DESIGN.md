@@ -316,6 +316,11 @@ measurements: one `stone` line listing them and EDIT DETAILS →. Listed:
 labels). Views: ALL · FOLDERS · FOR SALE; in FOR SALE's grid each piece's
 asking price sits underneath in label style. Public profile modal: PUBLIC ·
 OFF / FOR SALE ONLY / ON, then FOR SALE CONTACT (form field with hint).
+Visitors (16c): FOR SALE appears in the view bar only when something is
+listed (a FOR SALE ONLY page has just that tab); above its grid one
+`stone` line, "To buy: <contact>" (or "Ask @username how to buy these.");
+a listed piece's details end with FOR SALE: "$160 · Like new", the note in
+`stone`, and "To buy: …" under a `rule` line.
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No

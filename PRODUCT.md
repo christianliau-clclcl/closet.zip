@@ -464,7 +464,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       price, condition, note, what's missing, MARK SOLD), the FOR SALE tab
       in your closet, PUBLIC's three settings and the contact line in the
       Public profile modal.
-    - **16c:** the visitor's side: the FOR SALE tab on /@username with
+    - **16c (built 2026-10-06):** the visitor's side: the FOR SALE tab on /@username with
       price, condition, note and your contact line; FOR SALE ONLY pages.
 17. **Styling / outfits** (from v2, 2026-10-01): put pieces together into
     outfits or a styling project. Details to design.

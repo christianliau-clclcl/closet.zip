@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react";
 import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import ItemFolders from "@/components/ItemFolders";
+import ItemListing from "@/components/ItemListing";
 import ItemPublic from "@/components/ItemPublic";
 import ItemSell from "@/components/ItemSell";
 import PhotoViewer from "@/components/PhotoViewer";
@@ -21,6 +22,8 @@ type ItemOverlayProps = {
   unit: Unit;
   onUnitChange: (unit: Unit) => void;
   readOnly?: boolean; // someone's public closet (15d): details only, no owner's sections
+  // Someone's public closet: whose it is, and their contact line for listings (16c).
+  seller?: { username: string; contact?: string };
 };
 
 // True when a click on a garment photo lands in the empty margin around the
@@ -47,6 +50,7 @@ export default function ItemOverlay({
   unit,
   onUnitChange,
   readOnly = false,
+  seller,
 }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
@@ -125,6 +129,9 @@ export default function ItemOverlay({
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
             {!readOnly && <ItemActions key={item.id} item={item} />}
             <ItemDetails item={item} unit={unit} onUnitChange={onUnitChange} />
+            {readOnly && seller && item.listing && (
+              <ItemListing listing={item.listing} username={seller.username} contact={seller.contact} />
+            )}
             {/* Keys start fresh for each piece; siblings need different keys. */}
             {!readOnly && (
               <>

@@ -39,7 +39,12 @@ export default async function PublicClosetPage(props: PageProps<"/u/[username]">
       folders={closet.folders}
       initialUnit={unit}
       closetName={closet.closetName}
-      visitor={{ username: closet.username, ownPage: mine?.username === closet.username }}
+      visitor={{
+        username: closet.username,
+        ownPage: mine?.username === closet.username,
+        forSaleOnly: closet.forSaleOnly,
+        saleContact: closet.saleContact,
+      }}
     />
   );
 }
