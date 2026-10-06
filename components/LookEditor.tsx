@@ -239,14 +239,20 @@ export default function LookEditor({ look, items }: LookEditorProps) {
                 className="pointer-events-none block h-auto w-full"
               />
               {isSelected &&
-                (["-top-1 -left-1", "-top-1 -right-1", "-bottom-1 -left-1", "-bottom-1 -right-1"] as const).map((corner) => (
-                  <span
-                    key={corner}
-                    data-handle={corner}
-                    aria-hidden
-                    className={`absolute ${corner} size-2 cursor-nwse-resize border border-ink bg-cell`}
-                  />
-                ))}
+                // Each corner: the 8px square you see, inside a 44px area you
+                // can grab with a finger (18b).
+                (["-top-5.5 -left-5.5", "-top-5.5 -right-5.5", "-bottom-5.5 -left-5.5", "-bottom-5.5 -right-5.5"] as const).map(
+                  (corner) => (
+                    <span
+                      key={corner}
+                      data-handle={corner}
+                      aria-hidden
+                      className={`absolute ${corner} flex size-11 cursor-nwse-resize items-center justify-center`}
+                    >
+                      <span className="pointer-events-none size-2 border border-ink bg-cell" />
+                    </span>
+                  ),
+                )}
             </button>
           );
         })}

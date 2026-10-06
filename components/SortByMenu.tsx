@@ -42,9 +42,13 @@ export default function SortByMenu({
   const chosen = sortable && sort !== defaultSort ? sortShortLabels[sort] : undefined;
   const narrowing = sortable ? filterCount + (archived.shown ? 1 : 0) : 0;
   // Phones have room for the choice only ("BRAND"); desktop says "SORT BY · BRAND".
-  const label = [inBottomBar ? (chosen ?? "Sort by") : chosen ? `Sort by · ${chosen}` : "Sort by", narrowing || null]
-    .filter(Boolean)
-    .join(" · ");
+  // Where there's nothing to sort (LOOKS, the top of FOLDERS) the panel only
+  // holds zoom, so the button says so (18b).
+  const label = !sortable
+    ? "Zoom"
+    : [inBottomBar ? (chosen ?? "Sort by") : chosen ? `Sort by · ${chosen}` : "Sort by", narrowing || null]
+        .filter(Boolean)
+        .join(" · ");
 
   const row = "cursor-pointer border-t border-rule pt-4 text-left text-label uppercase";
 

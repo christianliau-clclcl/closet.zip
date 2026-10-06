@@ -26,6 +26,10 @@ type ItemOverlayProps = {
   // Someone's public closet: whose it is, and their contact line for listings (16c).
   seller?: { username: string; contact?: string };
   looks?: Look[]; // your own: the looks a piece is in (17b)
+  // PREVIOUS · NEXT (18b): the pieces in the order you're browsing them,
+  // and how to move to one (replacing ?item=, so Back still closes).
+  sequence?: string[];
+  onNavigate?: (id: string) => void;
 };
 
 // True when a click on a garment photo lands in the empty margin around the
@@ -54,9 +58,14 @@ export default function ItemOverlay({
   readOnly = false,
   seller,
   looks = [],
+  sequence = [],
+  onNavigate,
 }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
+  const at = item ? sequence.indexOf(item.id) : -1;
+  const previous = at > 0 ? items.find((i) => i.id === sequence[at - 1]) : undefined;
+  const next = at >= 0 && at < sequence.length - 1 ? items.find((i) => i.id === sequence[at + 1]) : undefined;
   const dialogRef = useRef<HTMLDialogElement>(null);
   const openedAt = useRef(0);
 
@@ -126,6 +135,28 @@ export default function ItemOverlay({
             >
               ✕
             </button>
+            {onNavigate && (previous || next) && (
+              <nav aria-label="Pieces" className="mb-6 flex gap-6 pr-10">
+                <button
+                  type="button"
+                  disabled={!previous}
+                  onClick={() => previous && onNavigate(previous.id)}
+                  aria-label={previous ? `Previous piece: ${itemTitle(previous)}` : "Previous piece"}
+                  className="cursor-pointer text-label text-stone uppercase underline-offset-4 hover:underline disabled:cursor-default disabled:text-pebble disabled:no-underline"
+                >
+                  ← Previous
+                </button>
+                <button
+                  type="button"
+                  disabled={!next}
+                  onClick={() => next && onNavigate(next.id)}
+                  aria-label={next ? `Next piece: ${itemTitle(next)}` : "Next piece"}
+                  className="cursor-pointer text-label text-stone uppercase underline-offset-4 hover:underline disabled:cursor-default disabled:text-pebble disabled:no-underline"
+                >
+                  Next →
+                </button>
+              </nav>
+            )}
             {item.status === "archived" && (
               <p className="mb-2 text-label text-stone uppercase">Archived</p>
             )}

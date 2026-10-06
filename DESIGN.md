@@ -345,6 +345,13 @@ show, and a look's page without ARRANGE or EDIT, under the public top bar;
 its pieces open in the public closet. The look's EDIT modal has PUBLIC PAGE
 · SHOWN / HIDDEN after the note, with a `stone` line that its pieces aren't
 hidden; hidden looks carry the crossed-out eye at their top-right.
+PREVIOUS · NEXT (18b): at the top of a piece's details, two `stone` labels
+("← PREVIOUS", "NEXT →", `pebble` at either end), moving through the pieces
+in the order they're on screen (grid, shelf by shelf, or the timeline); the
+address is replaced, not added to, so Back still closes the details. Where
+SORT BY's panel only holds zoom (LOOKS, the top of FOLDERS) its button
+reads ZOOM. ARRANGE's corner handles: the 8px square inside a 44px touch
+area. The filter lists sizes in size order (lib/size-order.ts).
 SAVE IMAGE (18b): an underlined label first in a look page's actions (SAVE
 IMAGE · ARRANGE · EDIT; visitors get SAVE IMAGE alone), "Saving…" while it
 draws. The image is the board only, white, 1200 × 1600.

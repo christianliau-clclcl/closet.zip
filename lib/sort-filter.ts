@@ -1,6 +1,7 @@
 import { averageColour, colourFamily, familyLabels, families, toHsv, type Family } from "@/lib/colour";
 import { categories, renamedCategories } from "@/lib/categories";
 import { formatCategory } from "@/lib/format";
+import { compareSizes } from "@/lib/size-order";
 import type { Item } from "@/lib/types";
 
 // Sorting and filtering the closet (PRODUCT.md "Views", "13½ Friend
@@ -187,7 +188,7 @@ export type FilterOption = {
 
 // The options for each field, built from the pieces themselves, so every
 // option matches at least one piece. Sorted A–Z (categories in their usual
-// order, colour families in gradient order).
+// order, sizes in size order, colour families in gradient order).
 export function filterOptions(items: Item[]): Record<FilterField, FilterOption[]> {
   const categoryOrder: readonly string[] = categories;
   return Object.fromEntries(
@@ -214,10 +215,11 @@ export function filterOptions(items: Item[]): Record<FilterField, FilterOption[]
       const options = [...counts.values()].sort((a, b) =>
         field === "category"
           ? categoryOrder.indexOf(a.value) - categoryOrder.indexOf(b.value)
-          : field === "colour"
-            ? families.indexOf(a.value as Family) -
-              families.indexOf(b.value as Family)
-            : a.label.localeCompare(b.label, "en", { sensitivity: "base", numeric: true }),
+          : field === "size"
+            ? compareSizes(a.value, b.value)
+            : field === "colour"
+              ? families.indexOf(a.value as Family) - families.indexOf(b.value as Family)
+              : a.label.localeCompare(b.label, "en", { sensitivity: "base", numeric: true }),
       );
       if (field === "colour") {
         for (const option of options) {

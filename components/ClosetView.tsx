@@ -37,6 +37,7 @@ import type { Unit } from "@/lib/measurements";
 import type { PublicProfile } from "@/lib/profile";
 import { saveMyUnit } from "@/lib/profile-client";
 import { searchItems } from "@/lib/search";
+import { inOrder, timeline } from "@/lib/timeline";
 import { shelvesByBrand, shelvesByColour, shelvesByType } from "@/lib/shelves";
 import { SelectionContext } from "@/lib/selection";
 import type { Folder, Item, Look } from "@/lib/types";
@@ -473,19 +474,29 @@ export default function ClosetView({
     );
 
   // The timeline or the shelves (grids are drawn by ItemGrid / FolderView).
+  const shelves =
+    layout !== "shelves"
+      ? []
+      : sort === "family"
+        ? shelvesByColour(shown)
+        : sort === "brand"
+          ? shelvesByBrand(shown)
+          : shelvesByType(shown);
   const piecesLayout =
     layout === "timeline" ? (
       <TimeView items={shown} newestFirst={newestFirst} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
     ) : (
-      <Shelves
-        shelves={
-          sort === "family" ? shelvesByColour(shown) : sort === "brand" ? shelvesByBrand(shown) : shelvesByType(shown)
-        }
-        zoom={zoom}
-        onOpen={openItem}
-        onPreview={showPreview}
-      />
+      <Shelves shelves={shelves} zoom={zoom} onOpen={openItem} onPreview={showPreview} />
     );
+  // PREVIOUS · NEXT in a piece's details follow what's on screen (18b): the
+  // timeline's order, shelf by shelf, or the grid.
+  const sequence = (
+    layout === "timeline"
+      ? inOrder(timeline(shown), newestFirst).flatMap((slot) => slot.items)
+      : layout === "shelves"
+        ? shelves.flatMap((shelf) => shelf.items)
+        : shown
+  ).map((piece) => piece.id);
 
   // Yours: MENU and + ADD; someone's public closet: their name and @username.
   const topBar = (withZoom: boolean) =>
@@ -649,6 +660,8 @@ export default function ClosetView({
           readOnly={Boolean(visitor)}
           seller={visitor && { username: visitor.username, contact: visitor.saleContact }}
           looks={visitor ? undefined : looks}
+          sequence={sequence}
+          onNavigate={(next) => window.history.replaceState(null, "", withParam("item", next))}
         />
       </Suspense>
     </SelectionContext.Provider>

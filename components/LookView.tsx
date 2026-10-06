@@ -144,6 +144,8 @@ export default function LookView({ look, items, folders, looks, initialUnit, vis
           readOnly={Boolean(visitor)}
           seller={visitor && { username: visitor.username, contact: visitor.saleContact }}
           looks={visitor ? undefined : looks}
+          sequence={pieces.map((piece) => piece.id)}
+          onNavigate={(next) => window.history.replaceState(null, "", withParam("item", next))}
         />
       </Suspense>
 

@@ -514,7 +514,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       (onboarding, public pages, selling, looks, ARRANGE): keyboard order
       and focus, labels and alt text, contrast of text and states, Reduce
       motion, screen-reader names; fixes as found.
-    - **18b:** mobile refinements and the parked extras: 44px touch areas
+    - **18b (built 2026-10-06, apart from what a real phone turns up):** mobile refinements and the parked extras: 44px touch areas
       around ARRANGE's corner handles; ZOOM instead of SORT BY where the
       menu only holds zoom (LOOKS, the top of FOLDERS); previous / next
       between pieces in the details overlay, in the order you're browsing;
