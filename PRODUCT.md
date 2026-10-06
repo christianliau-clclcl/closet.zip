@@ -348,10 +348,24 @@ archive on their own phones and computers. The app is deployed on a public URL.
       in a piece's details and in the folder modal, HIDE / SHOW in SELECT
       mode, a small crossed-out eye on hidden cells. Hiding a folder hides
       only the folder; its pieces still show unless hidden themselves
-    - **15c:** the public door: database functions that return only a
-      public profile's visible pieces and catalogue fields, and a storage
-      rule for their photos; tested as owner, visitor and another user
-      before applying
+    - **15c (planned 2026-10-05):** the public door. Tables keep their
+      owner-only rules; visitors (logged out or in, the owner too, to
+      preview) read through three security-definer functions that only
+      answer for a PUBLIC profile: `public_profile` (username and closet
+      name), `public_items` (visible pieces: name, brand, category, colour,
+      material, size, measurements, date acquired, archived or not, order,
+      photo paths; never price, where from, notes or how it left) and
+      `public_folders` (visible folders, their cover and visible pieces).
+      A private profile and a username that doesn't exist look the same.
+      A storage rule lets anyone open only the photos of visible pieces in
+      a public closet, and visible folders' uploaded covers; turning PUBLIC
+      off or hiding a piece closes it at once (links already handed out
+      expire within the hour). Decided 2026-10-05: the page shows the
+      closet name + @username; archived pieces show only that they're
+      archived (no date, no how); hiding a folder hides the folders inside
+      it too; a folder whose cover piece is hidden shows the box. Tested
+      rolled back as owner, visitor and another user before applying, and
+      CLAUDE.md's privacy rule reworded (with the user's OK) when applied.
     - **15d:** the visitor's page at /@username (read-only, noindex)
 15¼. **New category list** (planned 2026-10-05). The five categories become
     14, still a fixed list, in head-to-toe order: Tops, T-Shirts, Shirts,
