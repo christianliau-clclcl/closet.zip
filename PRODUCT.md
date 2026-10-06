@@ -366,7 +366,22 @@ archive on their own phones and computers. The app is deployed on a public URL.
       it too; a folder whose cover piece is hidden shows the box. Tested
       rolled back as owner, visitor and another user before applying, and
       CLAUDE.md's privacy rule reworded (with the user's OK) when applied.
-    - **15d:** the visitor's page at /@username (read-only, noindex)
+    - **15d (planned 2026-10-05):** the visitor's page at /@username
+      (a rewrite to /u/[username], since @ folders mean parallel routes in
+      Next.js). The closet screen in a visitor mode, so the views can't
+      drift apart: ALL · FOLDERS, SORT BY (no Price), search, filter, zoom,
+      piece details; no SELECT, ARRANGE, + ADD, PASTE, EDIT, ARCHIVE,
+      DELETE, Folders or PUBLIC PAGE sections, + NEW FOLDER or folder EDIT.
+      Data from the 15c functions (`lib/public-closet.ts`), photos by
+      signed links. Pages ask search engines not to index them. Decided
+      2026-10-05: top bar shows the closet name with @username in `stone`
+      and a quiet CLOSET.ZIP link home on the right; your own public page
+      has one `stone` line above the grid ("This is how others see your
+      closet. Back to your closet →"); a private or unknown address shows
+      "This closet is private or doesn't exist." on the status page.
+      Measurements in a logged-in visitor's own unit, else IN with the
+      switch working for the visit. The Public profile modal gets VIEW
+      PAGE and COPY LINK instead of "coming soon".
 15¼. **New category list** (planned 2026-10-05). The five categories become
     14, still a fixed list, in head-to-toe order: Tops, T-Shirts, Shirts,
     Knitwear, Sweatshirts, Jackets, Dresses, Trousers, Skirts, Shoes,
