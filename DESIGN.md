@@ -356,6 +356,13 @@ SAVE IMAGE (18b): an underlined label first in a look page's actions (SAVE
 IMAGE · ARRANGE · EDIT; visitors get SAVE IMAGE alone), "Saving…" while it
 draws. The image is the board only, white, 1200 × 1600.
 
+**Remove background** (2026-10-06). On Add, once a photo is chosen, a row
+under the picker: REMOVE BACKGROUND (underlined label) with a `stone` note,
+"Done on your device. First use downloads about 40 MB." While it works the
+label reads "DOWNLOADING… 45%" (first time only), then "REMOVING
+BACKGROUND…"; afterwards UNDO BACKGROUND REMOVAL. The cut-out replaces the
+preview and colour detection runs again on it.
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.

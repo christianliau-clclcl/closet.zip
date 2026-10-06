@@ -28,6 +28,10 @@ learning project, so understanding matters as much as shipping.
 - Tailwind CSS for styling
 - Supabase: Postgres database, Auth, and Storage (for item photos)
 - GitHub for version control, Vercel for hosting (auto-deploys from `main`)
+- `@imgly/background-removal` (pinned with `onnxruntime-web` 1.21.0) for
+  REMOVE BACKGROUND, loaded only when used. It's AGPL-3.0, so the project is
+  open source under AGPL-3.0-or-later (`LICENSE.md`, decided 2026-10-06):
+  keep the GitHub repo public.
 
 ## Rules
 

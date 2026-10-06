@@ -43,7 +43,8 @@ build them before friend testing (see Roadmap 15–17).
 
 - Browsing or discovering other users' closets (sharing is only ever by a
   link the owner chooses to give out)
-- Automatic background removal (users remove backgrounds themselves for now)
+- ~~Automatic background removal~~ Changed 2026-10-06: REMOVE BACKGROUND
+  on Add, done on the person's own device (see Milestone 18)
 - User-created custom fields or categories (the fixed category list stays;
   personal **folders** are the one exception, see Views)
 - Shopping links, price tracking, or store integrations
@@ -524,10 +525,23 @@ archive on their own phones and computers. The app is deployed on a public URL.
       its white background, drawn in the browser at 1200 × 1600 (no new
       library); phones open the share sheet (Save Image, Messages…),
       desktop downloads a PNG. On your look pages and on public ones.
-    - **18c:** a few lines around the log in form on the logged-out home
+    - **18c (on hold, 2026-10-06):** the user wants a simple marketing
+      page that leads to sign up / log in instead, and will design
+      wireframes for it first. The earlier idea: a few lines around the
+      log in form on the logged-out home
       page (what you can do, in the archive's own voice; decided
       2026-10-02, replacing an intro above the demo closet; the audience
       is collectors, 2026-10-05): drafted, then edited by the user.
+    - **18b+ REMOVE BACKGROUND (built on Add 2026-10-06; Edit next):**
+      `@imgly/background-removal` cuts the garment out in the browser, so
+      photos never leave the device; only the small model (~40 MB,
+      `isnet_quint8`) is downloaded, from IMG.LY's servers, the first time.
+      The library is AGPL-3.0, so Closet.zip is open source under
+      AGPL-3.0-or-later too (LICENSE.md; the user's call). UNDO keeps the
+      original. Single-threaded (the faster mode's page headers would block
+      Supabase photos). Works well on product-style photos (a shirt on a
+      table, 8s); poorly on hard ones (dark jeans and boots shot from above
+      on a tiled floor); iPhone's Copy Subject + PASTE remains the best.
     - **18d:** README and screenshots for the portfolio.
     - **18e (last, when the user's design is ready):** the real favicon
       and the phone home-screen icon (`apple-icon`).

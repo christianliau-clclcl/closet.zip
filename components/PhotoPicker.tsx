@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import PasteButton from "@/components/PasteButton";
+import { removePhotoBackground, type RemovalProgress } from "@/lib/background-removal";
 import { usePasteImage } from "@/lib/clipboard";
 
 type PhotoPickerProps = {
@@ -10,13 +11,21 @@ type PhotoPickerProps = {
 
 // The square photo chooser on the Add page. Tap to choose (phones offer the
 // camera, photo library or files); on desktop, a file can also be dropped on
-// it or pasted (⌘V); PASTE takes a copied image (e.g. iPhone's Copy Subject). Once chosen, the garment floats in the square as it will in the grid.
+// it or pasted (⌘V); PASTE takes a copied image (e.g. iPhone's Copy Subject).
+// Once chosen, the garment floats in the square as it will in the grid, and
+// REMOVE BACKGROUND cuts it out on the device (lib/background-removal.ts);
+// UNDO brings the original back.
 export default function PhotoPicker({ onChange }: PhotoPickerProps) {
   const inputId = useId();
   const hintId = `${inputId}-hint`;
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const urlRef = useRef<string | null>(null);
+  const [current, setCurrent] = useState<File | null>(null);
+  // The photo as chosen, kept while a cut-out stands in for it (for UNDO).
+  const [original, setOriginal] = useState<File | null>(null);
+  const [removal, setRemoval] = useState<RemovalProgress | null>(null);
+  const [removalError, setRemovalError] = useState<string | null>(null);
 
   // ⌘V anywhere on the Add page pastes a copied image as the photo.
   usePasteImage(pick);
@@ -26,13 +35,43 @@ export default function PhotoPicker({ onChange }: PhotoPickerProps) {
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
   }, []);
 
-  function pick(chosen: File | undefined) {
-    if (!chosen) return;
+  // Shows a photo and hands it to the form.
+  function show(file: File) {
     // Swap the preview for the new file, freeing the previous one.
     if (urlRef.current) URL.revokeObjectURL(urlRef.current);
-    urlRef.current = URL.createObjectURL(chosen);
+    urlRef.current = URL.createObjectURL(file);
     setPreviewUrl(urlRef.current);
-    onChange(chosen);
+    setCurrent(file);
+    onChange(file);
+  }
+
+  // A newly chosen photo starts over: no cut-out, nothing to undo.
+  function pick(chosen: File | undefined) {
+    if (!chosen || removal) return;
+    setOriginal(null);
+    setRemovalError(null);
+    show(chosen);
+  }
+
+  async function removeBackground() {
+    if (!current) return;
+    const before = current;
+    setRemovalError(null);
+    setRemoval({ stage: "removing" });
+    try {
+      const cutOut = await removePhotoBackground(before, setRemoval);
+      setOriginal(before);
+      show(cutOut);
+    } catch {
+      setRemovalError("Couldn't remove the background. Try again, or choose a photo with it already removed.");
+    }
+    setRemoval(null);
+  }
+
+  function undo() {
+    if (!original) return;
+    show(original);
+    setOriginal(null);
   }
 
   return (
@@ -82,7 +121,7 @@ export default function PhotoPicker({ onChange }: PhotoPickerProps) {
           A PNG with the background removed works best.
         </p>
         <span className="flex shrink-0 items-baseline gap-4">
-          <PasteButton onImage={pick} />
+          <PasteButton onImage={pick} disabled={Boolean(removal)} />
           {previewUrl && (
             <label htmlFor={inputId} className="cursor-pointer text-label uppercase underline underline-offset-4">
               Change photo
@@ -90,6 +129,36 @@ export default function PhotoPicker({ onChange }: PhotoPickerProps) {
           )}
         </span>
       </div>
+      {previewUrl && (
+        <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          {original ? (
+            <button type="button" onClick={undo} className="cursor-pointer text-label uppercase underline underline-offset-4">
+              Undo background removal
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={removeBackground}
+              disabled={Boolean(removal)}
+              aria-live="polite"
+              className="cursor-pointer text-label uppercase underline underline-offset-4 disabled:cursor-wait disabled:no-underline"
+            >
+              {!removal
+                ? "Remove background"
+                : removal.stage === "downloading"
+                  ? `Downloading… ${removal.percent}%`
+                  : "Removing background…"}
+            </button>
+          )}
+          {/* The first time only: the model comes down once, then stays. */}
+          {!original && !removal && <span className="text-stone">Done on your device. First use downloads about 40 MB.</span>}
+        </div>
+      )}
+      {removalError && (
+        <p role="alert" className="mt-2">
+          {removalError}
+        </p>
+      )}
     </div>
   );
 }
