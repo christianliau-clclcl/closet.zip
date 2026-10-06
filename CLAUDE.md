@@ -34,9 +34,13 @@ learning project, so understanding matters as much as shipping.
 ### Data & security
 - Secrets live in `.env.local` only. Never hardcode keys or commit that file.
   If a new env variable is needed, remind me to also add it in Vercel.
-- Every closet is private. Every Supabase table and storage bucket uses Row
-  Level Security so users can only read and write their own data. Explain any
-  policy you write.
+- Every closet is private unless its owner turns PUBLIC on. Every Supabase
+  table and storage bucket keeps owner-only Row Level Security, so users can
+  only read and write their own data. Visitors read a public closet only
+  through security-definer functions that return non-hidden pieces and
+  folders and catalogue fields (never price, where from or notes), plus a
+  storage rule for those pieces' photos (Milestone 15c). Explain any policy
+  you write.
 - Database changes go through migration files so they're tracked in git.
 - Photos live in their own table (item, storage path, order, is-hero), so an
   item can have many photos. Only the hero photo is required.
@@ -85,8 +89,14 @@ learning project, so understanding matters as much as shipping.
 
 Update this section at the end of each working session.
 
-- Current milestone: 15 — public profiles (2026-10-03: 15a and 15b done;
-  next 15c, the public door, then 15d, the /@username page). Paused for
+- Current milestone: 15 — public profiles (15a, 15b done 2026-10-03; 15c
+  the public door done 2026-10-05: `public_profile`, `public_items`,
+  `public_folders`, `is_public_photo` + storage rule; helpers
+  `public_owner`, `visible_folder_ids` not callable from the app. Next 15d,
+  the /@username page, via a /u/[username] rewrite since @ folders clash
+  with parallel routes; noindex). 15¼ new categories (`lib/categories.ts`)
+  and 15½ onboarding (/welcome, 3 steps, MENU → Closet setup) done
+  2026-10-05; research in `research/competitor-scan.md`. Paused for
   the day while the user gathers more feedback. Also queued: 15¼ new
   category list (13 flat categories replacing the five; ask where existing
   pieces move) and 15½ onboarding (mockups on the "Onboarding

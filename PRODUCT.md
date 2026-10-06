@@ -348,7 +348,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       in a piece's details and in the folder modal, HIDE / SHOW in SELECT
       mode, a small crossed-out eye on hidden cells. Hiding a folder hides
       only the folder; its pieces still show unless hidden themselves
-    - **15c (planned 2026-10-05):** the public door. Tables keep their
+    - **15c (built 2026-10-05; 23 rolled-back checks passed):** the public door. Tables keep their
       owner-only rules; visitors (logged out or in, the owner too, to
       preview) read through three security-definer functions that only
       answer for a PUBLIC profile: `public_profile` (username and closet

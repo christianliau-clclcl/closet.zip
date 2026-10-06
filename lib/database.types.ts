@@ -272,11 +272,54 @@ export type Database = {
         Returns: undefined
       }
       arrange_items: { Args: { p_item_ids: string[] }; Returns: undefined }
+      is_public_photo: { Args: { p_path: string }; Returns: boolean }
+      public_folders: {
+        Args: { p_username: string }
+        Returns: {
+          cover_item_id: string
+          cover_path: string
+          created_at: string
+          id: string
+          items: Json
+          name: string
+          parent_id: string
+          position: number
+        }[]
+      }
+      public_items: {
+        Args: { p_username: string }
+        Returns: {
+          acquired_month: number
+          acquired_year: number
+          brand: string
+          category: string
+          colour: string
+          colour_hex: string
+          created_at: string
+          id: string
+          is_archived: boolean
+          material: string
+          measurements: Json
+          name: string
+          photos: Json
+          size_label: string
+          sort_position: number
+        }[]
+      }
+      public_owner: { Args: { p_username: string }; Returns: string }
+      public_profile: {
+        Args: { p_username: string }
+        Returns: {
+          closet_name: string
+          username: string
+        }[]
+      }
       reorder_item_photos: {
         Args: { p_item_id: string; p_photo_ids: string[] }
         Returns: undefined
       }
       username_available: { Args: { p_username: string }; Returns: boolean }
+      visible_folder_ids: { Args: { p_owner: string }; Returns: string[] }
     }
     Enums: {
       [_ in never]: never
