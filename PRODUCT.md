@@ -532,7 +532,11 @@ archive on their own phones and computers. The app is deployed on a public URL.
       page (what you can do, in the archive's own voice; decided
       2026-10-02, replacing an intro above the demo closet; the audience
       is collectors, 2026-10-05): drafted, then edited by the user.
-    - **18b+ REMOVE BACKGROUND (built on Add 2026-10-06; Edit next):**
+    - **18b+ REMOVE BACKGROUND and turning (2026-10-06):** on Add, and on
+      Edit as CUT OUT per photo (UNDO right after); ↺ ↻ turn a photo a
+      quarter either way on both. Edit swaps a saved photo's files with
+      `replacePhoto` (new files first, then the record, then the old files
+      deleted), keeping its place and cover.
       `@imgly/background-removal` cuts the garment out in the browser, so
       photos never leave the device; only the small model (~40 MB,
       `isnet_quint8`) is downloaded, from IMG.LY's servers, the first time.

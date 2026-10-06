@@ -6,7 +6,9 @@ import { useRouter } from "next/navigation";
 import { useId, useRef, useState } from "react";
 import PasteButton from "@/components/PasteButton";
 import { usePasteImage } from "@/lib/clipboard";
-import { MAX_PHOTOS, UnreadableImage, addPhoto, preparePhoto, removePhoto } from "@/lib/photos";
+import { removePhotoBackground } from "@/lib/background-removal";
+import { photoFile, rotateImage } from "@/lib/image";
+import { MAX_PHOTOS, UnreadableImage, addPhoto, preparePhoto, removePhoto, replacePhoto } from "@/lib/photos";
 import { createClient } from "@/lib/supabase/client";
 import type { Photo } from "@/lib/types";
 
@@ -19,8 +21,10 @@ const smallAction = "cursor-pointer text-label uppercase disabled:cursor-wait di
 
 // The Photos section of the edit page. The first photo is the hero (the
 // cover in the grid). Reorder by dragging (motion's Reorder) or with the ← →
-// buttons; Make hero moves a photo to the front. Every change saves straight
-// away, then the page re-reads the item so everything stays in step.
+// buttons; Make hero moves a photo to the front; ↺ ↻ turn a photo a quarter
+// and CUT OUT removes its background on the device (18b), with UNDO right
+// after. Every change saves straight away, then the page re-reads the item
+// so everything stays in step.
 export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
   const router = useRouter();
   const inputId = useId();
@@ -31,7 +35,46 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
   const [busy, setBusy] = useState<string | null>(null); // what's happening, e.g. "Adding…"
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // The photo as it was before the last cut-out, for UNDO (until the next change).
+  const [undoable, setUndoable] = useState<{ photoId: string; original: File } | null>(null);
   const roomLeft = MAX_PHOTOS - photos.length;
+
+  // Turns, cuts out or restores one saved photo: loads it, makes the new
+  // picture, then swaps it in (replacePhoto keeps its place and cover).
+  async function change(photoId: string, make: (file: File) => Promise<File>, label: string, keepForUndo = false) {
+    const photo = byId.get(photoId);
+    if (!photo || busy) return;
+    setError(null);
+    setBusy(label);
+    try {
+      const supabase = createClient();
+      const { data: auth } = await supabase.auth.getClaims();
+      const userId = auth?.claims?.sub;
+      if (!userId) throw new Error("Not logged in");
+      const before = await photoFile(photo.src);
+      const after = await make(before);
+      await replacePhoto(supabase, { userId, itemId, photoId, photo: await preparePhoto(after) });
+      setUndoable(keepForUndo ? { photoId, original: before } : null);
+    } catch {
+      setError("Couldn't change the photo. Check your connection and try again.");
+    }
+    setBusy(null);
+    router.refresh();
+  }
+
+  const turn = (photoId: string, direction: 1 | -1) =>
+    change(photoId, (file) => rotateImage(file, direction), "Turning…");
+  const cutOut = (photoId: string) =>
+    change(
+      photoId,
+      (file) =>
+        removePhotoBackground(file, (progress) =>
+          setBusy(progress.stage === "downloading" ? `Downloading… ${progress.percent}%` : "Cutting out…"),
+        ),
+      "Cutting out…",
+      true,
+    );
+  const undoCutOut = () => undoable && change(undoable.photoId, async () => undoable.original, "Undoing…");
 
   function arrange(ids: string[]) {
     latestOrder.current = ids;
@@ -119,6 +162,9 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
       <p className="mt-1 text-stone">
         The first photo is the cover. Drag to reorder. Changes save straight away.
       </p>
+      <p aria-live="polite" className="mt-1 text-label uppercase">
+        {busy}
+      </p>
 
       {/* reducedMotion="user": with Reduce motion on, the other photos jump to
           their new places instead of gliding while you drag. */}
@@ -202,6 +248,47 @@ export default function PhotoManager({ itemId, photos }: PhotoManagerProps) {
                           className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
                         >
                           Remove
+                        </button>
+                      )}
+                    </div>
+                    <div className="mt-1 flex items-center gap-3 text-stone">
+                      <button
+                        type="button"
+                        onClick={() => turn(id, -1)}
+                        disabled={Boolean(busy)}
+                        aria-label={`Turn photo ${index + 1} left`}
+                        className={`${smallAction} -m-2 p-2`}
+                      >
+                        ↺
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => turn(id, 1)}
+                        disabled={Boolean(busy)}
+                        aria-label={`Turn photo ${index + 1} right`}
+                        className={`${smallAction} -m-2 p-2`}
+                      >
+                        ↻
+                      </button>
+                      {undoable?.photoId === id ? (
+                        <button
+                          type="button"
+                          onClick={undoCutOut}
+                          disabled={Boolean(busy)}
+                          aria-label={`Undo background removal on photo ${index + 1}`}
+                          className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
+                        >
+                          Undo
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => cutOut(id)}
+                          disabled={Boolean(busy)}
+                          aria-label={`Remove the background from photo ${index + 1}`}
+                          className={`${smallAction} ml-auto underline-offset-4 hover:underline`}
+                        >
+                          Cut out
                         </button>
                       )}
                     </div>

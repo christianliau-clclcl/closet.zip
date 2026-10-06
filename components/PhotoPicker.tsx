@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import PasteButton from "@/components/PasteButton";
 import { removePhotoBackground, type RemovalProgress } from "@/lib/background-removal";
 import { usePasteImage } from "@/lib/clipboard";
+import { rotateImage } from "@/lib/image";
 
 type PhotoPickerProps = {
   onChange: (file: File) => void;
@@ -13,8 +14,8 @@ type PhotoPickerProps = {
 // camera, photo library or files); on desktop, a file can also be dropped on
 // it or pasted (⌘V); PASTE takes a copied image (e.g. iPhone's Copy Subject).
 // Once chosen, the garment floats in the square as it will in the grid, and
-// REMOVE BACKGROUND cuts it out on the device (lib/background-removal.ts);
-// UNDO brings the original back.
+// ↺ ↻ turn it a quarter, REMOVE BACKGROUND cuts it out on the device
+// (lib/background-removal.ts) and UNDO brings the original back.
 export default function PhotoPicker({ onChange }: PhotoPickerProps) {
   const inputId = useId();
   const hintId = `${inputId}-hint`;
@@ -66,6 +67,23 @@ export default function PhotoPicker({ onChange }: PhotoPickerProps) {
       setRemovalError("Couldn't remove the background. Try again, or choose a photo with it already removed.");
     }
     setRemoval(null);
+  }
+
+  // ↺ ↻: a quarter turn. With a cut-out showing, the original turns too, so
+  // UNDO brings it back the same way up.
+  async function turn(direction: 1 | -1) {
+    if (!current || removal) return;
+    setRemovalError(null);
+    try {
+      const [turned, turnedOriginal] = await Promise.all([
+        rotateImage(current, direction),
+        original ? rotateImage(original, direction) : Promise.resolve(null),
+      ]);
+      show(turned);
+      if (turnedOriginal) setOriginal(turnedOriginal);
+    } catch {
+      setRemovalError("Couldn't turn the photo. Try again.");
+    }
   }
 
   function undo() {
@@ -131,6 +149,26 @@ export default function PhotoPicker({ onChange }: PhotoPickerProps) {
       </div>
       {previewUrl && (
         <div className="mt-4 flex flex-wrap items-baseline gap-x-6 gap-y-2">
+          <span className="flex gap-4">
+            <button
+              type="button"
+              onClick={() => turn(-1)}
+              disabled={Boolean(removal)}
+              aria-label="Turn photo left"
+              className="-m-2 cursor-pointer p-2 text-label disabled:cursor-wait"
+            >
+              ↺
+            </button>
+            <button
+              type="button"
+              onClick={() => turn(1)}
+              disabled={Boolean(removal)}
+              aria-label="Turn photo right"
+              className="-m-2 cursor-pointer p-2 text-label disabled:cursor-wait"
+            >
+              ↻
+            </button>
+          </span>
           {original ? (
             <button type="button" onClick={undo} className="cursor-pointer text-label uppercase underline underline-offset-4">
               Undo background removal

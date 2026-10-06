@@ -95,3 +95,49 @@ export async function removePhoto(supabase: Supabase, photoId: string) {
   const paths = [photo.storage_path, photo.thumb_path].filter((p): p is string => Boolean(p));
   await supabase.storage.from(BUCKET).remove(paths);
 }
+
+type ReplacePhotoOptions = {
+  userId: string;
+  itemId: string;
+  photoId: string;
+  photo: PreparedPhoto;
+};
+
+// Swaps a saved photo's picture for a new one (turned, or cut out; 18b),
+// keeping its place, cover status and record. The new files are uploaded
+// first and the record pointed at them; only then are the old files deleted,
+// so a failure part-way leaves the photo as it was.
+export async function replacePhoto(supabase: Supabase, { userId, itemId, photoId, photo }: ReplacePhotoOptions) {
+  const { data: old, error: readError } = await supabase
+    .from("item_photos")
+    .select("storage_path, thumb_path")
+    .eq("id", photoId)
+    .single();
+  if (readError) throw readError;
+
+  const name = `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+  const fullPath = `${userId}/${itemId}/${name}.${photo.full.extension}`;
+  const thumbPath = `${userId}/${itemId}/${name}-thumb.${photo.thumb.extension}`;
+  const storage = supabase.storage.from(BUCKET);
+
+  try {
+    for (const [path, image] of [
+      [fullPath, photo.full],
+      [thumbPath, photo.thumb],
+    ] as const) {
+      const { error } = await storage.upload(path, image.blob, { contentType: image.blob.type });
+      if (error) throw error;
+    }
+    const { error } = await supabase
+      .from("item_photos")
+      .update({ storage_path: fullPath, thumb_path: thumbPath })
+      .eq("id", photoId);
+    if (error) throw error;
+  } catch (cause) {
+    await storage.remove([fullPath, thumbPath]);
+    throw cause;
+  }
+
+  const paths = [old.storage_path, old.thumb_path].filter((p): p is string => Boolean(p));
+  await storage.remove(paths);
+}

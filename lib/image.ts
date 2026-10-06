@@ -46,6 +46,32 @@ export async function resizeImage(image: HTMLImageElement, maxSize: number): Pro
   return { blob: png, extension: "png" };
 }
 
+// A quarter turn (18b): 1 = clockwise ↻, -1 = anticlockwise ↺. Saved as
+// PNG, which loses nothing and keeps transparency; saving resizes it as usual.
+export async function rotateImage(file: File, turn: 1 | -1): Promise<File> {
+  const image = await loadImage(file);
+  const canvas = document.createElement("canvas");
+  canvas.width = image.naturalHeight; // a quarter turn swaps width and height
+  canvas.height = image.naturalWidth;
+  const context = canvas.getContext("2d");
+  if (!context) throw new Error("Canvas not available");
+  context.translate(canvas.width / 2, canvas.height / 2);
+  context.rotate((turn * Math.PI) / 2);
+  context.drawImage(image, -image.naturalWidth / 2, -image.naturalHeight / 2);
+  const png = await toBlob(canvas, "image/png");
+  if (!png) throw new Error("Couldn't encode image");
+  const name = file.name.replace(/\.[^.]+$/, "") || "photo";
+  return new File([png], `${name}.png`, { type: "image/png" });
+}
+
+// A saved photo (a signed link) as a file, to turn it or cut it out.
+export async function photoFile(src: string, name = "photo"): Promise<File> {
+  const response = await fetch(src);
+  if (!response.ok) throw new Error("Couldn't load the photo");
+  const blob = await response.blob();
+  return new File([blob], name, { type: blob.type });
+}
+
 function toBlob(canvas: HTMLCanvasElement, type: string, quality?: number): Promise<Blob | null> {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 }

@@ -361,7 +361,11 @@ under the picker: REMOVE BACKGROUND (underlined label) with a `stone` note,
 "Done on your device. First use downloads about 40 MB." While it works the
 label reads "DOWNLOADING… 45%" (first time only), then "REMOVING
 BACKGROUND…"; afterwards UNDO BACKGROUND REMOVAL. The cut-out replaces the
-preview and colour detection runs again on it.
+preview and colour detection runs again on it. ↺ ↻ (label size, with a
+bigger tap area) sit first in that row and turn the photo a quarter. On
+Edit, each photo tile gets a third row: ↺ ↻ and CUT OUT (UNDO right after a
+cut-out), and a label-style status line under the Photos heading says
+what's happening ("TURNING…", "DOWNLOADING… 45%", "CUTTING OUT…").
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
