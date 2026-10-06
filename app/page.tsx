@@ -5,6 +5,7 @@ import TopBar from "@/components/TopBar";
 import { closetNameFrom } from "@/lib/closet-name";
 import { getMyFolders } from "@/lib/folders";
 import { getMyItems } from "@/lib/items";
+import { getMyLooks } from "@/lib/looks";
 import { ONBOARDING_STEPS } from "@/lib/onboarding";
 import { getMyOnboardingStep, getMyPublicProfile, getMyUnit } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
@@ -35,11 +36,12 @@ export default async function Home() {
   // First login (or a new onboarding step since): onboarding first (15½).
   if ((await getMyOnboardingStep()) < ONBOARDING_STEPS) redirect("/welcome");
 
-  const [items, folders, unit, publicProfile] = await Promise.all([
+  const [items, folders, unit, publicProfile, looks] = await Promise.all([
     getMyItems(),
     getMyFolders(),
     getMyUnit(),
     getMyPublicProfile(),
+    getMyLooks(),
   ]);
   return (
     <ClosetView
@@ -48,6 +50,7 @@ export default async function Home() {
       initialUnit={unit}
       closetName={closetNameFrom(data.claims)}
       publicProfile={publicProfile}
+      looks={looks}
     />
   );
 }

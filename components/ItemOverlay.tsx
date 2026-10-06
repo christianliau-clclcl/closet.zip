@@ -6,13 +6,14 @@ import ItemActions from "@/components/ItemActions";
 import ItemDetails from "@/components/ItemDetails";
 import ItemFolders from "@/components/ItemFolders";
 import ItemListing from "@/components/ItemListing";
+import ItemLooks from "@/components/ItemLooks";
 import ItemPublic from "@/components/ItemPublic";
 import ItemSell from "@/components/ItemSell";
 import PhotoViewer from "@/components/PhotoViewer";
 import { itemTitle } from "@/lib/format";
 import { containedBox } from "@/lib/image";
 import type { Unit } from "@/lib/measurements";
-import type { Folder, Item } from "@/lib/types";
+import type { Folder, Item, Look } from "@/lib/types";
 
 type ItemOverlayProps = {
   items: Item[];
@@ -24,6 +25,7 @@ type ItemOverlayProps = {
   readOnly?: boolean; // someone's public closet (15d): details only, no owner's sections
   // Someone's public closet: whose it is, and their contact line for listings (16c).
   seller?: { username: string; contact?: string };
+  looks?: Look[]; // your own: the looks a piece is in (17b)
 };
 
 // True when a click on a garment photo lands in the empty margin around the
@@ -51,6 +53,7 @@ export default function ItemOverlay({
   onUnitChange,
   readOnly = false,
   seller,
+  looks = [],
 }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
@@ -139,6 +142,7 @@ export default function ItemOverlay({
                 {/* Keyed on hidden too: listing a piece shows it, and the chips follow. */}
                 <ItemPublic key={`public-${item.id}-${Boolean(item.hidden)}`} item={item} />
                 <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
+                <ItemLooks itemId={item.id} looks={looks} />
               </>
             )}
           </div>

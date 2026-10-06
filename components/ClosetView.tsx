@@ -7,6 +7,7 @@ import ArrangeGrid from "@/components/ArrangeGrid";
 import BottomBar from "@/components/BottomBar";
 import { chipClass } from "@/components/Chip";
 import ClosetTopBar from "@/components/ClosetTopBar";
+import LooksGallery from "@/components/LooksGallery";
 import PublicTopBar from "@/components/PublicTopBar";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
@@ -38,7 +39,7 @@ import { saveMyUnit } from "@/lib/profile-client";
 import { searchItems } from "@/lib/search";
 import { shelvesByBrand, shelvesByColour, shelvesByType } from "@/lib/shelves";
 import { SelectionContext } from "@/lib/selection";
-import type { Folder, Item } from "@/lib/types";
+import type { Folder, Item, Look } from "@/lib/types";
 import {
   countFilters,
   filterFields,
@@ -74,9 +75,18 @@ type ClosetViewProps = {
   // forSaleOnly: PUBLIC · FOR SALE ONLY, only the FOR SALE tab (16c).
   // saleContact: how to buy, shown with listings.
   visitor?: { username: string; ownPage: boolean; forSaleOnly: boolean; saleContact?: string };
+  looks?: Look[]; // the LOOKS tab (17b); visitors get looks with 17e
 };
 
-export default function ClosetView({ items, folders, initialUnit, closetName, publicProfile, visitor }: ClosetViewProps) {
+export default function ClosetView({
+  items,
+  folders,
+  initialUnit,
+  closetName,
+  publicProfile,
+  visitor,
+  looks = [],
+}: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
   // Your own pieces saved before colours existed get one in the background
   // (never on someone else's public closet: that would save to their pieces).
@@ -95,7 +105,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     : visitor.forSaleOnly
       ? ["for_sale"]
       : anyListed
-        ? views
+        ? ["all", "folders", "for_sale"]
         : ["all", "folders"];
   const requestedView = readView(params);
   const view = viewOptions.includes(requestedView) ? requestedView : viewOptions[0];
@@ -179,7 +189,9 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
         : []
       : view === "for_sale"
         ? items.filter((item) => item.listing)
-        : items,
+        : view === "looks"
+          ? []
+          : items,
     showArchived,
   );
 
@@ -310,8 +322,9 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     }
   }
 
-  // The top of FOLDERS is just folders: nothing to sort, filter or search there.
-  const sortable = view !== "folders" || Boolean(folder);
+  // The top of FOLDERS is just folders, and LOOKS just looks: nothing to
+  // sort, filter or search there (zoom still applies).
+  const sortable = view === "all" || view === "for_sale" || Boolean(folder);
 
   // SELECT, for your own pieces wherever there are some to choose (not on
   // the timeline, whose pieces aren't grid cells).
@@ -371,6 +384,10 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
         {selectButton}
         {arrangeButton}
       </>
+    ) : view === "looks" && !visitor ? (
+      <Link href="/looks/new" className="text-label whitespace-nowrap uppercase">
+        + New look
+      </Link>
     ) : (
       sortable && (
         <>
@@ -525,9 +542,9 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           !selecting &&
           !arranging &&
           !searchOpen && (
-            // A filled chip, so the main action stands out.
-            <Link href="/add" className={`shrink-0 ${chipClass(true)}`}>
-              + Add
+            // A filled chip, so the main action stands out. On LOOKS: a new look.
+            <Link href={view === "looks" ? "/looks/new" : "/add"} className={`shrink-0 ${chipClass(true)}`}>
+              {view === "looks" ? "+ New look" : "+ Add"}
             </Link>
           )
         }
@@ -549,6 +566,11 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
             Drag pieces into your order, or use ← →. On a phone, press and hold a piece to lift it.
           </p>
           <ArrangeGrid items={arrangeOrder} zoom={zoom} onReorder={setArrangeOrder} />
+        </main>
+      ) : view === "looks" ? (
+        <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
+          <h1 className="sr-only">Looks</h1>
+          <LooksGallery looks={looks} items={items} zoom={zoom} />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
@@ -622,6 +644,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           onUnitChange={changeUnit}
           readOnly={Boolean(visitor)}
           seller={visitor && { username: visitor.username, contact: visitor.saleContact }}
+          looks={visitor ? undefined : looks}
         />
       </Suspense>
     </SelectionContext.Provider>

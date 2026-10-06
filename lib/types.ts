@@ -71,3 +71,24 @@ export type Folder = {
   arranged: boolean; // its pieces have been arranged at least once
   hidden?: boolean; // left off your public page; its pieces still show (15b)
 };
+
+// A look (Milestone 17): a name, a note and some of your pieces composed on
+// a 3:4 board. Positions are fractions of the board, so it draws the same at
+// any size: x and y are a piece's centre, width a share of the board's width
+// (its height follows the photo), rotation in degrees, higher layers on top.
+export type LookPiece = {
+  itemId: string;
+  x: number;
+  y: number;
+  width: number;
+  rotation: number;
+  layer: number;
+};
+
+export type Look = {
+  id: string;
+  name: string;
+  note?: string;
+  hidden?: boolean; // left off your public page (17e)
+  pieces: LookPiece[]; // bottom layer first
+};

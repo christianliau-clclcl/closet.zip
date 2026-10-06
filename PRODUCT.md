@@ -496,7 +496,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **17a (built 2026-10-06; 17 rolled-back checks passed):** the database: `looks` (name, note, order, hidden) and
       `look_items` (piece, position, size, rotation, layer), owner-only
       rules, tested rolled back before applying.
-    - **17b:** the LOOKS tab and gallery, a look's page (board, name,
+    - **17b (built 2026-10-06):** the LOOKS tab and gallery, a look's page (board, name,
       note, pieces), + NEW LOOK (pick pieces, starting flat-lay), name and
       note, delete; looks in a piece's details.
     - **17c:** the freeform editor (drag, resize, rotate, layer, remove,

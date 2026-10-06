@@ -322,6 +322,19 @@ listed (a FOR SALE ONLY page has just that tab); above its grid one
 a listed piece's details end with FOR SALE: "$160 · Like new", the note in
 `stone`, and "To buy: …" under a `rule` line.
 
+**Looks** (17b, 2026-10-06; "Looks explorations" canvas). Views: ALL ·
+FOLDERS · LOOKS · FOR SALE. LOOKS is a gallery at the zoom's columns: each
+look a small copy of its 3:4 board (no background, like the grid) with the
+grid dot and "NAME — 05" underneath in label style, like folders. + NEW
+LOOK sits in the view bar on desktop and replaces + ADD in the phone's
+bottom bar on this tab. /looks/new: serif title, NAME, NOTE (serif
+textarea), then PIECES as the grid with select squares, and a bar fixed
+to the bottom with "N CHOSEN" and an ink CREATE LOOK. A look's page: a
+512px column, ← LOOKS and EDIT (underlined), the name as the serif title,
+the board, the note in the serif, then PIECES · N as 64px photos. EDIT
+opens a modal like the folder one (NAME, NOTE, DELETE LOOK with a confirm,
+SAVE). A piece's details end with LOOKS (links) when it's in any.
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.
