@@ -456,7 +456,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - MARK SOLD takes it off sale and archives it as Sold this month
       (editable), keeping your record of it.
     Steps:
-    - **16a:** the database: listing fields on items (for sale, asking
+    - **16a (built 2026-10-05; 21 rolled-back checks passed):** the database: listing fields on items (for sale, asking
       price, condition, sale note), PUBLIC's three settings and the
       contact line on profiles, and the public door updated (listings,
       FOR SALE ONLY); tested rolled back before applying.

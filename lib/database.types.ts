@@ -155,11 +155,14 @@ export type Database = {
           acquired_year: number | null
           archived_month: number | null
           archived_year: number | null
+          asking_price: number | null
           brand: string | null
           category: string | null
           colour: string | null
           colour_hex: string | null
+          condition: string | null
           created_at: string
+          for_sale: boolean
           id: string
           is_hidden: boolean
           left_via: string | null
@@ -168,6 +171,7 @@ export type Database = {
           name: string | null
           notes: string | null
           price: number | null
+          sale_note: string | null
           size_label: string | null
           sort_position: number | null
           status: string
@@ -180,11 +184,14 @@ export type Database = {
           acquired_year?: number | null
           archived_month?: number | null
           archived_year?: number | null
+          asking_price?: number | null
           brand?: string | null
           category?: string | null
           colour?: string | null
           colour_hex?: string | null
+          condition?: string | null
           created_at?: string
+          for_sale?: boolean
           id?: string
           is_hidden?: boolean
           left_via?: string | null
@@ -193,6 +200,7 @@ export type Database = {
           name?: string | null
           notes?: string | null
           price?: number | null
+          sale_note?: string | null
           size_label?: string | null
           sort_position?: number | null
           status?: string
@@ -205,11 +213,14 @@ export type Database = {
           acquired_year?: number | null
           archived_month?: number | null
           archived_year?: number | null
+          asking_price?: number | null
           brand?: string | null
           category?: string | null
           colour?: string | null
           colour_hex?: string | null
+          condition?: string | null
           created_at?: string
+          for_sale?: boolean
           id?: string
           is_hidden?: boolean
           left_via?: string | null
@@ -218,6 +229,7 @@ export type Database = {
           name?: string | null
           notes?: string | null
           price?: number | null
+          sale_note?: string | null
           size_label?: string | null
           sort_position?: number | null
           status?: string
@@ -230,10 +242,12 @@ export type Database = {
         Row: {
           closet_categories: string[] | null
           created_at: string
+          for_sale_only: boolean
           id: string
           is_public: boolean
           measurement_unit: string
           onboarding_step: number
+          sale_contact: string | null
           updated_at: string
           username: string | null
           usual_sizes: Json
@@ -241,10 +255,12 @@ export type Database = {
         Insert: {
           closet_categories?: string[] | null
           created_at?: string
+          for_sale_only?: boolean
           id?: string
           is_public?: boolean
           measurement_unit?: string
           onboarding_step?: number
+          sale_contact?: string | null
           updated_at?: string
           username?: string | null
           usual_sizes?: Json
@@ -252,10 +268,12 @@ export type Database = {
         Update: {
           closet_categories?: string[] | null
           created_at?: string
+          for_sale_only?: boolean
           id?: string
           is_public?: boolean
           measurement_unit?: string
           onboarding_step?: number
+          sale_contact?: string | null
           updated_at?: string
           username?: string | null
           usual_sizes?: Json
@@ -291,17 +309,21 @@ export type Database = {
         Returns: {
           acquired_month: number
           acquired_year: number
+          asking_price: number
           brand: string
           category: string
           colour: string
           colour_hex: string
+          condition: string
           created_at: string
+          for_sale: boolean
           id: string
           is_archived: boolean
           material: string
           measurements: Json
           name: string
           photos: Json
+          sale_note: string
           size_label: string
           sort_position: number
         }[]
@@ -311,6 +333,8 @@ export type Database = {
         Args: { p_username: string }
         Returns: {
           closet_name: string
+          for_sale_only: boolean
+          sale_contact: string
           username: string
         }[]
       }
