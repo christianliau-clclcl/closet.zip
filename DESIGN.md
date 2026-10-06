@@ -340,6 +340,11 @@ outline, the chosen piece with a 1px `ink` outline and four 8px corner
 handles (`cell` fill, `ink` border), then FORWARD · BACK · ↺ · ↻ · REMOVE
 (underlined labels, `pebble` when nothing is chosen) with a `stone` hint on
 the right, then ADD PIECES: a sideways strip of 56px photos in white boxes.
+SHUFFLE (17d), beside + NEW LOOK on the LOOKS tab: ← LOOKS, "Shuffle" as the
+serif title with a `stone` line, then TOP · BOTTOM · SHOES rows between
+`rule` lines (label, a 144px photo, the piece's name and a KEEP chip when
+there's another piece to shuffle to; a `stone` line when there's none), and
+a fixed bottom bar with SHUFFLE AGAIN (outlined) and SAVE AS LOOK (ink).
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No

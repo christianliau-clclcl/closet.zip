@@ -501,7 +501,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       note, delete; looks in a piece's details.
     - **17c (built 2026-10-06):** the freeform editor (drag, resize, rotate, layer, remove,
       add pieces), phones and desktop.
-    - **17d:** SHUFFLE.
+    - **17d (built 2026-10-06):** SHUFFLE at /looks/shuffle (first pick on the server); SAVE AS LOOK names it "Shuffle, Oct 2026" and opens ARRANGE.
     - **17e:** looks on public pages (through the public door), hideable.
 18. **Final polish:** accessibility pass, mobile refinements, README and
     screenshots for the portfolio, and a few lines around the log in form on

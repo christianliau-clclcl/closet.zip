@@ -369,6 +369,11 @@ export default function ClosetView({
     inBottomBar ? (
       <>
         {sortBy(true)}
+        {view === "looks" && !visitor && (
+          <Link href="/looks/shuffle" className="text-label whitespace-nowrap uppercase">
+            Shuffle
+          </Link>
+        )}
         {sortable && (
           <button
             type="button"
@@ -385,9 +390,14 @@ export default function ClosetView({
         {arrangeButton}
       </>
     ) : view === "looks" && !visitor ? (
-      <Link href="/looks/new" className="text-label whitespace-nowrap uppercase">
-        + New look
-      </Link>
+      <>
+        <Link href="/looks/shuffle" className="text-label whitespace-nowrap uppercase">
+          Shuffle
+        </Link>
+        <Link href="/looks/new" className="text-label whitespace-nowrap uppercase">
+          + New look
+        </Link>
+      </>
     ) : (
       sortable && (
         <>
