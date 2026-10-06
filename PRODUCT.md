@@ -493,7 +493,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       (a look is a record).
     - Public pages show looks like folders, each hideable (to confirm).
     Steps:
-    - **17a:** the database: `looks` (name, note, order, hidden) and
+    - **17a (built 2026-10-06; 17 rolled-back checks passed):** the database: `looks` (name, note, order, hidden) and
       `look_items` (piece, position, size, rotation, layer), owner-only
       rules, tested rolled back before applying.
     - **17b:** the LOOKS tab and gallery, a look's page (board, name,

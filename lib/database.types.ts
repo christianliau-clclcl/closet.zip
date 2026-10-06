@@ -238,6 +238,90 @@ export type Database = {
         }
         Relationships: []
       }
+      look_items: {
+        Row: {
+          created_at: string
+          item_id: string
+          layer: number
+          look_id: string
+          rotation: number
+          user_id: string
+          width: number
+          x: number
+          y: number
+        }
+        Insert: {
+          created_at?: string
+          item_id: string
+          layer?: number
+          look_id: string
+          rotation?: number
+          user_id?: string
+          width: number
+          x: number
+          y: number
+        }
+        Update: {
+          created_at?: string
+          item_id?: string
+          layer?: number
+          look_id?: string
+          rotation?: number
+          user_id?: string
+          width?: number
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "look_items_item_fkey"
+            columns: ["item_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "items"
+            referencedColumns: ["id", "user_id"]
+          },
+          {
+            foreignKeyName: "look_items_look_fkey"
+            columns: ["look_id", "user_id"]
+            isOneToOne: false
+            referencedRelation: "looks"
+            referencedColumns: ["id", "user_id"]
+          },
+        ]
+      }
+      looks: {
+        Row: {
+          created_at: string
+          id: string
+          is_hidden: boolean
+          name: string
+          note: string | null
+          position: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          name: string
+          note?: string | null
+          position?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_hidden?: boolean
+          name?: string
+          note?: string | null
+          position?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           closet_categories: string[] | null
@@ -340,6 +424,10 @@ export type Database = {
       }
       reorder_item_photos: {
         Args: { p_item_id: string; p_photo_ids: string[] }
+        Returns: undefined
+      }
+      save_look_board: {
+        Args: { p_look_id: string; p_pieces: Json }
         Returns: undefined
       }
       username_available: { Args: { p_username: string }; Returns: boolean }
