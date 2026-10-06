@@ -37,6 +37,7 @@ export default async function PublicClosetPage(props: PageProps<"/u/[username]">
     <ClosetView
       items={closet.items}
       folders={closet.folders}
+      looks={closet.looks}
       initialUnit={unit}
       closetName={closet.closetName}
       visitor={{

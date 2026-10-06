@@ -5,7 +5,11 @@ const nextConfig: NextConfig = {
   // @ mean parallel routes in Next.js, so the page itself is /u/[username];
   // this shows it at the @ address without changing what's in the bar.
   async rewrites() {
-    return [{ source: "/@:username", destination: "/u/:username" }];
+    return [
+      { source: "/@:username", destination: "/u/:username" },
+      // Pages inside a public closet, e.g. a look: /@sam/looks/<id> (17e).
+      { source: "/@:username/:path*", destination: "/u/:username/:path*" },
+    ];
   },
 };
 

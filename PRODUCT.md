@@ -485,13 +485,12 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - Looks live in a LOOKS tab (ALL · FOLDERS · LOOKS · FOR SALE): your
       gallery of looks, each a small copy of its board with "NAME — 06".
       A piece's details list the looks it's in.
-    - SHUFFLE: one random top (tops, t-shirts, shirts, knitwear,
-      sweatshirts), bottom (trousers, skirts) and shoes (shoes, sneakers)
-      from pieces still in your closet, each with KEEP; SHUFFLE AGAIN and
-      SAVE AS LOOK (opens them in the editor).
+    - SHUFFLE (a random top, bottom and shoes) was built in 17d and removed
+      the same day at the user's request (code in git history, commit
+      1bb54ab).
     - Deleting a piece removes it from its looks; archiving keeps it there
       (a look is a record).
-    - Public pages show looks like folders, each hideable (to confirm).
+    - Public pages show looks like folders, each hideable.
     Steps:
     - **17a (built 2026-10-06; 17 rolled-back checks passed):** the database: `looks` (name, note, order, hidden) and
       `look_items` (piece, position, size, rotation, layer), owner-only
@@ -501,8 +500,8 @@ archive on their own phones and computers. The app is deployed on a public URL.
       note, delete; looks in a piece's details.
     - **17c (built 2026-10-06):** the freeform editor (drag, resize, rotate, layer, remove,
       add pieces), phones and desktop.
-    - **17d (built 2026-10-06):** SHUFFLE at /looks/shuffle (first pick on the server); SAVE AS LOOK names it "Shuffle, Oct 2026" and opens ARRANGE.
-    - **17e:** looks on public pages (through the public door), hideable.
+    - **17d:** SHUFFLE, built then removed (2026-10-06, the user's call).
+    - **17e (built 2026-10-06; 10 rolled-back checks passed):** looks on public pages through `public_looks` (only visible looks, only visible pieces on their boards, none on FOR SALE ONLY pages); LOOKS tab for visitors when there are any; read-only look pages at /@username/looks/<id>; PUBLIC PAGE · SHOWN / HIDDEN in the look's EDIT, the crossed-out eye in your gallery.
 18. **Final polish:** accessibility pass, mobile refinements, README and
     screenshots for the portfolio, and a few lines around the log in form on
     the logged-out home page (what you can do, in the archive's own voice;

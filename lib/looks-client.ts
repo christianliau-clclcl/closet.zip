@@ -36,10 +36,11 @@ export async function saveLookBoard(lookId: string, pieces: LookPiece[]): Promis
   if (error) throw error;
 }
 
-export async function updateLook(lookId: string, name: string, note: string): Promise<void> {
+// hidden: left off your public page (17e).
+export async function updateLook(lookId: string, name: string, note: string, hidden: boolean): Promise<void> {
   const { error } = await createClient()
     .from("looks")
-    .update({ name: name.trim(), note: note.trim() || null })
+    .update({ name: name.trim(), note: note.trim() || null, is_hidden: hidden })
     .eq("id", lookId);
   if (error) throw error;
 }

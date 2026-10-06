@@ -3,7 +3,7 @@ import type { Category } from "@/lib/categories";
 import type { Condition } from "@/lib/listing";
 import { readMeasurements } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/server";
-import type { Folder, Item, Photo } from "@/lib/types";
+import type { Folder, Item, Look, LookPiece, Photo } from "@/lib/types";
 
 // A public closet (Milestone 15d), read through the public door (15c): the
 // database functions public_profile, public_items and public_folders, which
@@ -21,6 +21,7 @@ export type PublicCloset = {
   saleContact?: string; // how buyers get in touch, in the owner's words
   items: Item[];
   folders: Folder[];
+  looks: Look[]; // visible looks, with only visible pieces on their boards (17e)
 };
 
 type PhotoJson = { id: string; storage_path: string; thumb_path: string | null; is_hero: boolean; position: number };
@@ -36,12 +37,18 @@ export const getPublicCloset = cache(async (username: string): Promise<PublicClo
   const profile = profiles?.[0];
   if (!profile) return null;
 
-  const [{ data: itemRows, error: itemsError }, { data: folderRows, error: foldersError }] = await Promise.all([
+  const [
+    { data: itemRows, error: itemsError },
+    { data: folderRows, error: foldersError },
+    { data: lookRows, error: looksError },
+  ] = await Promise.all([
     supabase.rpc("public_items", { p_username: username }),
     supabase.rpc("public_folders", { p_username: username }),
+    supabase.rpc("public_looks", { p_username: username }),
   ]);
   if (itemsError) throw itemsError;
   if (foldersError) throw foldersError;
+  if (looksError) throw looksError;
 
   // One request for every photo's and cover's signed link.
   const paths = [
@@ -113,8 +120,25 @@ export const getPublicCloset = cache(async (username: string): Promise<PublicClo
     saleContact: text(profile.sale_contact),
     items,
     folders,
+    looks: [...lookRows].sort(byMyOrder).map(
+      (row): Look => ({
+        id: row.id,
+        name: row.name,
+        note: text(row.note),
+        pieces: (row.pieces as PieceJson[]).map((p) => ({
+          itemId: p.item_id,
+          x: p.x,
+          y: p.y,
+          width: p.width,
+          rotation: p.rotation,
+          layer: p.layer,
+        })),
+      }),
+    ),
   };
 });
+
+type PieceJson = Omit<LookPiece, "itemId"> & { item_id: string };
 
 // Blank text counts as empty.
 function text(value: string | null): string | undefined {

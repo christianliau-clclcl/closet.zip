@@ -154,7 +154,7 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
             <p className="mt-4 text-stone">
               {isPublic && forSaleOnly
                 ? "Anyone with your link sees only the pieces you’ve listed for sale, with their price, condition and note. The rest of your closet stays private."
-                : "When on, anyone with your link can see your closet: photos, name, brand, category, colour, material, size, measurements and date acquired, and the asking price of pieces for sale. Never what you paid, where things came from or your notes. Hide pieces and folders from their details, or many at once with SELECT."}
+                : "When on, anyone with your link can see your closet: photos, name, brand, category, colour, material, size, measurements and date acquired, your looks, and the asking price of pieces for sale. Never what you paid, where things came from or your notes. Hide pieces, folders and looks from their details, or many pieces at once with SELECT."}
             </p>
           </fieldset>
           <div>

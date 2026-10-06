@@ -412,6 +412,17 @@ export type Database = {
           sort_position: number
         }[]
       }
+      public_looks: {
+        Args: { p_username: string }
+        Returns: {
+          created_at: string
+          id: string
+          name: string
+          note: string
+          pieces: Json
+          position: number
+        }[]
+      }
       public_owner: { Args: { p_username: string }; Returns: string }
       public_profile: {
         Args: { p_username: string }

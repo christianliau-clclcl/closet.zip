@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useRef, useState } from "react";
+import Chip from "@/components/Chip";
 import FormField from "@/components/FormField";
 import { MAX_LOOK_NAME, MAX_LOOK_NOTE, deleteLook, updateLook } from "@/lib/looks-client";
 import type { Look } from "@/lib/types";
@@ -11,7 +12,8 @@ type LookModalProps = {
   onClose: () => void;
 };
 
-// EDIT on a look's page (Milestone 17b): its name, note and, set apart,
+// EDIT on a look's page (Milestone 17b): its name, note, PUBLIC PAGE ·
+// SHOWN / HIDDEN (17e) and, set apart,
 // DELETE LOOK (with a confirm; the pieces themselves stay). Same shape as
 // the folder modal: full screen on phones, a 384px panel over the scrim on
 // desktop. A native <dialog>: Esc and focus are handled.
@@ -21,6 +23,7 @@ export default function LookModal({ look, onClose }: LookModalProps) {
   const noteId = useId();
   const [name, setName] = useState(look.name);
   const [note, setNote] = useState(look.note ?? "");
+  const [hidden, setHidden] = useState(Boolean(look.hidden));
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +38,7 @@ export default function LookModal({ look, onClose }: LookModalProps) {
     setBusy(true);
     setError(null);
     try {
-      await updateLook(look.id, name, note);
+      await updateLook(look.id, name, note, hidden);
       onClose();
       router.refresh();
     } catch {
@@ -88,6 +91,19 @@ export default function LookModal({ look, onClose }: LookModalProps) {
               className="mt-2 w-full resize-y border border-rule bg-cell px-3 py-3 font-serif text-notes outline-none focus:border-ink"
             />
           </div>
+          {/* 17e: like folders, hiding a look leaves its pieces as they are. */}
+          <fieldset>
+            <legend className="text-label uppercase">Public page</legend>
+            <div className="mt-2 flex gap-2">
+              <Chip chosen={!hidden} onClick={() => setHidden(false)}>
+                Shown
+              </Chip>
+              <Chip chosen={hidden} onClick={() => setHidden(true)}>
+                Hidden
+              </Chip>
+            </div>
+            <p className="mt-2 text-stone">Hiding the look doesn’t hide the pieces in it.</p>
+          </fieldset>
           {confirming ? (
             <div className="border-y border-rule py-4">
               <p>Delete “{look.name}”? The pieces stay in your closet.</p>

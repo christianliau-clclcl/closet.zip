@@ -75,7 +75,7 @@ type ClosetViewProps = {
   // forSaleOnly: PUBLIC · FOR SALE ONLY, only the FOR SALE tab (16c).
   // saleContact: how to buy, shown with listings.
   visitor?: { username: string; ownPage: boolean; forSaleOnly: boolean; saleContact?: string };
-  looks?: Look[]; // the LOOKS tab (17b); visitors get looks with 17e
+  looks?: Look[]; // the LOOKS tab (17b); a public closet's visible looks (17e)
 };
 
 export default function ClosetView({
@@ -100,13 +100,12 @@ export default function ClosetView({
   // Visitors: FOR SALE only when something's listed; a FOR SALE ONLY page
   // has just that tab (16c). Your own closet always has all three.
   const anyListed = items.some((item) => item.listing);
+  // Visitors: LOOKS and FOR SALE only when there's something in them.
   const viewOptions: readonly View[] = !visitor
     ? views
     : visitor.forSaleOnly
       ? ["for_sale"]
-      : anyListed
-        ? ["all", "folders", "for_sale"]
-        : ["all", "folders"];
+      : views.filter((option) => (option === "looks" ? looks.length > 0 : option === "for_sale" ? anyListed : true));
   const requestedView = readView(params);
   const view = viewOptions.includes(requestedView) ? requestedView : viewOptions[0];
   // The open folder (FOLDERS view): none at the top level.
@@ -369,11 +368,6 @@ export default function ClosetView({
     inBottomBar ? (
       <>
         {sortBy(true)}
-        {view === "looks" && !visitor && (
-          <Link href="/looks/shuffle" className="text-label whitespace-nowrap uppercase">
-            Shuffle
-          </Link>
-        )}
         {sortable && (
           <button
             type="button"
@@ -390,14 +384,9 @@ export default function ClosetView({
         {arrangeButton}
       </>
     ) : view === "looks" && !visitor ? (
-      <>
-        <Link href="/looks/shuffle" className="text-label whitespace-nowrap uppercase">
-          Shuffle
-        </Link>
-        <Link href="/looks/new" className="text-label whitespace-nowrap uppercase">
-          + New look
-        </Link>
-      </>
+      <Link href="/looks/new" className="text-label whitespace-nowrap uppercase">
+        + New look
+      </Link>
     ) : (
       sortable && (
         <>
@@ -580,7 +569,12 @@ export default function ClosetView({
       ) : view === "looks" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
           <h1 className="sr-only">Looks</h1>
-          <LooksGallery looks={looks} items={items} zoom={zoom} />
+          <LooksGallery
+            looks={looks}
+            items={items}
+            zoom={zoom}
+            closetHref={visitor ? `/@${visitor.username}` : undefined}
+          />
         </main>
       ) : view === "folders" ? (
         <main className="flex flex-1 flex-col p-4 pb-20 md:p-8">
