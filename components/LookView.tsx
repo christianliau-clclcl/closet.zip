@@ -15,7 +15,7 @@ type LookViewProps = {
 
 // A look's page (Milestone 17b): the name in the serif, the board, the note,
 // and its pieces as small photos that open their details in your closet.
-// EDIT opens the name, note and delete. Rearranging the board comes in 17c.
+// ARRANGE opens the board's editor (17c); EDIT the name, note and delete.
 export default function LookView({ look, items }: LookViewProps) {
   const [editing, setEditing] = useState(false);
   const byId = new Map(items.map((item) => [item.id, item]));
@@ -27,13 +27,19 @@ export default function LookView({ look, items }: LookViewProps) {
         <Link href="/?view=looks" className="text-label text-stone uppercase underline-offset-4 hover:underline">
           ← Looks
         </Link>
-        <button
-          type="button"
-          onClick={() => setEditing(true)}
-          className="cursor-pointer text-label uppercase underline underline-offset-4"
-        >
-          Edit
-        </button>
+        <div className="flex gap-6">
+          {/* The board, freeform (17c). */}
+          <Link href={`/looks/${look.id}/arrange`} className="text-label uppercase underline underline-offset-4">
+            Arrange
+          </Link>
+          <button
+            type="button"
+            onClick={() => setEditing(true)}
+            className="cursor-pointer text-label uppercase underline underline-offset-4"
+          >
+            Edit
+          </button>
+        </div>
       </div>
       <h1 className="mt-6 font-serif text-title">{look.name}</h1>
       <LookBoard pieces={look.pieces} items={byId} className="mt-6" />

@@ -334,6 +334,12 @@ to the bottom with "N CHOSEN" and an ink CREATE LOOK. A look's page: a
 the board, the note in the serif, then PIECES · N as 64px photos. EDIT
 opens a modal like the folder one (NAME, NOTE, DELETE LOOK with a confirm,
 SAVE). A piece's details end with LOOKS (links) when it's in any.
+ARRANGE (17c), beside EDIT on a look's page, opens the editor: CANCEL · the
+name in `stone` · DONE along the top, the board on `cell` with a `rule`
+outline, the chosen piece with a 1px `ink` outline and four 8px corner
+handles (`cell` fill, `ink` border), then FORWARD · BACK · ↺ · ↻ · REMOVE
+(underlined labels, `pebble` when nothing is chosen) with a `stone` hint on
+the right, then ADD PIECES: a sideways strip of 56px photos in white boxes.
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No

@@ -499,7 +499,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - **17b (built 2026-10-06):** the LOOKS tab and gallery, a look's page (board, name,
       note, pieces), + NEW LOOK (pick pieces, starting flat-lay), name and
       note, delete; looks in a piece's details.
-    - **17c:** the freeform editor (drag, resize, rotate, layer, remove,
+    - **17c (built 2026-10-06):** the freeform editor (drag, resize, rotate, layer, remove,
       add pieces), phones and desktop.
     - **17d:** SHUFFLE.
     - **17e:** looks on public pages (through the public door), hideable.
