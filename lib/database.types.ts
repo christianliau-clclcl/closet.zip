@@ -228,6 +228,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          closet_categories: string[] | null
           created_at: string
           id: string
           is_public: boolean
@@ -235,8 +236,10 @@ export type Database = {
           onboarding_step: number
           updated_at: string
           username: string | null
+          usual_sizes: Json
         }
         Insert: {
+          closet_categories?: string[] | null
           created_at?: string
           id?: string
           is_public?: boolean
@@ -244,8 +247,10 @@ export type Database = {
           onboarding_step?: number
           updated_at?: string
           username?: string | null
+          usual_sizes?: Json
         }
         Update: {
+          closet_categories?: string[] | null
           created_at?: string
           id?: string
           is_public?: boolean
@@ -253,6 +258,7 @@ export type Database = {
           onboarding_step?: number
           updated_at?: string
           username?: string | null
+          usual_sizes?: Json
         }
         Relationships: []
       }

@@ -1,6 +1,6 @@
-// Onboarding (PRODUCT.md 15½): the first-run steps, shown once at first
-// login, each skippable. Only step 1 (closet name and units) is built; your
-// sizes and what's in your closet follow the new category list (15¼).
+// Onboarding (PRODUCT.md 15½, 15¼b): the first-run steps, shown once at
+// first login, each skippable, and again from MENU → Closet setup:
+// (1) closet name and units, (2) what's in your closet, (3) your sizes.
 // When a step is added, raise this: people who finished the earlier steps
 // see only the new one, once.
-export const ONBOARDING_STEPS = 1;
+export const ONBOARDING_STEPS = 3;

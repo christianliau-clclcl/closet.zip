@@ -286,6 +286,14 @@ line, CLOSET NAME (form field with hint), MEASUREMENTS IN as IN · CM chips
 with a `stone` note, and a full-width ink DONE button in a bar with a `rule`
 line above. "STEP N OF 3" and the thin progress bars come back once there's
 more than one step.
+Steps 2–3 (15¼b): the header becomes "← STEP 2 OF 3" (back) with SKIP, and
+three 2px bars (`ink` up to this step, `rule` after). Step 2: CATEGORIES ·
+N, all 14 chips, several allowed. Step 3: one group per kind of size
+needed (TOPS SIZE, WAIST, SHOE SIZE), each with a `stone` line naming the
+categories it covers, chips plus OTHER… (opens a field), and for tops and
+shoes a sizing system switch beside the label in the IN · CM style
+(LETTER · EU · NUMBERED, US · UK · EU). The button reads NEXT, then DONE.
+On Add/Edit, the category chips are yours first, then a MORE… chip.
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No

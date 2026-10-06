@@ -1,6 +1,7 @@
 import type { Tables } from "@/lib/database.types";
-import { categories } from "@/lib/categories";
+import { categories, categoryInfo } from "@/lib/categories";
 import { readMeasurements } from "@/lib/measurements";
+import { getMyClosetSetup } from "@/lib/profile";
 import { createClient } from "@/lib/supabase/server";
 import type { Category, Item, ItemStatus, LeftVia, MonthYear, Photo } from "@/lib/types";
 
@@ -45,14 +46,21 @@ export async function getMyItem(id: string): Promise<Item | null> {
 // 2026-10-03): brands (A–Z, for typing) and your usual size per category
 // (the one you've used most).
 // "Levi's" and "levi's" count as one; the first spelling seen is kept.
+// Your usual size falls back to the one you gave onboarding for that kind of
+// size (15¼b) until your own pieces show one. myCategories: the ones you
+// ticked in onboarding, which Add shows first.
 export type ClosetHistory = {
   brands: string[];
   usualSizes: Partial<Record<Category, string>>;
+  myCategories?: Category[];
 };
 
 export async function getMyHistory(): Promise<ClosetHistory> {
   const supabase = await createClient();
-  const { data, error } = await supabase.from("items").select("brand, category, size_label");
+  const [{ data, error }, setup] = await Promise.all([
+    supabase.from("items").select("brand, category, size_label"),
+    getMyClosetSetup(),
+  ]);
   if (error) throw error;
 
   // Counts each spelling-insensitive value, keeping its first spelling.
@@ -73,7 +81,9 @@ export async function getMyHistory(): Promise<ClosetHistory> {
   const usualSizes: Partial<Record<Category, string>> = {};
   for (const category of categories) {
     const [usual] = byUse(tally(data.filter((row) => row.category === category).map((row) => row.size_label)));
-    if (usual) usualSizes[category] = usual;
+    const kind = categoryInfo[category].size;
+    const fallback = kind ? setup.sizes[kind] : undefined;
+    if (usual ?? fallback) usualSizes[category] = usual ?? fallback;
   }
 
   return {
@@ -81,6 +91,7 @@ export async function getMyHistory(): Promise<ClosetHistory> {
       .map((entry) => entry.name)
       .sort((a, b) => a.localeCompare(b)),
     usualSizes,
+    myCategories: setup.categories,
   };
 }
 

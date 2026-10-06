@@ -1,3 +1,4 @@
+import { readCategories, readUsualSizes, type Category, type UsualSizes } from "@/lib/categories";
 import type { Unit } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/server";
 
@@ -25,4 +26,14 @@ export async function getMyOnboardingStep(): Promise<number> {
   const supabase = await createClient();
   const { data } = await supabase.from("profiles").select("onboarding_step").maybeSingle();
   return data?.onboarding_step ?? 0;
+}
+
+// What you told onboarding (15¼b): the categories you ticked (none if you
+// haven't answered) and your usual size for each kind of size.
+export type ClosetSetup = { categories?: Category[]; sizes: UsualSizes };
+
+export async function getMyClosetSetup(): Promise<ClosetSetup> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("profiles").select("closet_categories, usual_sizes").maybeSingle();
+  return { categories: readCategories(data?.closet_categories), sizes: readUsualSizes(data?.usual_sizes) };
 }

@@ -1,3 +1,4 @@
+import type { Category, UsualSizes } from "@/lib/categories";
 import type { Unit } from "@/lib/measurements";
 import { createClient } from "@/lib/supabase/client";
 
@@ -31,12 +32,21 @@ export async function saveMyPublicProfile(username: string | null, isPublic: boo
 }
 
 // Onboarding (Milestone 15½): records that a step is done or skipped, so it
-// isn't shown again (creating the profile row the first time).
-export async function saveOnboardingStep(step: number): Promise<void> {
+// isn't shown again (creating the profile row the first time), with that
+// step's answers when it was done rather than skipped.
+export async function saveOnboardingStep(
+  step: number,
+  answers: { closetCategories?: Category[]; usualSizes?: UsualSizes } = {},
+): Promise<void> {
   const supabase = createClient();
   const { data } = await supabase.auth.getClaims();
   const id = data?.claims?.sub;
   if (!id) throw new Error("Not logged in");
-  const { error } = await supabase.from("profiles").upsert({ id, onboarding_step: step });
+  const { error } = await supabase.from("profiles").upsert({
+    id,
+    onboarding_step: step,
+    ...(answers.closetCategories && { closet_categories: answers.closetCategories }),
+    ...(answers.usualSizes && { usual_sizes: answers.usualSizes }),
+  });
   if (error) throw error;
 }

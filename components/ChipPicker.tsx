@@ -8,6 +8,7 @@ type ChipPickerProps<T extends string> = {
   onChange: (value: T | "") => void;
   hint?: string;
   children?: React.ReactNode; // shown under the chips (e.g. a field to type in)
+  last?: React.ReactNode; // one more chip at the end of the row (e.g. MORE…)
 };
 
 // One choice from a short list, as compact boxed chips (DESIGN.md "Chips").
@@ -20,6 +21,7 @@ export default function ChipPicker<T extends string>({
   onChange,
   hint,
   children,
+  last,
 }: ChipPickerProps<T>) {
   return (
     <fieldset>
@@ -30,6 +32,7 @@ export default function ChipPicker<T extends string>({
             {labelFor ? labelFor(option) : option}
           </Chip>
         ))}
+        {last}
       </div>
       {hint && <p className="mt-2 text-stone">{hint}</p>}
       {children}

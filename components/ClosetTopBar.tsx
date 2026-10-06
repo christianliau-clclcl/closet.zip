@@ -20,8 +20,9 @@ type ClosetTopBarProps = {
 
 // The closet's top bar: the closet's name on the left. Desktop: zoom, ADD and
 // MENU. Phones: MENU only; zoom and ADD live in the bottom bar there
-// (DESIGN.md "Phones"). MENU holds naming the closet, the public profile
-// (username and PUBLIC) and LOG OUT.
+// (DESIGN.md "Phones"). MENU holds naming the closet, CLOSET SETUP (the
+// onboarding steps again), the public profile (username and PUBLIC) and
+// LOG OUT.
 export default function ClosetTopBar({ closetName, publicProfile, zoom }: ClosetTopBarProps) {
   const [naming, setNaming] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -31,6 +32,10 @@ export default function ClosetTopBar({ closetName, publicProfile, zoom }: Closet
       <button type="button" onClick={() => setNaming(true)} className="cursor-pointer text-label uppercase">
         {closetName ? "Rename closet" : "Name your closet"}
       </button>
+      {/* Onboarding again, with your earlier answers (15¼b). */}
+      <Link href="/welcome?from=menu" className="text-label uppercase">
+        Closet setup
+      </Link>
       <button type="button" onClick={() => setProfileOpen(true)} className="cursor-pointer text-label uppercase">
         Public profile{publicProfile.isPublic ? " · On" : ""}
       </button>

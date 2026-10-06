@@ -1,8 +1,9 @@
-import { useId } from "react";
+import { useId, useState } from "react";
 import ColourField from "@/components/ColourField";
 import FormField from "@/components/FormField";
 import MeasurementFields from "@/components/MeasurementFields";
 import AcquiredField from "@/components/AcquiredField";
+import { chipClass } from "@/components/Chip";
 import ChipPicker from "@/components/ChipPicker";
 import MaterialField from "@/components/MaterialField";
 import { categories } from "@/lib/categories";
@@ -10,7 +11,6 @@ import { formatCategory } from "@/lib/format";
 import type { ItemDraft } from "@/lib/item-draft";
 import type { ClosetHistory } from "@/lib/items";
 import type { Unit } from "@/lib/measurements";
-
 
 type ItemDetailsFieldsProps = {
   draft: ItemDraft;
@@ -35,6 +35,13 @@ export default function ItemDetailsFields({
 }: ItemDetailsFieldsProps) {
   const brandListId = useId();
   const notesId = useId();
+  // Your categories from onboarding first (15¼b), MORE… for the rest. All of
+  // them when you haven't said, or when the piece is already in another one.
+  const mine = history.myCategories?.length ? history.myCategories : undefined;
+  const [showAll, setShowAll] = useState(
+    () => !mine || Boolean(draft.category && !mine.includes(draft.category)),
+  );
+  const shownCategories = showAll || !mine ? categories : mine;
 
   function set<K extends keyof ItemDraft>(key: K, value: ItemDraft[K]) {
     onChange((current) => ({ ...current, [key]: value }));
@@ -51,8 +58,15 @@ export default function ItemDetailsFields({
 
       <ChipPicker
         legend="Category"
-        options={categories}
+        options={shownCategories}
         labelFor={formatCategory}
+        last={
+          !showAll && (
+            <button type="button" onClick={() => setShowAll(true)} className={chipClass(false)}>
+              More…
+            </button>
+          )
+        }
         value={draft.category}
         onChange={(category) =>
           onChange((current) => {

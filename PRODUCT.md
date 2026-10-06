@@ -376,9 +376,16 @@ archive on their own phones and computers. The app is deployed on a public URL.
       first); Add/Edit chips, measurements, usual size, Type shelves,
       filter, labels, old links. Applied right before pushing, since the
       live app and the database must agree on the values.
-    - **15¼b:** onboarding steps 2–3 on the new list (sizes by kind of
-      size: letter, waist, shoe; then tick which categories you own, and
-      Add shows those first), with updated mockups on the canvas first.
+    - **15¼b (built 2026-10-05):** onboarding steps 2–3 on the new list,
+      categories first so sizes only ask what you need: (2) tick the
+      categories you own (`profiles.closet_categories`); Add/Edit show
+      those first, MORE… for the rest; (3) your sizes by kind
+      (`profiles.usual_sizes`: letter, waist, shoe), filling in on Add
+      until your own pieces show a usual size. Sizing systems (decided
+      2026-10-05): shoes US · UK · EU, tops LETTER · EU · NUMBERED, saved
+      with the system in front ("EU 43", "US 9.5"); waist and women's
+      sizes typed via OTHER… for now. MENU → CLOSET SETUP reopens the
+      steps with your answers.
 15½. **Onboarding** (planned 2026-10-03): an optional first-run flow that
     makes logging faster. Shown once at first login, SKIP on every step,
     everything editable later from MENU. Steps: (1) closet name (if skipped
@@ -394,8 +401,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       records how far you've got; the closet sends you to /welcome while
       it's below the number of steps (`ONBOARDING_STEPS`), so steps added
       later show once to everyone. Existing accounts see it once too.
-    - **Steps 2–3:** after the new category list (15¼), since sizes and
-      types depend on it.
+    - **Steps 2–3:** built with the new category list (15¼b).
 16. **Sell to friends** (from v2, 2026-10-01): see "Sell to friends" below.
     To revisit with public profiles (2026-10-03): instead of private
     listing links, pieces could be marked "for sale" on a public profile
