@@ -193,9 +193,10 @@ Update this section at the end of each working session.
 - Known issues: `README.md` is still the create-next-app boilerplate; favicon
   is a placeholder (`app/icon.svg`, no `apple-icon` yet); ESLint 9
   deprecation warning comes from the Next.js template.
-  Input borders (`rule`, 1.3:1) are below WCAG's 3:1 for field boundaries;
-  kept for the quiet look (labels above + white fill mark each field),
-  revisit in final polish (Milestone 18). Auth emails use Supabase's default templates
+  Input borders (`rule`, 1.3:1) are below WCAG's 3:1 for field boundaries:
+  a deliberate exception, the user's call (2026-10-06, after comparing it
+  with `stone`); labels above, the white fill and the ink focus border mark
+  each field. Don't "fix" it without asking. Auth emails use Supabase's default templates
   and built-in sender (editing them needs custom SMTP: an email service plus
   an owned domain). Consequences: generic wording, a low hourly email limit,
   and links must be opened in the same browser that requested them. Revisit

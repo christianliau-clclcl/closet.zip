@@ -502,10 +502,31 @@ archive on their own phones and computers. The app is deployed on a public URL.
       add pieces), phones and desktop.
     - **17d:** SHUFFLE, built then removed (2026-10-06, the user's call).
     - **17e (built 2026-10-06; 10 rolled-back checks passed):** looks on public pages through `public_looks` (only visible looks, only visible pieces on their boards, none on FOR SALE ONLY pages); LOOKS tab for visitors when there are any; read-only look pages at /@username/looks/<id>; PUBLIC PAGE · SHOWN / HIDDEN in the look's EDIT, the crossed-out eye in your gallery.
-18. **Final polish:** accessibility pass, mobile refinements, README and
-    screenshots for the portfolio, and a few lines around the log in form on
-    the logged-out home page (what you can do, in the archive's own voice;
-    decided 2026-10-02, replacing an intro above the demo closet)
+18. **Final polish** (planned 2026-10-06). Decisions:
+    - Input borders stay `rule` (1.3:1, under WCAG's 3:1 for field edges):
+      a deliberate exception for the quiet look, the user's call after
+      comparing it with `stone` (2026-10-06). Labels above, the white fill
+      and the `ink` focus border mark each field.
+    - The words (home page lines, README) are drafted by Claude in the
+      archive's voice and edited by the user before they ship.
+    Steps:
+    - **18a:** accessibility pass over everything built since Milestone 10
+      (onboarding, public pages, selling, looks, ARRANGE): keyboard order
+      and focus, labels and alt text, contrast of text and states, Reduce
+      motion, screen-reader names; fixes as found.
+    - **18b:** mobile refinements and the parked extras: 44px touch areas
+      around ARRANGE's corner handles; ZOOM instead of SORT BY where the
+      menu only holds zoom (LOOKS, the top of FOLDERS); previous / next
+      between pieces in the details overlay, in the order you're browsing;
+      sizes in size order in the filter (XS, S, M, L… and numbers in
+      order, not A–Z). Plus anything found trying it on a real phone.
+    - **18c:** a few lines around the log in form on the logged-out home
+      page (what you can do, in the archive's own voice; decided
+      2026-10-02, replacing an intro above the demo closet; the audience
+      is collectors, 2026-10-05): drafted, then edited by the user.
+    - **18d:** README and screenshots for the portfolio.
+    - **18e (last, when the user's design is ready):** the real favicon
+      and the phone home-screen icon (`apple-icon`).
 19. **Friend testing:** invite a few friends at a time, with a feedback
     link (Google Form). Consider a custom domain and email service first:
     Supabase's built-in sender allows only a few emails per hour.
