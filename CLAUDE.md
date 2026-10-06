@@ -115,6 +115,9 @@ Update this section at the end of each working session.
   OVERVIEW tab removed (bar is ALL · FOLDERS; ?view=overview → Colour
   shelves). Second friend-feedback round shipped faster logging (chips for
   category, material, acquired; usual size fills in).
+  Accessibility check: `scripts/a11y-audit.js` (paste into the browser on
+  any page or open panel; 18a found no problems across 17 views, keyboard
+  and Reduce motion checked by hand). Run it after building new screens.
   Gotcha: don't run Prettier on whole files; the code isn't
   Prettier-formatted, so it rewrites far more than the edit.
 - Milestone 14 done (2026-10-02): OVERVIEW tab (ALL · FOLDERS · OVERVIEW;

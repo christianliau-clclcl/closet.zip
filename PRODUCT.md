@@ -510,7 +510,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
     - The words (home page lines, README) are drafted by Claude in the
       archive's voice and edited by the user before they ship.
     Steps:
-    - **18a:** accessibility pass over everything built since Milestone 10
+    - **18a (done 2026-10-06; nothing needed fixing):** accessibility pass over everything built since Milestone 10
       (onboarding, public pages, selling, looks, ARRANGE): keyboard order
       and focus, labels and alt text, contrast of text and states, Reduce
       motion, screen-reader names; fixes as found.
