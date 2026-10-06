@@ -8,6 +8,7 @@ import type { Zoom } from "@/lib/zoom";
 type SortByMenuProps = {
   inBottomBar: boolean; // phones: opens upwards and holds zoom too
   sortable: boolean; // false at the top of FOLDERS (only zoom applies there)
+  options?: readonly Sort[]; // the arrangements offered; all of them by default
   sort: Sort;
   defaultSort: Sort; // My order once arranged, else Newest added
   onSortChange: (sort: Sort) => void;
@@ -27,6 +28,7 @@ type SortByMenuProps = {
 export default function SortByMenu({
   inBottomBar,
   sortable,
+  options = sorts,
   sort,
   defaultSort,
   onSortChange,
@@ -67,7 +69,7 @@ export default function SortByMenu({
             <div>
               <p className="text-label text-stone uppercase">Sort by</p>
               <div className="mt-1">
-                {sorts.map((option) => (
+                {options.map((option) => (
                   <button
                     key={option}
                     type="button"

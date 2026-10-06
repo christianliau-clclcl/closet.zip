@@ -17,7 +17,7 @@ type Availability = "idle" | "checking" | "available" | "taken";
 
 // MENU → Public profile (Milestone 15a): your username and PUBLIC · OFF / ON.
 // Same shape as the closet name modal. As you type, it checks (after a short
-// pause) whether the username is free. The public page itself arrives in 15d.
+// pause) whether the username is free. Once public: VIEW PAGE and COPY LINK.
 export default function PublicProfileModal({ current, onClose }: PublicProfileModalProps) {
   const router = useRouter();
   const dialogRef = useRef<HTMLDialogElement>(null);
@@ -26,6 +26,7 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
   const [availability, setAvailability] = useState<Availability>("idle");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const username = normaliseUsername(typed);
   const problem = usernameProblem(username);
@@ -128,10 +129,31 @@ export default function PublicProfileModal({ current, onClose }: PublicProfileMo
             </div>
             <p className="mt-4 text-stone">
               When on, anyone with your link can see your closet: photos, name, brand, category, colour, material,
-              size, measurements and date acquired. Never prices, where things came from or your notes. You’ll be able
-              to hide pieces and folders.
+              size, measurements and date acquired. Never prices, where things came from or your notes. Hide pieces
+              and folders from their details, or many at once with SELECT.
             </p>
-            <p className="mt-2 text-stone">Your public page is coming soon; you can choose your username now.</p>
+            {/* Your saved public page (15d): open it, or copy its address to send. */}
+            {current.isPublic && current.username && (
+              <div className="mt-4 flex gap-6">
+                <a href={`/@${current.username}`} className="text-label uppercase underline underline-offset-4">
+                  View page
+                </a>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      await navigator.clipboard.writeText(`${window.location.origin}/@${current.username}`);
+                      setCopied(true);
+                    } catch {
+                      setError("Couldn't copy. The address is closet-zip.vercel.app/@" + current.username);
+                    }
+                  }}
+                  className="cursor-pointer text-label uppercase underline underline-offset-4"
+                >
+                  {copied ? "Copied" : "Copy link"}
+                </button>
+              </div>
+            )}
           </fieldset>
         </div>
         <div className="border-t border-rule px-4 py-4 md:px-8">

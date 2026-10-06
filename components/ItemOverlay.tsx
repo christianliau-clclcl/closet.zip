@@ -19,6 +19,7 @@ type ItemOverlayProps = {
   onOpenFolder: (id: string) => void; // closes the overlay and opens the folder
   unit: Unit;
   onUnitChange: (unit: Unit) => void;
+  readOnly?: boolean; // someone's public closet (15d): details only, no owner's sections
 };
 
 // True when a click on a garment photo lands in the empty margin around the
@@ -44,6 +45,7 @@ export default function ItemOverlay({
   onOpenFolder,
   unit,
   onUnitChange,
+  readOnly = false,
 }: ItemOverlayProps) {
   const id = useSearchParams().get("item");
   const item = items.find((i) => i.id === id);
@@ -120,11 +122,15 @@ export default function ItemOverlay({
               <p className="mb-2 text-label text-stone uppercase">Archived</p>
             )}
             {item.name && <h2 className="pr-8 font-serif text-title">{item.name}</h2>}
-            <ItemActions key={item.id} item={item} />
+            {!readOnly && <ItemActions key={item.id} item={item} />}
             <ItemDetails item={item} unit={unit} onUnitChange={onUnitChange} />
             {/* Keys start fresh for each piece; siblings need different keys. */}
-            <ItemPublic key={`public-${item.id}`} item={item} />
-            <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
+            {!readOnly && (
+              <>
+                <ItemPublic key={`public-${item.id}`} item={item} />
+                <ItemFolders key={`folders-${item.id}`} itemId={item.id} folders={folders} onOpenFolder={onOpenFolder} />
+              </>
+            )}
           </div>
         </>
       )}

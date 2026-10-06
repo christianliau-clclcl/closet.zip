@@ -295,6 +295,17 @@ shoes a sizing system switch beside the label in the IN · CM style
 (LETTER · EU · NUMBERED, US · UK · EU). The button reads NEXT, then DONE.
 On Add/Edit, the category chips are yours first, then a MORE… chip.
 
+**Public closet** (15d, 2026-10-05), at /@username: the closet screen,
+read-only. Top bar: the closet's name in label style with `@username`
+beside it in `stone` (lowercase, as typed), zoom on desktop, and a `stone`
+CLOSET.ZIP link home on the right; no MENU or + ADD. View bar: ALL ·
+FOLDERS with search and SORT BY (no Price); phones: SORT BY · SEARCH in the
+bottom bar. Details show catalogue fields only. Your own public page adds
+one `stone` line under the view bar: "This is how others see your closet.
+Back to your closet →" (the link in ink, underlined). Private or unknown:
+the status page, "Nothing here" / "This closet is private or doesn't
+exist." The Public profile modal shows VIEW PAGE and COPY LINK once public.
+
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
 demo closet.

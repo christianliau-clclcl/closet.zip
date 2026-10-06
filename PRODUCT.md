@@ -366,7 +366,7 @@ archive on their own phones and computers. The app is deployed on a public URL.
       it too; a folder whose cover piece is hidden shows the box. Tested
       rolled back as owner, visitor and another user before applying, and
       CLAUDE.md's privacy rule reworded (with the user's OK) when applied.
-    - **15d (planned 2026-10-05):** the visitor's page at /@username
+    - **15d (built 2026-10-05):** the visitor's page at /@username
       (a rewrite to /u/[username], since @ folders mean parallel routes in
       Next.js). The closet screen in a visitor mode, so the views can't
       drift apart: ALL · FOLDERS, SORT BY (no Price), search, filter, zoom,

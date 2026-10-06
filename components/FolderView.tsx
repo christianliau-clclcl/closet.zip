@@ -24,6 +24,7 @@ type FolderViewProps = {
   onOpenItem: (id: string) => void;
   onPreview: (id: string | null, anchor?: HTMLElement) => void;
   children?: React.ReactNode; // the pieces in another layout (timeline, shelves)
+  readOnly?: boolean; // someone's public closet (15d): no + NEW FOLDER or EDIT
 };
 
 type Mode = "new" | "edit" | null; // which folder modal is open
@@ -44,6 +45,7 @@ export default function FolderView({
   onOpenItem,
   onPreview,
   children,
+  readOnly = false,
 }: FolderViewProps) {
   const router = useRouter();
   const [mode, setMode] = useState<Mode>(null);
@@ -75,16 +77,18 @@ export default function FolderView({
             })}
           </ol>
         </nav>
-        <div className="flex gap-6">
-          <button type="button" onClick={() => setMode("new")} className={action}>
-            + New folder
-          </button>
-          {current && (
-            <button type="button" onClick={() => setMode("edit")} className={action}>
-              Edit
+        {!readOnly && (
+          <div className="flex gap-6">
+            <button type="button" onClick={() => setMode("new")} className={action}>
+              + New folder
             </button>
-          )}
-        </div>
+            {current && (
+              <button type="button" onClick={() => setMode("edit")} className={action}>
+                Edit
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {mode && (
@@ -128,7 +132,9 @@ export default function FolderView({
       ) : noMatch ? (
         <ViewEmpty message={noMatch.message} action={noMatch.action} />
       ) : current ? (
-        <ViewEmpty message="This folder is empty. Add pieces to it from their details." />
+        <ViewEmpty message={readOnly ? "This folder is empty." : "This folder is empty. Add pieces to it from their details."} />
+      ) : readOnly ? (
+        <ViewEmpty message="No folders." />
       ) : (
         <ViewEmpty
           message="No folders yet. Make one for a collection: grails, a season, pieces to sell."

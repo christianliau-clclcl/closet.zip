@@ -7,6 +7,7 @@ import ArrangeGrid from "@/components/ArrangeGrid";
 import BottomBar from "@/components/BottomBar";
 import { chipClass } from "@/components/Chip";
 import ClosetTopBar from "@/components/ClosetTopBar";
+import PublicTopBar from "@/components/PublicTopBar";
 import EmptyState from "@/components/EmptyState";
 import FilterDrawer from "@/components/FilterDrawer";
 import FolderView from "@/components/FolderView";
@@ -46,12 +47,15 @@ import {
   readFilters,
   readSort,
   sortItems,
+  sorts,
   upgradeOldAddress,
   type Filters,
   type Sort,
 } from "@/lib/sort-filter";
 import { readView, views, withParam, withParams, withoutArchived, type View } from "@/lib/views";
 import type { Zoom } from "@/lib/zoom";
+
+const noItems: Item[] = []; // the same empty list on every render
 
 // Runs in the browser so it can remember the zoom level as the slider moves,
 // switch tabs and arrangements, and open or close the detail overlay. The
@@ -61,14 +65,19 @@ type ClosetViewProps = {
   items: Item[];
   folders: Folder[];
   closetName?: string; // shown in the top bar instead of CLOSET.ZIP
-  publicProfile: PublicProfile; // username and PUBLIC, set from MENU
+  publicProfile?: PublicProfile; // username and PUBLIC, set from MENU (your own closet)
   initialUnit: Unit; // for measurements in the overlay
+  // Someone's public closet at /@username (15d): read-only, so no SELECT,
+  // ARRANGE, + ADD, PASTE, owner's sections in the details or folder
+  // editing, and no Price in SORT BY. ownPage: you're looking at your own.
+  visitor?: { username: string; ownPage: boolean };
 };
 
-export default function ClosetView({ items, folders, initialUnit, closetName, publicProfile }: ClosetViewProps) {
+export default function ClosetView({ items, folders, initialUnit, closetName, publicProfile, visitor }: ClosetViewProps) {
   const [zoom, setZoom] = useState<Zoom>("medium");
-  // Your own pieces saved before colours existed get one in the background.
-  useColourBackfill(items);
+  // Your own pieces saved before colours existed get one in the background
+  // (never on someone else's public closet: that would save to their pieces).
+  useColourBackfill(visitor ? noItems : items);
   // The hovered or focused piece, and the cell itself when focused by keyboard.
   const [preview, setPreview] = useState<{ id: string; anchor: HTMLElement | null } | null>(null);
   const showPreview = (id: string | null, anchor?: HTMLElement) =>
@@ -81,7 +90,10 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   // Once the closet (or the open folder) has been arranged, it opens in My order.
   const arranged = view === "folders" ? Boolean(folder?.arranged) : items.some((i) => i.sortPosition !== undefined);
   const defaultSort: Sort = arranged ? "mine" : "newest";
-  const sort = readSort(params, defaultSort);
+  const requestedSort = readSort(params, defaultSort);
+  // Visitors never get prices, so Price isn't offered (or followed in a link).
+  const sortOptions: readonly Sort[] = visitor ? sorts.filter((option) => option !== "price") : sorts;
+  const sort = sortOptions.includes(requestedSort) ? requestedSort : defaultSort;
   const layout = layoutOf(sort);
   // Links from before SORT BY (?view=rows, ?view=time…) become today's.
   useEffect(() => {
@@ -257,7 +269,8 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   // remembered in your profile.
   function changeUnit(next: Unit) {
     setUnit(next);
-    saveMyUnit(next);
+    if (!visitor) saveMyUnit(next); // a visitor's choice lasts for the visit
+
   }
   // True when the overlay was opened from the grid (so closing = going back),
   // false when the page was loaded straight from an item link.
@@ -282,7 +295,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
 
   // SELECT, for your own pieces wherever there are some to choose (not on
   // the timeline, whose pieces aren't grid cells).
-  const selectButton = sortable && layout !== "timeline" && (
+  const selectButton = !visitor && sortable && layout !== "timeline" && (
     <button
       type="button"
       onClick={() => setSelecting(true)}
@@ -293,7 +306,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
   );
 
   // ARRANGE, beside SELECT, where pieces can be put in order.
-  const arrangeButton = canArrange && (
+  const arrangeButton = !visitor && canArrange && (
     <button type="button" onClick={startArranging} className="cursor-pointer text-label whitespace-nowrap uppercase">
       Arrange
     </button>
@@ -305,6 +318,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
     <SortByMenu
       inBottomBar={inBottomBar}
       sortable={sortable}
+      options={sortOptions}
       sort={sort}
       defaultSort={defaultSort}
       onSortChange={changeSort}
@@ -437,30 +451,57 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
       />
     );
 
+  // Yours: MENU and + ADD; someone's public closet: their name and @username.
+  const topBar = (withZoom: boolean) =>
+    visitor ? (
+      <PublicTopBar
+        closetName={closetName}
+        username={visitor.username}
+        zoom={withZoom ? { value: zoom, onChange: setZoom } : undefined}
+      />
+    ) : (
+      <ClosetTopBar
+        closetName={closetName}
+        publicProfile={publicProfile ?? { isPublic: false }}
+        zoom={withZoom ? { value: zoom, onChange: setZoom } : undefined}
+      />
+    );
+
+  // On your own public page, one line to say so (decided 2026-10-05).
+  const ownPageNote = visitor?.ownPage && (
+    <p className="px-4 pt-4 text-stone md:px-8">
+      This is how others see your closet.{" "}
+      <Link href="/" className="whitespace-nowrap text-ink underline underline-offset-4">
+        Back to your closet →
+      </Link>
+    </p>
+  );
+
   if (items.length === 0) {
     return (
       <>
-        <ClosetTopBar closetName={closetName} publicProfile={publicProfile} />
-        <main className="flex flex-1 flex-col">
-          <EmptyState />
-        </main>
+        {topBar(false)}
+        {ownPageNote}
+        <main className="flex flex-1 flex-col">{visitor ? <ViewEmpty message="Nothing here yet." /> : <EmptyState />}</main>
       </>
     );
   }
 
   return (
     <SelectionContext.Provider value={{ active: selecting, selected, toggle: toggleSelected }}>
-      <ClosetTopBar closetName={closetName} publicProfile={publicProfile} zoom={{ value: zoom, onChange: setZoom }} />
+      {topBar(true)}
 
       {/* Desktop: search, SORT BY and the rest on the right of the view bar.
           Phones: in the bottom bar instead (below), so the top stays uncrowded. */}
       <ViewBar view={view} options={views} onChange={changeView}>
         <div className="hidden items-center gap-6 md:flex">{barContents(false)}</div>
       </ViewBar>
+      {ownPageNote}
 
       <BottomBar
         tools={barContents(true)}
         action={
+          !visitor &&
           !selecting &&
           !arranging &&
           !searchOpen && (
@@ -501,6 +542,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
             onOpenFolder={openFolder}
             onOpenItem={openItem}
             onPreview={showPreview}
+            readOnly={Boolean(visitor)}
           >
             {/* Timeline and Type show the folder's pieces in their own layout,
                 under the folders inside it. */}
@@ -523,9 +565,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
             <ViewEmpty message={noMatch.message} action={noMatch.action} />
           ) : (
             <ViewEmpty
-              message={
-                showArchived ? "Nothing in your closet right now." : "Nothing in your closet right now. Archived pieces are hidden."
-              }
+              message={`Nothing in ${visitor ? "this" : "your"} closet right now.${showArchived ? "" : " Archived pieces are hidden."}`}
             />
           )}
         </main>
@@ -543,6 +583,7 @@ export default function ClosetView({ items, folders, initialUnit, closetName, pu
           onOpenFolder={openFolderFromItem}
           unit={unit}
           onUnitChange={changeUnit}
+          readOnly={Boolean(visitor)}
         />
       </Suspense>
     </SelectionContext.Provider>
