@@ -520,6 +520,10 @@ archive on their own phones and computers. The app is deployed on a public URL.
       between pieces in the details overlay, in the order you're browsing;
       sizes in size order in the filter (XS, S, M, L… and numbers in
       order, not A–Z). Plus anything found trying it on a real phone.
+      Also SAVE IMAGE on a look (decided 2026-10-06): the board only, on
+      its white background, drawn in the browser at 1200 × 1600 (no new
+      library); phones open the share sheet (Save Image, Messages…),
+      desktop downloads a PNG. On your look pages and on public ones.
     - **18c:** a few lines around the log in form on the logged-out home
       page (what you can do, in the archive's own voice; decided
       2026-10-02, replacing an intro above the demo closet; the audience

@@ -8,6 +8,7 @@ import HoverLabel from "@/components/HoverLabel";
 import ItemOverlay from "@/components/ItemOverlay";
 import LookBoard from "@/components/LookBoard";
 import LookModal from "@/components/LookModal";
+import SaveLookImage from "@/components/SaveLookImage";
 import { itemSummary, itemTitle } from "@/lib/format";
 import type { Unit } from "@/lib/measurements";
 import { saveMyUnit } from "@/lib/profile-client";
@@ -29,8 +30,8 @@ type LookViewProps = {
 // (as when arranging), the note, and its pieces as small photos. Hovering a
 // piece, on the board or below, shows its label as in the closet; tapping it
 // opens its details over this page (?item=…), so Back or ✕ returns to the
-// look. ARRANGE opens the board's editor (17c); EDIT the name, note, PUBLIC
-// PAGE and delete.
+// look. SAVE IMAGE saves the board as a PNG (18b); ARRANGE opens the board's
+// editor (17c); EDIT the name, note, PUBLIC PAGE and delete.
 export default function LookView({ look, items, folders, looks, initialUnit, visitor }: LookViewProps) {
   const router = useRouter();
   const [editing, setEditing] = useState(false);
@@ -65,21 +66,25 @@ export default function LookView({ look, items, folders, looks, initialUnit, vis
         <Link href={`${closet}?view=looks`} className="text-label text-stone uppercase underline-offset-4 hover:underline">
           ← Looks
         </Link>
-        {!visitor && (
-          <div className="flex gap-6">
-            {/* The board, freeform (17c). */}
-            <Link href={`/looks/${look.id}/arrange`} className="text-label uppercase underline underline-offset-4">
-              Arrange
-            </Link>
-            <button
-              type="button"
-              onClick={() => setEditing(true)}
-              className="cursor-pointer text-label uppercase underline underline-offset-4"
-            >
-              Edit
-            </button>
-          </div>
-        )}
+        <div className="flex flex-wrap justify-end gap-x-6 gap-y-2">
+          {/* The board as a PNG, for you and visitors (18b). */}
+          <SaveLookImage look={look} items={byId} />
+          {!visitor && (
+            <>
+              {/* The board, freeform (17c). */}
+              <Link href={`/looks/${look.id}/arrange`} className="text-label uppercase underline underline-offset-4">
+                Arrange
+              </Link>
+              <button
+                type="button"
+                onClick={() => setEditing(true)}
+                className="cursor-pointer text-label uppercase underline underline-offset-4"
+              >
+                Edit
+              </button>
+            </>
+          )}
+        </div>
       </div>
       <h1 className="mt-6 font-serif text-title">{look.name}</h1>
       <LookBoard

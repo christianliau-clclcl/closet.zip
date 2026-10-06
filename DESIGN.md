@@ -345,6 +345,9 @@ show, and a look's page without ARRANGE or EDIT, under the public top bar;
 its pieces open in the public closet. The look's EDIT modal has PUBLIC PAGE
 · SHOWN / HIDDEN after the note, with a `stone` line that its pieces aren't
 hidden; hidden looks carry the crossed-out eye at their top-right.
+SAVE IMAGE (18b): an underlined label first in a look page's actions (SAVE
+IMAGE · ARRANGE · EDIT; visitors get SAVE IMAGE alone), "Saving…" while it
+draws. The image is the board only, white, 1200 × 1600.
 
 **Logged-out home** (2026-10-02). The top bar with only `CLOSET.ZIP`, then,
 centred on the page, one `stone` line ("Keep track of what you own: your grails, where you found them, and how your closet changes over time.") 48px above the log in / sign up form below. No
